@@ -4,6 +4,8 @@ title: Joy of OCaml - Part I
 published: true
 ---
 
+Many programming problems lend themselves easily to solutions based on Functional Programming languages. It is not hard to convince ourselves of this after coding a Language like OCaml or Haskell. 
+
 
 ### Higher-order functions
 
