@@ -5,7 +5,46 @@ published: true
 ---
 
 
+### Higher-order functions
+
+####Example 1
+
+A naïve way of writing functions to take ‘n’ elements from a list and to drop ‘n’ elements. This is not the Idiomatic OCaml style I have come across. Moreover the algorithmic complexity is off the scale as the length of the list is computed repeatedly.
+
+{% highlight OCaml %}
+let take n words =
+  let rec loop i l1 = 
+    if i = n
+    then l1
+    else
+    if( n <= List.length words ) then
+      loop (i + 1)  ( appendtolist l1 (List.nth words i) ) 
+    else []
+  in loop 0  []
+;;
+{% endhighlight %}
+
+{% highlight OCaml %}
+let drop n words =
+  let rec loop i l1 = 
+    if i >= List.length words
+    then l1
+    else
+      loop (i + 1) (appendtolist l1 (List.nth words i))
+  in loop n  []
+;;
+{% endhighlight %}
+
+{% highlight OCaml %}
+let rec appendtolist l a =
+  match l with
+  |[] -> [a]
+  |h :: t -> (h :: appendtolist t a)
+;;
+{% endhighlight %}
+
 ### Imperative OCaml
+
 This code checks if a List is sorted or not. 
 
 {% highlight OCaml %}
