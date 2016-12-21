@@ -7,7 +7,7 @@ published: true
 
 ### Higher-order functions
 
-####Example 1
+#### Example 1
 
 A naïve way of writing functions to take ‘n’ elements from a list and to drop ‘n’ elements. This is not the Idiomatic OCaml style I have come across. Moreover the algorithmic complexity is off the scale as the length of the list is computed repeatedly.
 
