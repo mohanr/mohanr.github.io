@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Joy of OCaml - Part I
-published: false
+published: true
 ---
 
 
