@@ -13,8 +13,8 @@ let is_list_sorted l =
 let n – ref true in
   for I = 0 to List.length l -1 do
       if ( I + 1 <= List.length l -1 then
-          If( (String.compare (List.nth l i) (List.nth l (I + 1)) == -1 ||
-               String.compare (List.nth l i) (List.nth l ( I + 1 )) == 0 ) 
+         If( (String.compare (List.nth l i) (List.nth l (I + 1)) == -1 ||
+              String.compare (List.nth l i) (List.nth l ( I + 1 )) == 0 ) 
           then n := true
           else n := false )
   done;
