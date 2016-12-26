@@ -8,11 +8,14 @@ Many programming problems lend themselves easily to solutions based on Functiona
 
 This short article does not explain the basics of OCaml. Nor is it too advanced.
 
+### Development environment
+
 [OPAM](https://opam.ocaml.org) does not seem to install easily in Windows. As is my wont in such cases I started with Cygwin and after two days switched to a Ubuntu VM. I didn’t think I was gaining much by reporting Cygwin permission issues to owners of OPAM Windows installers.  
+
+The IDE is emacs.
 
 ### Higher-order functions
 
-#### Example 1
 
 A naïve way of writing functions to take ‘n’ elements from a list and to drop ‘n’ elements. This is not the Idiomatic OCaml style I have come across. Moreover the algorithmic complexity is off the scale as the length of the list is computed repeatedly.
 
