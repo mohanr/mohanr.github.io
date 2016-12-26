@@ -21,6 +21,14 @@ The hardest concept to fathom is side-effect or mutation. OCaml is mostly a func
 It has imperative constructs too and mutable data structures which I have decided to gloss over as my intention is to highlight the functional programming paradigm. But an example of imperative code is given at the end.
 
 {% highlight OCaml %}
+let rec appendtolist l a =
+  match l with
+  |[] -> [a]
+  |h :: t -> (h :: appendtolist t a)
+;;
+{% endhighlight %}
+
+{% highlight OCaml %}
 
 let insert l a b = 
   if List.mem_assoc a l
@@ -59,13 +67,6 @@ let drop n words =
 ;;
 {% endhighlight %}
 
-{% highlight OCaml %}
-let rec appendtolist l a =
-  match l with
-  |[] -> [a]
-  |h :: t -> (h :: appendtolist t a)
-;;
-{% endhighlight %}
 
 ### The Option type
 
