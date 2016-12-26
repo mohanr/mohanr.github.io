@@ -14,6 +14,23 @@ This short article does not explain the basics of OCaml. Nor is it too advanced.
 
 The IDE is emacs.
 
+### let keyword
+
+{% highlight OCaml %}
+let min_index a =
+
+let b = Array.copy a in a;
+
+Array.sort compare a;
+
+let n = 0 in a.(n);
+
+let i := ref(-1) in
+
+let () = Array.iteri( fun x elt -> if a.(n) = elt then I := x else ()) 0 in
+;;
+{% endhighlight %}
+
 ### Mutation
 
 
