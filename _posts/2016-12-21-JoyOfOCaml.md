@@ -14,6 +14,22 @@ This short article does not explain the basics of OCaml. Nor is it too advanced.
 
 The IDE is emacs.
 
+### Mutation
+
+
+The hardest concept to fathom is side-effect or mutation. OCaml is mostly a functional language but
+It has imperative constructs too and mutable data structures which I have decided to gloss over as my intention is to highlight the functional programming paradigm. But an example of imperative code is given at the end.
+
+{% highlight OCaml %}
+
+let insert l a b = 
+  if List.mem_assoc a l
+  then 
+    let n = List.assoc a l in (a, (appendtolist n b))::(List.remove_assoc a l)
+  else (a, (appendtolist [] b))::l
+;;
+{% endhighlight %}
+
 ### Higher-order functions
 
 
