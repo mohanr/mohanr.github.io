@@ -28,6 +28,7 @@ let n = 0 in a.(n);
 let i := ref(-1) in
 
 let () = Array.iteri( fun x elt -> if a.(n) = elt then I := x else ()) 0 in
+!i
 ;;
 {% endhighlight %}
 
