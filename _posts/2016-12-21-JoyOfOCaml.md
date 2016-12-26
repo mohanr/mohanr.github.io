@@ -58,8 +58,12 @@ let store l =
  in loop 0 (Hashtbl.create 42) l
 ;;
 
+{% endhighlight %}
+
 _'Some value'_ means that the value is found and _'None'_ means it isn't.
 
+
+{% highlight OCaml %}
 let optional hash a =
  if Hashtbl.find hash a
    then Some a
