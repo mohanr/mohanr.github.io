@@ -45,6 +45,29 @@ let rec appendtolist l a =
 ;;
 {% endhighlight %}
 
+### The Option type
+
+This obviates the need to litter code with checks for the presence or absence of an expected result. 
+
+{% highlight OCaml %}
+let store l =
+ let rec loop count hash l1 = 
+ match l1 with
+ | h :: t -> Hashtbl.add hash h count; loop ( count + 1) hash t
+ | [] -> hash 
+ in loop 0 (Hashtbl.create 42) l
+;;
+
+_'Some value'_ means that the value is found and _'None'_ means it isn't.
+
+let optional hash a =
+ if Hashtbl.find hash a
+   then Some a
+ else
+   None
+;;
+{% endhighlight %}
+
 ### Imperative OCaml
 
 This code checks if a List is sorted or not. 
