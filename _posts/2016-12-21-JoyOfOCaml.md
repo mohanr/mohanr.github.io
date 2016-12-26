@@ -13,6 +13,7 @@ Many programming problems lend themselves easily to solutions based on Functiona
 This short article does not explain the basics of OCaml. Nor is it too advanced.
 
 [OPAM](https://opam.ocaml.org) does not seem to install easily in Windows. As is my wont in such cases I started with Cygwin and after two days switched to a Ubuntu VM. I didn’t think I was gaining much by reporting Cygwin permission issues to owners of OPAM Windows installers.  
+
 ### Higher-order functions
 
 #### Example 1
