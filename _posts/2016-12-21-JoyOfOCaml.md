@@ -134,8 +134,8 @@ let foldhashtbl  htbl   =
 
 ### Imperative OCaml
 
-The contrast here is between pure functional styoe of programming without mutating any state
-and the imperative features and operate based on side-effects.
+The contrast here is between pure functional style of programming without mutating any state
+and the imperative features that operate based on side-effects.
 
 This code checks if a List is sorted or not. 
 
