@@ -1,6 +1,10 @@
 ---
 layout: post
 title: Joy of OCaml - Part I
+style: |
+  body {
+		background: HoneyDew;
+	}
 published: true
 ---
 
