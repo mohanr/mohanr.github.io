@@ -6,7 +6,8 @@ published: true
 
 Many programming problems lend themselves easily to solutions based on Functional Programming languages. It is not hard to convince ourselves of this after coding a Language like OCaml or Haskell. 
 
-This short article does not explain the basics of OCaml. Nor is it too advanced.
+This short article does not explain the basics of OCaml. Nor is it too advanced. The functionas are
+kept as simple as possible and obviously they are not coded by an expert. This is the learner's perspective after all.
 
 ### Development environment
 
@@ -113,6 +114,21 @@ let optional hash a =
 ;;
 {% endhighlight %}
 
+### Fold
+
+Let us consider the _store_ function shown above. We fold the _Hashtbl_ and accumulate
+the count before returning it at the end. _Fold_ is the functional style of operation on
+data structures.
+
+If the key matches a value we accumulate the count in _accum_.
+
+let foldhashtbl  htbl   =
+  Hashtbl.fold (fun k v accum -> (if (  k  = "a" ) 
+                                  then
+                                    ( accum + 1 )
+                                  else 
+                                    accum)) htbl 0
+;;
 ### Imperative OCaml
 
 The contrast here is between pure functional styoe of programming without mutating any state
