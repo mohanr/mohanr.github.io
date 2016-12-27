@@ -13,9 +13,9 @@ kept as simple as possible and obviously they are not coded by an expert. This i
 
 [OPAM](https://opam.ocaml.org) does not seem to install easily in Windows. As is my wont in such cases I started with Cygwin and after two days switched to a Ubuntu VM. I didn’t think I was gaining much by reporting Cygwin permission issues to owners of OPAM Windows installers.  
 
-The IDE is emacs.
+The IDE is the venerable emacs.
 
-### let keyword
+### _let_ keyword
 
 {% highlight OCaml %}
 let min_index a =
