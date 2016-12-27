@@ -132,6 +132,19 @@ let foldhashtbl  htbl   =
 ;;
 {% endhighlight %}
 
+_Fold_ has some semantics that originates in the deep bowels of the functional
+paradigm but we print some values to understand that. Unlike a fold on _List_ which can be _left_ or _right_, a fold on _Hashtbl_ seems straightforward.
+
+{% highlight OCaml %}
+let foldhashtbl  htbl   =
+  Hashtbl.fold (fun k v accum -> (if (  k  = "a" ) 
+                                  then
+                                    ( Printf.printf "%3s %3d\n" k v ;accum + 1 )
+                                  else 
+                                    (  Printf.printf "%3s %3d\n" k v ;accum) )) htbl 0
+;;
+{% endhighlight %}
+
 ### Imperative OCaml
 
 The contrast here is between pure functional style of programming without mutating any state
