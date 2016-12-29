@@ -38,6 +38,7 @@ let () = Array.iteri( fun x elt -> if a.(n) = elt then I := x else ()) 0 in
 
 The hardest concept to fathom is side-effect or mutation. OCaml is mostly a functional language but
 It has imperative constructs too and mutable data structures which I have decided to gloss over as my intention is to highlight the functional programming paradigm. But an example of imperative code is given at the end.
+
 The OCaml code shown below does not mutate any value or data structure. It create a new _List_. That is hallmark of functional code. No side-effects unless we intend to create it using imperative constructs.
 
 {% highlight OCaml %}
@@ -216,4 +217,4 @@ let rec loop l1 =
 in loop l
 ;;
 {% endhighlight %}
-
+![image-title-here](../images/djikstra.tex.preview.pdf.png){:class="img-responsive"}
