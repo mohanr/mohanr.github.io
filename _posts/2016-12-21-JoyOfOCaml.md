@@ -217,4 +217,4 @@ let rec loop l1 =
 in loop l
 ;;
 {% endhighlight %}
-![image-title-here](../images/djikstra.tex.preview.pdf.png){:class="img-responsive"}
+![image-title-here](images/djikstra.tex.preview.pdf.png){:class="img-responsive"}
