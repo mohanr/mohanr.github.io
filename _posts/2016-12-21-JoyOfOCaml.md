@@ -154,6 +154,7 @@ let foldhashtbl  htbl   =
 
 A rather contrived example of _List.fold_left_ is
 
+{% highlight OCaml %}
 let issorted l  =
   match l with
   | [] -> true
@@ -164,16 +165,18 @@ let issorted l  =
                       else (cur,false) )(x,true ) tl in
                       result
 ;;
+{% endhighlight %}
 
+>
 
-#  issorted ["b";"c";"d";"a";"b"];;
-- : bool = false
-#   issorted ["b";"c";"d";"a"];;
-- : bool = false
-#   issorted ["b";"c";"d";"b"];;
-- : bool = false
-#  issorted ["b";"c";"d"];;
-- : bool = true
+      #  issorted ["b";"c";"d";"a";"b"];;
+      - : bool = false
+      #   issorted ["b";"c";"d";"a"];;
+      - : bool = false
+      #   issorted ["b";"c";"d";"b"];;
+      - : bool = false
+      #  issorted ["b";"c";"d"];;
+      - : bool = true
 
 ### Imperative OCaml
 
