@@ -9,11 +9,13 @@ Many programming problems lend themselves easily to solutions based on Functiona
 This short article does not explain the basics of OCaml. Nor is it too advanced. The functions are
 kept as simple as possible. This is the learner's perspective after all.
 
+Dr Xavier Leroy was awarded the Milner Award 2016 for achivements including OCaml.
+
 ### Development environment
 
 [OPAM](https://opam.ocaml.org) does not seem to install easily in Windows. As is my wont in such cases I started with Cygwin and after two days switched to a Ubuntu VM. I didn’t think I was gaining much by reporting Cygwin permission issues to owners of OPAM Windows installers.  
 
-The IDE is the venerable emacs.
+The IDE is the venerable emacs. All diagrams are drawn using the Tex package, Tikz.
 
 ### _let_ keyword
 
@@ -217,4 +219,48 @@ let rec loop l1 =
 in loop l
 ;;
 {% endhighlight %}
+
+### Djikstra's shorters-path
+
+So based on the functions defined above we try to find the shortest-path. This is
+from chapter 24. of Carmen et al.
+
 ![image-title-here](../images/djikstra.tex.preview.pdf.png){:class="img-responsive"}
+
+
+{% highlight OCaml %}
+let inserttriple l s d wt = 
+   (s, d, wt)::l
+;;
+
+let parse_triples l =
+  let rec loop l l1 = 
+    match l with
+    | []       -> l1
+    | _ :: []       -> l1
+    | _ :: _ ::  []       -> l1
+    | a :: b :: c :: ( _ as t)  ->  loop t (inserttriple l1 a b c)
+  in loop l  [] 
+;;
+
+let rec appendtolist l a =
+  match l with
+  |[] -> [a]
+  |h :: t -> (h :: appendtolist t a)
+;;
+
+
+let identify_paths l =
+  let rec segregate l hash =
+  match l with
+  | (a,b,c) :: t -> if Hashtbl.mem hash (a,b)
+               then
+                ( Hashtbl.replace hash (a,b) ( appendtolist (Hashtbl.find hash (a,b)) ( int_of_string  c ) );
+                  segregate t hash )
+               else 
+                ( Hashtbl.add hash (a,b) ( appendtolist []  ( int_of_string c ) );
+                  segregate t hash )
+  | [] -> hash
+in segregate l (Hashtbl.create 42)
+;;
+{% endhighlight %}
