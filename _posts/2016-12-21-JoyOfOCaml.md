@@ -7,7 +7,7 @@ published: true
 Many programming problems lend themselves easily to solutions based on Functional Programming languages. It is not hard to convince ourselves of this after coding a Language like OCaml or Haskell. 
 
 This short article does not explain the basics of OCaml. Nor is it too advanced. The functions are
-kept as simple as possible and obviously they are not coded by an expert. This is the learner's perspective after all.
+kept as simple as possible. This is the learner's perspective after all.
 
 ### Development environment
 
@@ -38,6 +38,7 @@ let () = Array.iteri( fun x elt -> if a.(n) = elt then I := x else ()) 0 in
 
 The hardest concept to fathom is side-effect or mutation. OCaml is mostly a functional language but
 It has imperative constructs too and mutable data structures which I have decided to gloss over as my intention is to highlight the functional programming paradigm. But an example of imperative code is given at the end.
+The OCaml code shown below does not mutate any value or data structure. It create a new _List_. That is hallmark of functional code. No side-effects unless we intend to create it using imperative constructs.
 
 {% highlight OCaml %}
 let rec appendtolist l a =
@@ -58,9 +59,15 @@ let insert l a b =
 {% endhighlight %}
 
 ### Higher-order functions
+Composable functions can be combined to create higher-order functions. Let us assume we
+want part of a list and the rest to be dropped. We want to _take n_ elements and drop
+the rest.
 
 
-A naïve way of writing functions to take ‘n’ elements from a list and to drop ‘n’ elements. This is not the Idiomatic OCaml style I have come across. Moreover the algorithmic complexity is off the scale as the length of the list is computed repeatedly.
+These two functions take ‘n’ elements from a list and  drop ‘n’ elements. This is not the Idiomatic OCaml style I have come across because the algorithmic complexity is off the scale as the length of the list is computed repeatedly.
+
+But these two functions can be composed to form other higher-order functions that operate
+on the lists obtained.
 
 {% highlight OCaml %}
 let take n words =
@@ -144,6 +151,29 @@ let foldhashtbl  htbl   =
                                     (  Printf.printf "%3s %3d\n" k v ;accum) )) htbl 0
 ;;
 {% endhighlight %}
+
+A rather contrived example of _List.fold_left_ is
+
+let issorted l  =
+  match l with
+  | [] -> true
+  |  x::tl -> let (_,result) = List.fold_left
+                  ( fun (accum,result) cur -> 
+                      if (result = true && (String.compare accum cur = 0 || String.compare accum cur = -1)) 
+ `                     then  (cur,true) 
+                      else (cur,false) )(x,true ) tl in
+                      result
+;;
+
+
+#  issorted ["b";"c";"d";"a";"b"];;
+- : bool = false
+#   issorted ["b";"c";"d";"a"];;
+- : bool = false
+#   issorted ["b";"c";"d";"b"];;
+- : bool = false
+#  issorted ["b";"c";"d"];;
+- : bool = true
 
 ### Imperative OCaml
 
