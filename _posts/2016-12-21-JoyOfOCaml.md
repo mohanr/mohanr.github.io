@@ -167,9 +167,9 @@ let issorted l  =
 ;;
 {% endhighlight %}
 
->
+This is the result.
 
-      #  issorted ["b";"c";"d";"a";"b"];;
+>     #  issorted ["b";"c";"d";"a";"b"];;
       - : bool = false
       #   issorted ["b";"c";"d";"a"];;
       - : bool = false
