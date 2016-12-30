@@ -103,6 +103,8 @@ This is somethinkg like a _Markov Chain_.
 
 We _take 2_ and drop the rest.
 
+Now we slide the window to the right.
+
 {% highlight OCaml %}
 let slidewindow l x =
   match l with
