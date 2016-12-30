@@ -103,7 +103,7 @@ This is somethinkg like a _Markov Chain_.
 
 We _take 2_ and drop the rest.
 
-Now we slide the window to the right.
+Now we slide the window to the right and drop the first element.
 
 {% highlight OCaml %}
 let slidewindow l x =
