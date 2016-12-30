@@ -9,7 +9,7 @@ Many programming problems lend themselves easily to solutions based on Functiona
 This short article does not explain the basics of OCaml. Nor is it too advanced. The functions are
 kept as simple as possible. This is the learner's perspective after all.
 
-Dr Xavier Leroy was awarded the Milner Award 2016 for achivements including OCaml.
+Dr Xavier Leroy was awarded the Milner Award in 2016 for achivements including OCaml.
 
 ### Development environment
 
@@ -96,7 +96,24 @@ let drop n words =
 ;;
 {% endhighlight %}
 
+Let us assume we are working on lists of words to find out which word follows an n-gram. In this case we want to find out which word follws all sets of 2 words in a sentence.
+This is somethinkg like a _Markov Chain_.
+
 ![image-title-here](../images/higher-order.tex.preview.pdf.png){:class="img-responsive"}
+
+We _take 2_ and drop the rest.
+
+{% highlight OCaml %}
+let slidewindow l x =
+  match l with
+  | h :: t -> t @ [x]
+  | [] -> []
+;;
+{% endhighlight %}
+
+![image-title-here](../images/higher-order1.tex.preview.pdf.png){:class="img-responsive"}
+
+We slide the window to the right and thereby get the following word. Our composable functions can be used to figure out a simple _Markov Chain_.
 
 ### The Option type
 
