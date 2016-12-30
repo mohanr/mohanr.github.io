@@ -183,7 +183,9 @@ let issorted l  =
   | [] -> true
   |  x::tl -> let (_,result) = List.fold_left
                   ( fun (accum,result) cur -> 
-                      if (result = true && (String.compare accum cur = 0 || String.compare accum cur = -1)) 
+                      if (result = true && 
+		      (String.compare accum cur = 0 || 
+		       String.compare accum cur = -1)) 
  `                     then  (cur,true) 
                       else (cur,false) )(x,true ) tl in
                       result
@@ -192,13 +194,13 @@ let issorted l  =
 
 This is the result.
 
->     #  issorted ["b";"c";"d";"a";"b"];;
+>       issorted ["b";"c";"d";"a";"b"];;
       - : bool = false
-      #   issorted ["b";"c";"d";"a"];;
+         issorted ["b";"c";"d";"a"];;
       - : bool = false
-      #   issorted ["b";"c";"d";"b"];;
+         issorted ["b";"c";"d";"b"];;
       - : bool = false
-      #  issorted ["b";"c";"d"];;
+        issorted ["b";"c";"d"];;
       - : bool = true
 
 ### Imperative OCaml
@@ -242,7 +244,7 @@ in loop l
 
 ### Djikstra's shortest-path
 
-So based on the functions defined above we try to find the shortest-path. This is
+So based on some of the functions defined above we try to find the shortest-path. This is
 from chapter 24. of Carmen et al.
 
 ![image-title-here](../images/djikstra.tex.preview.pdf.png){:class="img-responsive"}
