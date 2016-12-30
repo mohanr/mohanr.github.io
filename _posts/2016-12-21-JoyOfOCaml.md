@@ -194,13 +194,13 @@ let issorted l  =
 
 This is the result.
 
->       issorted ["b";"c";"d";"a";"b"];;
+>     #  issorted ["b";"c";"d";"a";"b"];;
       - : bool = false
-         issorted ["b";"c";"d";"a"];;
+      #   issorted ["b";"c";"d";"a"];;
       - : bool = false
-         issorted ["b";"c";"d";"b"];;
+      #   issorted ["b";"c";"d";"b"];;
       - : bool = false
-        issorted ["b";"c";"d"];;
+      #  issorted ["b";"c";"d"];;
       - : bool = true
 
 ### Imperative OCaml
