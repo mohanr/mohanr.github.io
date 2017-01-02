@@ -252,19 +252,7 @@ from chapter 24. of Carmen et al.
 
 
 {% highlight OCaml %}
-let inserttriple l s d wt = 
-   (s, d, wt)::l
-;;
 
-let parse_triples l =
-  let rec loop l l1 = 
-    match l with
-    | []       -> l1
-    | _ :: []       -> l1
-    | _ :: _ ::  []       -> l1
-    | a :: b :: c :: ( _ as t)  ->  loop t (inserttriple l1 a b c)
-  in loop l  [] 
-;;
 
 let rec appendtolist l a =
   match l with
@@ -273,17 +261,42 @@ let rec appendtolist l a =
 ;;
 
 
-let identify_paths l =
-  let rec segregate l hash =
-  match l with
-  | (a,b,c) :: t -> if Hashtbl.mem hash (a,b)
-               then
-                ( Hashtbl.replace hash (a,b) ( appendtolist (Hashtbl.find hash (a,b)) ( int_of_string  c ) );
-                  segregate t hash )
-               else 
-                ( Hashtbl.add hash (a,b) ( appendtolist []  ( int_of_string c ) );
-                  segregate t hash )
-  | [] -> hash
-in segregate l (Hashtbl.create 42)
+
+let estimates n = 
+let rec loop n1 l = 
+  match n1 with
+  | n1 when n1 < n -> loop (n1 + 1) ( appendtolist l infinity)
+  | n1 -> l
+in loop 0 []
+;;
+
+let predecessor n = 
+let rec loop n1 l = 
+  match n1 with
+  | n1 when n1 < n -> loop (n1 + 1) ( appendtolist l false )
+  | n1 -> l
+in loop 0 []
+;;
+
+let update l a b = 
+  if List.mem_assoc a l
+  then 
+    let n = List.assoc a l in b::(List.remove_assoc a l)
+  else l
+;;
+
+let creategraph =
+[
+[0;0;0;3;0;5;0;0;0;0;0];
+[0;0;0;0;0;0;0;0;0;0;0];
+[0;0;0;0;0;0;0;0;0;0;0];
+[0;0;0;0;0;2;0;0;6;0;0];
+[0;0;0;0;0;0;0;0;0;0;0];
+[0;0;0;1;0;0;0;0;4;0;6];
+[0;0;0;0;0;0;0;0;0;0;0];
+[0;0;0;0;0;0;0;0;0;0;0];
+[0;0;0;0;0;0;0;0;0;0;2];
+[0;0;0;0;0;0;0;0;0;0;0];
+[3;0;0;0;0;0;0;0;7;0;0]]
 ;;
 {% endhighlight %}
