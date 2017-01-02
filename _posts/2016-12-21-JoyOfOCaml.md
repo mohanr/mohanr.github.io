@@ -18,6 +18,7 @@ Dr Xavier Leroy was awarded the Milner Award in 2016 for achivements including O
 The IDE is the venerable emacs. All diagrams are drawn using the Tex package, Tikz.
 
 ### _let_ keyword
+**This section is Yet to be updated**
 
 {% highlight OCaml %}
 let min_index a =
@@ -242,7 +243,7 @@ in loop l
 ;;
 {% endhighlight %}
 
-### Djikstra's shortest-path
+### Djikstra's shortest-path **(Yet to be updated)**
 
 So based on some of the functions defined above we try to find the shortest-path. This is
 from chapter 24. of Carmen et al.
