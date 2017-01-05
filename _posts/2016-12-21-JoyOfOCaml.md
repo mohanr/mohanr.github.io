@@ -40,9 +40,9 @@ usages of _let_ but this function uses imperative constructs and cannot be consi
 _function_.
 
 <ol>
-<li>_let_ is used to define a function called min_index</li>
+<li>let is used to define a function called min_index</li>
 
-<li>_b_ holds a copy of the Array _a_ before it is sorted because</li>
+<li>b holds a copy of the Array a before it is sorted because</li>
 
 <li>
 Array.sort does not return anything useful.
@@ -54,7 +54,7 @@ Array.sort does not return anything useful.
 </li>
 
 <li>
-_let_ can also be used to define a variable
+let can also be used to define a variable
 </li>
 
 <li>
@@ -63,15 +63,15 @@ _let_ can also be used to define a variable
 {% highlight OCaml %}
 let i :- ref(-1)
 {% endhighlight %}
-_i_ holds the value _-1_
+i holds the value -1
 </li>
 
 <li>
-Since _Array.iteri_ updates _i_, 
+Since Array.iteri updates i, 
 {% highlight OCaml %}
 	let ()
 {% endhighlight %}
-expects only _unit_. Functional paradigms are based on languages that generally do not mutate any state in a program. Read the next section.
+expects only unit. Functional paradigms are based on languages that generally do not mutate any state in a program. Read the next section.
 </li>
 </ol>
 
