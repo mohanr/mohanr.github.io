@@ -253,6 +253,8 @@ from chapter 24. of Carmen et al.
 {% highlight OCaml %}
 
 
+
+
 let rec appendtolist l a =
   match l with
   |[] -> [a]
@@ -292,10 +294,10 @@ let creategraph =
 ]
 ;;
 
-let mindistance est pred =
+let mindistance est pred n=
 let rec loop l l1 min index accum =
 match l,l1 with
-| h :: t,h1 :: t1 when (index < 4 ) ->
+| h :: t,h1 :: t1 when (index < (n - 1) ) ->
        if ( (h1 = false) && (h <= min ))
        then
        loop t t1 h  (succ index) index
@@ -357,12 +359,12 @@ let djikstra graph n n1=
 
  let rec loop times est pred accum  =
 
- if (accum <= 25)
+ if (accum <= (n * n1))
  then
    (if times < n 
       then (
   
-                let (x,y) = mindistance est pred in
+                let (x,y) = mindistance est pred n in
                 let pr = (update pred y true) in
 
                 ( 
@@ -377,7 +379,7 @@ let djikstra graph n n1=
  in loop 0 (update (estimates n) 0 (float_of_int 0)) (predecessor n1) 0
 ;;
 
-(* This is yet another test *)
+(* Yet another test *)
 let djikstratest =
              let graph =
                                  [[0; 4; 0; 0; 0; 0; 0; 8; 0];
