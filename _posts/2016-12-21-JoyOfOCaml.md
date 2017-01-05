@@ -17,8 +17,7 @@ Dr Xavier Leroy was awarded the Milner Award in 2016 for achivements including O
 
 The IDE is the venerable emacs. All diagrams are drawn using the Tex package, Tikz.
 
-### _let_ keyword
-**This section is Yet to be updated**
+### _let_ keyword **This section is Yet to be updated**
 
 {% highlight OCaml %}
 let min_index a =
@@ -227,7 +226,7 @@ let n – ref true in
 
 Even though OCaml has such constructs an aspiring functional programmer should be cautioned. It is all too easy to forget that we are learning about functions and hark back to an earlier style we are used to.
 
-Let use write a more idiomatic OCaml function that does the same thing.
+Let us write a more idiomatic OCaml function that does the same thing.
 
 {% highlight OCaml %}
 let is_list_sorter1 l =
