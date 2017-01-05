@@ -17,7 +17,7 @@ Dr Xavier Leroy was awarded the Milner Award in 2016 for achivements including O
 
 The IDE is the venerable emacs. All diagrams are drawn using the Tex package, Tikz.
 
-### _let_ keyword _This section is Yet to be updated_
+### _let_ keyword 
 
 {% highlight OCaml %}
 let min_index a =
@@ -34,6 +34,40 @@ let () = Array.iteri( fun x elt -> if a.(n) = elt then I := x else ()) 0 in
 !i
 ;;
 {% endhighlight %}
+
+This function returns the index of the smallest element in an _Array_. It illustrates some of the various
+usages of _let_ but this function uses imperative constructs and cannot be considered a real example of a OCaml
+_function_.
+
+<ol>
+<li>_let_ is used to define a function called min_index</li>
+<li>_b_ holds a copy the Array _a_ before it is sorted because</li>
+<li>
+Array.sort does not return anything useful.
+
+{% highlight OCaml %}
+#  Array.sort compare [|1,2|];;
+- : unit = ()
+{% endhighlight %}
+</li>
+<li>
+_let_ can also be used define a variable
+</li>
+<li>
+
+{% highlight OCaml %}
+let i :- ref(-1)
+{% endhighlight %}
+_i_ holds the value _-1_
+</li>
+<li>
+Since _Array.iteri_ updates _i_, 
+{% highlight OCaml %}
+	let ()
+{% endhighlight %}
+expects only _unit_
+</li>
+</ol>
 
 ### Mutation
 
