@@ -6,7 +6,7 @@ published: true
 
 Many programming problems lend themselves easily to solutions based on Functional Programming languages. It is not hard to convince ourselves of this after coding a Language like OCaml or Haskell. 
 
-This short article does not explain the basics of OCaml. Nor is it too advanced. The functions are
+This article does not explain the basics of OCaml. Nor is it too advanced. The functions are
 kept as simple as possible. This is the learner's perspective after all.
 
 Dr Xavier Leroy was awarded the Milner Award in 2016 for achivements including OCaml.
@@ -42,7 +42,7 @@ let () = Array.iteri( fun x elt -> if a.(n) = elt then I := x else ()) 0 in
 The hardest concept to fathom is side-effect or mutation. OCaml is mostly a functional language but
 It has imperative constructs too and mutable data structures which I have decided to gloss over as my intention is to highlight the functional programming paradigm. But an example of imperative code is given at the end.
 
-The OCaml code shown below does not mutate any value or data structure. It creates a new _List_. That is hallmark of functional code. No side-effects unless we intend to create it using imperative constructs.
+The OCaml code shown below does not mutate any value or data structure. It creates a new _List_. That is the hallmark of functional code. No side-effects unless we intend to create it using imperative constructs.
 
 {% highlight OCaml %}
 let rec appendtolist l a =
