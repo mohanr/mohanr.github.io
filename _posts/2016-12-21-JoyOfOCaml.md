@@ -71,7 +71,7 @@ Since Array.iteri updates i,
 {% highlight OCaml %}
 	let ()
 {% endhighlight %}
-expects only unit. Functional paradigms are based on languages that generally do not mutate any state in a program. Read the next section.
+expects only unit. Obviously this is a side-effect and Functional paradigms are based on languages that generally do not mutate any state in a program. Read the next section.
 </li>
 </ol>
 
