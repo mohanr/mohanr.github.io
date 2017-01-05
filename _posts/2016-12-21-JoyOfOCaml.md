@@ -242,7 +242,7 @@ in loop l
 ;;
 {% endhighlight %}
 
-### Djikstra's shortest-path _(Yet to be tested one last time)_
+### Djikstra's shortest-path
 
 So based on some of the functions defined above we try to find the shortest-path. This is
 from chapter 24. of Carmen et al.
