@@ -247,7 +247,19 @@ in loop l
 So based on some of the functions defined above we try to find the shortest-path. This is
 from chapter 24. of Carmen et al.
 
+So, for example, I represent this graph
+
 ![image-title-here](../images/djikstra.tex.preview.pdf.png){:class="img-responsive"}
+
+as
+
+[
+[0;0;0;3;5];
+[0;0;6;0;0];
+[0;6;0;7;0];
+[3;0;7;0;6];
+[5;0;0;6;0];
+]
 
 
 {% highlight OCaml %}
