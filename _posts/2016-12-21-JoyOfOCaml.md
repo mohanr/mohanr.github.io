@@ -17,7 +17,7 @@ Dr Xavier Leroy was awarded the Milner Award in 2016 for achivements including O
 
 The IDE is the venerable emacs. All diagrams are drawn using the Tex package, Tikz.
 
-### _let_ keyword **This section is Yet to be updated**
+### _let_ keyword _This section is Yet to be updated_
 
 {% highlight OCaml %}
 let min_index a =
@@ -97,7 +97,7 @@ let drop n words =
 {% endhighlight %}
 
 Let us assume we are working on lists of words to find out which word follows an n-gram. In this case we want to find out which word follws all sets of 2 words in a sentence.
-This is somethinkg like a _Markov Chain_.
+This is somethink like a _Markov Chain_.
 
 ![image-title-here](../images/higher-order.tex.preview.pdf.png){:class="img-responsive"}
 
@@ -242,7 +242,7 @@ in loop l
 ;;
 {% endhighlight %}
 
-### Djikstra's shortest-path **(Yet to be updated)**
+### Djikstra's shortest-path _(Yet to be tested one last time)_
 
 So based on some of the functions defined above we try to find the shortest-path. This is
 from chapter 24. of Carmen et al.
@@ -251,6 +251,8 @@ from chapter 24. of Carmen et al.
 
 
 {% highlight OCaml %}
+
+
 let rec appendtolist l a =
   match l with
   |[] -> [a]
@@ -325,9 +327,13 @@ let printpred l =
  List.iter (Printf.printf "%B ") l
 ;;
 
-let updateestimates est1 pred1 y graph =
+let printdistances l =
+ List.iteri( fun i x -> Printf.printf "\n%3d %3f\n" i x) l
+;;
+
+let updateestimates est1 pred1 y graph n =
 let rec loop1 times1 est pred=
-                       if times1 < 5 then ( 
+                       if times1 < n then ( 
                          if (( ( List.nth pred times1) = false ) &&
                            ((find graph y times1) <> 0) &&
                            ((List.nth est y) <> infinity) &&
@@ -347,26 +353,43 @@ let rec loop1 times1 est pred=
 in loop1 0 est1 pred1
 ;;
 
-let djikstra graph =
+let djikstra graph n n1=
 
  let rec loop times est pred accum  =
 
  if (accum <= 25)
  then
-   (if times < 5 
+   (if times < n 
       then (
   
                 let (x,y) = mindistance est pred in
+                let pr = (update pred y true) in
+
                 ( 
                           Printf.printf "\n%3s %3d %3d\n" "Updating estimates" y accum; 
-                          loop (times + 1) (updateestimates est (update pred y true) y graph)) pred (succ accum) ; 
+                          loop (times + 1) (updateestimates est pr y graph n1)) pr (succ accum) ; 
                 )
        else 
    loop 0 est pred  (succ accum)
    )
  else
- est
- in loop 0 (update (estimates 5) 0 (float_of_int 0)) (predecessor 5) 0
+ (printdistances est;est)
+ in loop 0 (update (estimates n) 0 (float_of_int 0)) (predecessor n1) 0
 ;;
 
+(* This is yet another test *)
+let djikstratest =
+             let graph =
+                                 [[0; 4; 0; 0; 0; 0; 0; 8; 0];
+                                  [4; 0; 8; 0; 0; 0; 0; 11; 0];
+                                  [0; 8; 0; 7; 0; 4; 0; 0; 2];
+                                  [0; 0; 7; 0; 9; 14; 0; 0; 0];
+                                  [0; 0; 0; 9; 0; 10; 0; 0; 0];
+                                  [0; 0; 4; 14; 10; 0; 2; 0; 0];
+                                  [0; 0; 0; 0; 0; 2; 0; 1; 6];
+                                  [8; 11; 0; 0; 0; 0; 1; 0; 7];
+                                  [0; 0; 2; 0; 0; 0; 6; 7; 0]
+                                 ] in
+             djikstra graph 9 9
+;;
 {% endhighlight %}
