@@ -222,17 +222,20 @@ let issorted l  =
   match l with
   | [] -> true
   |  x::tl -> let (_,result) = List.fold_left
-                  ( fun (accum,result) cur -> 
-                      if (result = true && 
-		      (String.compare accum cur = 0 || 
-		       String.compare accum cur = -1)) 
- `                     then  (cur,true) 
-                      else (cur,false) )(x,true ) tl in
+                  ( fun (old,result) cur -> 
+                       if (result = true && 
+		          (String.compare old cur = 0 || 
+		           String.compare old cur = -1)) 
+                       then 
+                        (cur,true) 
+                       else 
+                        (cur,false) ) (x,true ) tl in
                       result
 ;;
 {% endhighlight %}
 
-This is the result.
+This is the result. We move from the left storing the previous value in _old_ and the current value in _cur_.
+The check _result=true_ short-circuits the logic in this simple example.
 
 >     #  issorted ["b";"c";"d";"a";"b"];;
       - : bool = false
