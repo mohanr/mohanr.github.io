@@ -252,8 +252,6 @@ from chapter 24. of Carmen et al.
 
 
 {% highlight OCaml %}
-
-
 let rec appendtolist l a =
   match l with
   |[] -> [a]
@@ -279,24 +277,97 @@ in loop 0 []
 ;;
 
 let update l a b = 
-  if List.mem_assoc a l
-  then 
-    let n = List.assoc a l in b::(List.remove_assoc a l)
-  else l
+ List.mapi( fun index value -> if index=a then b else value ) l
+
 ;;
 
 let creategraph =
 [
-[0;0;0;3;0;5;0;0;0;0;0];
-[0;0;0;0;0;0;0;0;0;0;0];
-[0;0;0;0;0;0;0;0;0;0;0];
-[0;0;0;0;0;2;0;0;6;0;0];
-[0;0;0;0;0;0;0;0;0;0;0];
-[0;0;0;1;0;0;0;0;4;0;6];
-[0;0;0;0;0;0;0;0;0;0;0];
-[0;0;0;0;0;0;0;0;0;0;0];
-[0;0;0;0;0;0;0;0;0;0;2];
-[0;0;0;0;0;0;0;0;0;0;0];
-[3;0;0;0;0;0;0;0;7;0;0]]
+[0;0;0;3;5];
+[0;3;6;0;0];
+[0;6;0;7;0];
+[3;0;7;0;6];
+[5;0;0;6;0];
+]
 ;;
+
+let mindistance est pred =
+let rec loop l l1 min index accum =
+match l,l1 with
+| h :: t,h1 :: t1 when (index < 4 ) ->
+       if ( (h1 = false) && (h <= min ))
+       then
+       loop t t1 h  (succ index) index
+       else
+       loop t t1  min (succ index) accum
+|[e],[e1] ->
+       if ( (e1 = false) && (e <= min ))
+       then
+       (e,accum)
+       else
+        (min,accum)
+|[],[] ->  (min,accum) 
+|_::_,_::_ ->   (min,accum)
+|_::_,[] ->   (min,accum)
+|[],_::_ ->   (min,accum)
+
+in loop est pred infinity 0 0
+;;
+
+let rec find l x y = 
+  ( List.nth (List.nth l x) y)
+;;
+
+let printlist l = 
+ List.iter (Printf.printf "%f ") l
+;;
+
+let printpred l = 
+ List.iter (Printf.printf "%B ") l
+;;
+
+let updateestimates est1 pred1 y graph =
+let rec loop1 times1 est pred=
+                       if times1 < 5 then ( 
+                         if (( ( List.nth pred times1) = false ) &&
+                           ((find graph y times1) <> 0) &&
+                           ((List.nth est y) <> infinity) &&
+                           ((( List.nth est  y ) +.  (float_of_int (find graph y times1))) <  ( List.nth est times1 )))
+                         then
+                         ( 
+                           Printf.printf "\nTimes1( update) %d %f with %f\n" times1 
+                                                   ( List.nth est y) (( List.nth est y) +. float_of_int(find graph y times1));
+                           loop1  (times1 + 1)
+                           (update est times1 (( List.nth est y) +. float_of_int(find graph y times1))) pred;
+                         )
+                         else 
+                           ( loop1  (times1 + 1) est pred)
+                          )
+                        else
+                       (printpred pred; est) 
+in loop1 0 est1 pred1
+;;
+
+let djikstra graph =
+
+ let rec loop times est pred accum  =
+
+ if (accum <= 25)
+ then
+   (if times < 5 
+      then (
+  
+                let (x,y) = mindistance est pred in
+                ( 
+                          Printf.printf "\n%3s %3d %3d\n" "Updating estimates" y accum; 
+                          loop (times + 1) (updateestimates est (update pred y true) y graph)) pred (succ accum) ; 
+                )
+       else 
+   loop 0 est pred  (succ accum)
+   )
+ else
+ est
+ in loop 0 (update (estimates 5) 0 (float_of_int 0)) (predecessor 5) 0
+;;
+
 {% endhighlight %}
