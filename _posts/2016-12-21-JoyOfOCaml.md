@@ -41,7 +41,9 @@ _function_.
 
 <ol>
 <li>_let_ is used to define a function called min_index</li>
-<li>_b_ holds a copy the Array _a_ before it is sorted because</li>
+
+<li>_b_ holds a copy of the Array _a_ before it is sorted because</li>
+
 <li>
 Array.sort does not return anything useful.
 
@@ -50,22 +52,26 @@ Array.sort does not return anything useful.
 - : unit = ()
 {% endhighlight %}
 </li>
+
 <li>
-_let_ can also be used define a variable
+_let_ can also be used to define a variable
 </li>
+
 <li>
+
 
 {% highlight OCaml %}
 let i :- ref(-1)
 {% endhighlight %}
 _i_ holds the value _-1_
 </li>
+
 <li>
 Since _Array.iteri_ updates _i_, 
 {% highlight OCaml %}
 	let ()
 {% endhighlight %}
-expects only _unit_
+expects only _unit_. Functional paradigms are based on languages that generally do not mutate any state in a program. Read the next section.
 </li>
 </ol>
 
