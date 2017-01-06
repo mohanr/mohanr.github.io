@@ -288,7 +288,8 @@ in loop l
 ### Djikstra's shortest-path
 
 So based on some of the functions defined above we try to find the shortest-path. This is
-from chapter 24. of Carmen et al.
+from chapter 24. of _Introduction to Algorithms_ by Cormen et al.
+
 
 So, for example, I represent this graph
 
@@ -307,6 +308,8 @@ as
 
 [5;0;0;6;0];
 ]
+
+A caveat is that this code is not as _functional_ as I want it to be. There are far too many loops and imperative structures here.
 
 
 {% highlight OCaml %}
