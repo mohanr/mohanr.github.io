@@ -313,7 +313,6 @@ as
 
 
 
-
 let rec appendtolist l a =
   match l with
   |[] -> [a]
@@ -321,7 +320,7 @@ let rec appendtolist l a =
 ;;
 
 
-
+(*infinity is used to initialize. So floats are used. Don't see any problem *)
 let estimates n = 
 let rec loop n1 l = 
   match n1 with
@@ -343,6 +342,7 @@ let update l a b =
 
 ;;
 
+(* This does not seem to be the right data structure. Use better OCaml *)
 let creategraph =
 [
 [0;0;0;3;5];
@@ -401,8 +401,7 @@ let rec loop1 times1 est pred=
                            ((( List.nth est  y ) +.  (float_of_int (find graph y times1))) <  ( List.nth est times1 )))
                          then
                          ( 
-                           Printf.printf "\nTimes1( update) %d %f with %f\n" times1 
-                                                   ( List.nth est y) (( List.nth est y) +. float_of_int(find graph y times1));
+
                            loop1  (times1 + 1)
                            (update est times1 (( List.nth est y) +. float_of_int(find graph y times1))) pred;
                          )
@@ -410,7 +409,7 @@ let rec loop1 times1 est pred=
                            ( loop1  (times1 + 1) est pred)
                           )
                         else
-                       (printpred pred; est) 
+                       ( est) 
 in loop1 0 est1 pred1
 ;;
 
@@ -427,7 +426,6 @@ let djikstra graph n n1=
                 let pr = (update pred y true) in
 
                 ( 
-                          Printf.printf "\n%3s %3d %3d\n" "Updating estimates" y accum; 
                           loop (times + 1) (updateestimates est pr y graph n1)) pr (succ accum) ; 
                 )
        else 
@@ -438,7 +436,6 @@ let djikstra graph n n1=
  in loop 0 (update (estimates n) 0 (float_of_int 0)) (predecessor n1) 0
 ;;
 
-(* Yet another test *)
 let djikstratest =
              let graph =
                                  [[0; 4; 0; 0; 0; 0; 0; 8; 0];
