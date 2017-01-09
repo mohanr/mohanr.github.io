@@ -137,7 +137,7 @@ let drop n words =
 {% endhighlight %}
 
 Let us assume we are working on lists of words to find out which word follows an n-gram. In this case we want to find out which word follows all sets of 2 words in a sentence.
-This is somethink like a _Markov Chain_.
+This is something like a _Markov Chain_.
 
 ![image-title-here](../images/higher-order.tex.preview.pdf.png){:class="img-responsive"}
 
