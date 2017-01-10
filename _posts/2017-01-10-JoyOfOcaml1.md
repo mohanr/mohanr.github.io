@@ -1,10 +1,6 @@
 ---
 layout: post
-<<<<<<< HEAD
 title: Joy of OCaml - Part II( Unfinished post )
-=======
-title: Joy of OCaml - Part II( Unfinished post )
->>>>>>> 2fee0f1b7400c7e902ecbf32694c81cfbe49790d
 published: true
 ---
 In the second part I will explain some more language features and code.
