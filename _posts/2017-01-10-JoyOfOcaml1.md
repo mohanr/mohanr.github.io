@@ -86,3 +86,5 @@ let gridfocus x y g =
 
                                   )
 {% endhighlight %}
+
+1. Huet, Gerard (September 1997). "Functional Pearl: The Zipper"
