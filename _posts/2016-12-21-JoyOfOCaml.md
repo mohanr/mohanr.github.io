@@ -40,9 +40,9 @@ usages of _let_ but this function uses imperative constructs and cannot be consi
 _function_.
 
 <ol>
-<li><i>let</i> is used to define a function called min_index</li>
+<li><i>let</i> is used to define a function called <i>min_index</i></li>
 
-<li>b holds a copy of the Array a before it is sorted because</li>
+<li><i>b</i> holds a copy of the Array <i>a</i> before it is sorted because</li>
 
 <li>
 Array.sort does not return anything useful.
@@ -53,8 +53,8 @@ Array.sort does not return anything useful.
 {% endhighlight %}
 </li>
 
-<li>
-let can also be used to define a variable
+<li><i>
+let</i> can also be used to define a variable
 </li>
 
 <li>
@@ -63,11 +63,11 @@ let can also be used to define a variable
 {% highlight OCaml %}
 let i :- ref(-1)
 {% endhighlight %}
-i holds the value -1
+<i>i</i> holds the value -1
 </li>
 
 <li>
-Since Array.iteri updates i, 
+Since <i>Array.iteri</i> updates <i>i</i>, 
 {% highlight OCaml %}
 	let ()
 {% endhighlight %}
