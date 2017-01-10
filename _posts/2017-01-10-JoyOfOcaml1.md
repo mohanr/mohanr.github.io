@@ -73,16 +73,16 @@ let gridfocus x y g =
  let a = focuscell x g in
   match a with
     | Some(before, line , after) -> (
-                                  let b = focuscell y line in
-                                   match b with
-                                   Some (left  , focus, right) ->  
-                                                               let above =  { gamegrid = before } in
-                                                               let below = { gamegrid = after} in
-                                                                            {  above
-                                                                            ;  below
-                                                                            ;  left
-                                                                            ;  right
-                                                                            ;  focus }
+                          let b = focuscell y line in
+                            match b with
+                               Some (left  , focus, right) ->  
+                                  let above =  { gamegrid = before } in
+                                  let below = { gamegrid = after} in
+                                                  {  above
+                                                  ;  below
+                                                  ;  left
+                                                  ;  right
+                                                  ;  focus }
 
                                   )
 {% endhighlight %}
