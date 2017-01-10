@@ -86,6 +86,6 @@ let gridfocus x y g =
                                                                             ;  left
                                                                             ;  right
                                                                             ;  focus }
-{% endhighlight %}
 
                                   )
+{% endhighlight %}
