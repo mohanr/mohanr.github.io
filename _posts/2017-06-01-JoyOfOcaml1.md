@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Joy of OCaml - Part II
-published: false
+published: true
 ---
 In the second part I will explain some more language features and code.
 
