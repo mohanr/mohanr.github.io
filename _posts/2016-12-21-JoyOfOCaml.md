@@ -321,8 +321,10 @@ let rec appendtolist l a =
   |[] -> [a]
   |h :: t -> (h :: appendtolist t a)
 ;;
+{% endhighlight %}
 
 
+{% highlight OCaml %}
 (*infinity is used to initialize. So floats are used. Don't see any problem *)
 let estimates n = 
 let rec loop n1 l = 
@@ -331,7 +333,9 @@ let rec loop n1 l =
   | n1 -> l
 in loop 0 []
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 let predecessor n = 
 let rec loop n1 l = 
   match n1 with
@@ -339,12 +343,16 @@ let rec loop n1 l =
   | n1 -> l
 in loop 0 []
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 let update l a b = 
  List.mapi( fun index value -> if index=a then b else value ) l
 
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 (* This does not seem to be the right data structure. Use better OCaml *)
 let creategraph =
 [
@@ -355,7 +363,9 @@ let creategraph =
 [5;0;0;6;0];
 ]
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 let mindistance est pred n=
 let rec loop l l1 min index accum =
 match l,l1 with
@@ -378,23 +388,33 @@ match l,l1 with
 
 in loop est pred infinity 0 0
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 let rec find l x y = 
   ( List.nth (List.nth l x) y)
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 let printlist l = 
  List.iter (Printf.printf "%f ") l
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 let printpred l = 
  List.iter (Printf.printf "%B ") l
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 let printdistances l =
  List.iteri( fun i x -> Printf.printf "\n%3d %3f\n" i x) l
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 let updateestimates est1 pred1 y graph n =
 let rec loop1 times1 est pred=
                        if times1 < n then ( 
@@ -415,7 +435,9 @@ let rec loop1 times1 est pred=
                        ( est) 
 in loop1 0 est1 pred1
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 let djikstra graph n n1=
 
  let rec loop times est pred accum  =
@@ -438,7 +460,9 @@ let djikstra graph n n1=
  (printdistances est;est)
  in loop 0 (update (estimates n) 0 (float_of_int 0)) (predecessor n1) 0
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 let djikstratest =
              let graph =
                                  [[0; 4; 0; 0; 0; 0; 0; 8; 0];
