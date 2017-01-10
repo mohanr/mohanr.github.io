@@ -31,22 +31,32 @@ let choose_randomly_hashtbl table (word : string) =
 
 ### Record types
 
+
+{% highlight OCaml %}
 type cell = { alive : bool }
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 type cellzipper =    cell list *  cell *  cell list
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 type grid = {gamegrid : cell list}
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 type gridzipper  =
              { above : grid
              ; below : grid
              ; left  : cell list
              ; right : cell list
              ; focus : cell }
+{% endhighlight %}
 
+{% highlight OCaml %}
 let focuscell celllist n =
  let rec loop acc n l =
   match l,n with
@@ -55,7 +65,9 @@ let focuscell celllist n =
     | hd :: tl,0 -> Some (acc, hd, tl)
  in loop  [] 0 celllist
 ;;
+{% endhighlight %}
 
+{% highlight OCaml %}
 let gridfocus x y g =
  let a = focuscell x g in
   match a with
@@ -70,5 +82,6 @@ let gridfocus x y g =
                                                                             ;  left
                                                                             ;  right
                                                                             ;  focus }
+{% endhighlight %}
 
                                   )
