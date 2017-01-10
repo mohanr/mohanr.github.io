@@ -35,6 +35,7 @@ let choose_randomly_hashtbl table (word : string) =
 
 ### Record types
 
+The following is my OCaml port of existing Haskell code.
 
 {% highlight OCaml %}
 type cell = { alive : bool }
