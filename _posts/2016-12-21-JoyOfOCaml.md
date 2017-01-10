@@ -40,7 +40,7 @@ usages of _let_ but this function uses imperative constructs and cannot be consi
 _function_.
 
 <ol>
-<li>let is used to define a function called min_index</li>
+<li><i>let</i> is used to define a function called min_index</li>
 
 <li>b holds a copy of the Array a before it is sorted because</li>
 
