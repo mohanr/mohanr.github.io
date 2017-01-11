@@ -3,7 +3,7 @@ layout: post
 title: Joy of OCaml - Part II( Unfinished post )
 published: true
 ---
-In the second part I will explain some more language features and code.
+In the second part I will explain some more language features and code. All diagrams are drawn using the Tex package, Tikz.
 
 ### _let_ keyword
 We start with this keyword again as this tripped me up. Moreover one does not
