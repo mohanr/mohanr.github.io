@@ -91,4 +91,43 @@ let gridfocus x y g =
                                   )
 {% endhighlight %}
 
+{% highlight OCaml %}
+let left g =
+match g.left with
+ [] -> None 
+| hd::tl ->  let newgridzipper = { g  with focus = hd; left = tl; right = g.right @ [g.focus] } in
+             Some(newgridzipper)
+;;
+{% endhighlight %}
+
+{% highlight OCaml %}
+let right g =
+match g.left with
+ [] -> None 
+| hd::tl ->  let newgridzipper = { g  with focus = hd; left = [g.focus]; right =  tl } in
+             Some(newgridzipper)
+;;
+{% endhighlight %}
+
+{% highlight OCaml %}
+(*pattern-matches on the list (of lists) , which should be non-empty, and introduces two bindings, line for the head, and above for the tail.*)
+let up g =
+ match g.above,g.below with
+   |  {gamegrid = line :: above},{gamegrid = below} -> (
+                          let below' =  (List.rev g.left) :: ([g.focus] @ g.right) :: below in
+                          let a = focuscell line (List.length g.left) in
+                          match a with
+                           Some (left, focus, right) ->
+                                                               let above =  { gamegrid = above } in
+                                                               let below = { gamegrid = below'} in
+                            { above
+                            ; below
+                            ; left
+                            ; right
+                            ; focus }
+                         )
+;;
+{% endhighlight %}
+
+
 1. Huet, Gerard (September 1997). "Functional Pearl: The Zipper"
