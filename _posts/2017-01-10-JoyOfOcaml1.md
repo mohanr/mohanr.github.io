@@ -31,7 +31,10 @@ let choose_randomly_hashtbl table (word : string) =
 
 ### Record types
 
-The following is my OCaml port of existing Haskell code.
+The following is my OCaml port of existing Haskell code. The code focusses on cell like this picture shows. There are areas above,below, to the left and to the right. We move over this grid.
+
+![image-title-here](../images/myhanddrawn.tex.preview.pdf.png){:class="img-responsive"}
+
 
 {% highlight OCaml %}
 type cell = { alive : bool }
