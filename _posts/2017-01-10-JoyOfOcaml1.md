@@ -27,12 +27,13 @@ let choose_randomly_hashtbl table (word : string) =
 
 *choose_randomly_hashtbl* returns randomly one of the values from the list corresponding to the key . And we see that _n0_, _n1_ and _n2_ are used after they are defined one by one. This should give a clearer idea about _let_'s semantics.
 
-### Partial function application
 
 ### Record types
 
 The following is my OCaml port of existing Haskell code. The code focuses on a _cell_ like this picture shows. There are areas above,below, to the left and to the right. We move over this grid.
 The focus is the green square.
+
+#### Nested pattern matching Record types
 
 ![image-title-here](../images/myhanddrawn.tex.preview.pdf.png){:class="img-responsive"}
 
@@ -129,5 +130,29 @@ let up g =
 ;;
 {% endhighlight %}
 
+{% highlight OCaml %}
+(*pattern-matches on the list (of lists) , which should be non-empty, and introduces two bindings, line for the head, and below for the tail.*)let down g = 
+ match g.below,g.above with
+   |  {gamegrid = line :: below},{gamegrid = above} -> (
+                          let above' =  (List.rev g.left) :: ([g.focus] @ g.right) :: above in
+                          let a = focuscell line (List.length g.left) in
+                          match a with
+                           Some (left, focus, right) ->
+                                                               let above =  { gamegrid = above } in
+                                                               let below = { gamegrid = above'} in
+                            { above
+                            ; below
+                            ; left
+                            ; right
+                            ; focus }
+                          |None -> 
+                            { above = g.above
+                            ; below = g.below
+                            ; left = g.left
+                            ; right = g.right
+                            ; focus = g.focus }
+                         )
+;;
+{% endhighlight %}
 
 1. Huet, Gerard (September 1997). "Functional Pearl: The Zipper"
