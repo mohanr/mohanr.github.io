@@ -43,6 +43,8 @@ I plan to write about pattern matching concepts in another installment of this s
 
 Let us use the record types and UDF's to code a grid using the _zipper_ pattern which is a functional way of coding a grid. The code should serve as a foundation for a _game of life_ representation in the future.
 
+It should be  pointed out that none of these function mutate and data structure. So there is no side-effect. As you see it takes some effort to shed our memory of imperative mutable code. It is hard at the beginning but seems quite natural now.
+
 Some of the following functions are my OCaml port of existing Haskell code. Given that I am not an OCaml expert, this code is far more verbose than Haskell The code focuses on a _cell_ like this picture shows. There are areas above,below, to the left and to the right. We move over this grid.
 The focus is the green square.
 
@@ -112,8 +114,14 @@ let gridfocus x y g =
     | None -> None
 ;;
 
+### Move the focus inside the grid
 
-                                  )
+
+![image-title-here](../images/myhanddrawn-move.tex.preview.png){:class="img-responsive"}
+
+The _left_ function moves the focus to the left. Similarly the other functions shift the focus
+to other grids cells.
+
 {% endhighlight %}
 
 {% highlight OCaml %}
