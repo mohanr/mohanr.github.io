@@ -113,7 +113,7 @@ let gridfocus x y g =
                                   )
     | None -> None
 ;;
-
+{% endhighlight %}
 ### Move the focus inside the grid
 
 
@@ -122,7 +122,6 @@ let gridfocus x y g =
 The _left_ function moves the focus to the left. Similarly the other functions shift the focus
 to other grids cells.
 
-{% endhighlight %}
 
 {% highlight OCaml %}
 let left g =
