@@ -45,7 +45,9 @@ Let us use the record types and UDF's to code a grid using the _zipper_ pattern 
 
 It should be  pointed out that none of these functions mutate any data structure. So there is no side-effect. As you see it takes some effort to shed our memory of imperative mutable code. It is hard at the beginning but seems quite natural now.
 
-Some of the following functions are my OCaml port of existing Haskell code. Given that I am not an OCaml expert, this code is far more verbose than Haskell The code focuses on a _cell_ like this picture shows. There are areas above,below, to the left and to the right. We move over this grid.
+Some of the following functions are my OCaml port of existing Haskell code. Given that I am not an OCaml expert, this code is far more verbose than the equivalent Haskell code My Haskell chops were not enough and I turned to the IRC for much needed advice. 
+
+The code focuses on a _cell_ like this picture shows. There are areas above,below, to the left and to the right. We move over this grid.
 The focus is the green square.
 
 
