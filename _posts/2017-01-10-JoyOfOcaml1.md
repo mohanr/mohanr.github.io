@@ -56,7 +56,7 @@ I plan to write about pattern matching concepts in another installment of this s
 {% endhighlight %}
 
 The third line in the _up_ function shown below matches the _head(line)_ of the list and the _tail(above)_ of the list.
-It is nested because the pattern which is nested inside a record type is matched. _gamegrid_ is the name identifier of a grid defined by this code. It is a grid made of a list of lists of _cell_ which is another record type.
+It is nested because the pattern matches the constituent part identified by a name inside a record type. _gamegrid_ is the name identifier of a grid defined by this code. It is a grid made of a list of lists of _cell_ which is another record type.
 
 {% highlight OCaml %}
 type grid = {gamegrid : cell list list}
