@@ -3,7 +3,7 @@ layout: post
 title: Joy of OCaml - Part II
 published: true
 ---
-In the second part I will explain some more language features and code. 
+In the second part I explain some more language features and code. 
 
 ### _let_ keyword
 We start with this keyword again as this tripped me up. Moreover one does not
