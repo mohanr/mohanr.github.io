@@ -81,9 +81,11 @@ This create a 2x2 grid which is a list of lists.`_List_ seems to be the workhors
 
 Let us use the record types and UDF's to code a grid using the _zipper_ pattern which is a functional way of coding a grid. The code should serve as a foundation for a _game of life_ representation in the future.
 
-It should be  pointed out that none of these function mutate and data structure. So there is no side-effect. As you see it takes some effort to shed our memory of imperative mutable code. It is hard at the beginning but seems quite natural now.
+It should be  pointed out that none of these functions mutate any data structure. So there is no side-effect. As you see it takes some effort to shed our memory of imperative mutable code. It is hard at the beginning but seems quite natural now.
 
-Some of the following functions are my OCaml port of existing Haskell code. Given that I am not an OCaml expert, this code is far more verbose than Haskell The code focuses on a _cell_ like this picture shows. There are areas above,below, to the left and to the right. We move over this grid.
+Some of the following functions are my OCaml port of existing Haskell code. Given that I am not an OCaml expert, this code is far more verbose than the equivalent Haskell code My Haskell chops were not enough and I turned to the IRC for much needed advice. 
+
+The code focuses on a _cell_ like this picture shows. There are areas above,below, to the left and to the right. We move over this grid.
 The focus is the green square.
 
 
@@ -248,6 +250,9 @@ let down g =
  let makegrid = CCList.init 2 ( fun i -> (CCList.init 2 (fun j -> { alive = true; column = j;row = i })) );;
 {% endhighlight %}
 
+Function that tests if the focus stays within the grid. _None_ signifies an exceptional movement outside. 
+
+{% highlight OCaml %}
 let grid = makegrid in
   let gf = gridfocus 0 1 grid in
    match gf with
@@ -255,13 +260,18 @@ let grid = makegrid in
                 Printf.printf "Focus is on [ %B %d %d ]" gf.focus.alive gf.focus.column gf.focus.row;left gf
    | None -> Printf.printf "No focus";gf
 ;;
+{% endhighlight %}
 
+Another Function that tests _focuscell_, a lower-order function.
+
+{% highlight OCaml %}
 let grid = makegrid in
   let fc = focuscell grid 2 in
    match fc with
     | Some(before, line , after) -> Printf.printf "Focus is on [ %B %d %d ]" (List.nth line 0).alive (List.nth line 0).column (List.nth line 0).row
     | None -> Printf.printf "No focus"
 ;;
+{% endhighlight %}
 
 References :
 
