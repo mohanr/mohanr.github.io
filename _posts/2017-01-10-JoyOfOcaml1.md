@@ -3,7 +3,7 @@ layout: post
 title: Joy of OCaml - Part II( Unfinished post )
 published: true
 ---
-In the second part I will explain some more language features and code. All diagrams are drawn using the Tex package, Tikz.
+In the second part I will explain some more language features and code. 
 
 ### _let_ keyword
 We start with this keyword again as this tripped me up. Moreover one does not
@@ -31,15 +31,53 @@ let choose_randomly_hashtbl table (word : string) =
 
 ### User-defined types
 
+As the name implies a _UDF_ is a custom type defined by the user.
+
+{% highlight OCaml %}
+type x = cell list;;
+{% endhighlight %}
+
 ### Record types
+
+A record type is a step further. It identifies each constituent part of the type by a name identifier like this.
+
+
+{% highlight OCaml %}
+type cell = { alive : bool ; column : int ; row : int }
+;;
+{% endhighlight %}
 
 #### Nested pattern matching Record types
 
 I plan to write about pattern matching concepts in another installment of this series as that is deeper than what would fit in one paragraph.
 
+{% highlight OCaml %}
+   |  {gamegrid = line :: above},{gamegrid = below} -> (
+{% endhighlight %}
+
+The third line in the _up_ function shown below matches the _head(line)_ of the list and the _tail(above)_ of the list.
+It is nested because the pattern which is nested inside a record type is matched. _gamegrid_ is the name identifier of a grid defined by this code. It is a grid made of a list of lists of _cell_ which is another record type.
+
+{% highlight OCaml %}
+type grid = {gamegrid : cell list list}
+;;
+{% endhighlight %}
 #### Partial updates of Record types
 
 ### Basic containers
+
+As I understand it these are library extensions. We have to install those libraries we require. So, for example, _CCList_ enables us to create a mxn list of lists easily. 
+
+This is how I used it.
+
+{% highlight OCaml %}
+#require "containers";;
+ let makegrid = CCList.init 2 ( fun i -> (CCList.init 2 (fun j -> { alive = true; column = j;row = i })) );;
+{% endhighlight %}
+
+This create a 2x2 grid which is a list of lists.`_List_ seems to be the workhorse of functional programming languages.
+
+### More involved code
 
 Let us use the record types and UDF's to code a grid using the _zipper_ pattern which is a functional way of coding a grid. The code should serve as a foundation for a _game of life_ representation in the future.
 
