@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Joy of OCaml - Part II( Unfinished post )
+title: Joy of OCaml - Part II
 published: true
 ---
 In the second part I will explain some more language features and code. 
@@ -62,7 +62,20 @@ It is nested because the pattern matches the constituent part identified by a na
 type grid = {gamegrid : cell list list}
 ;;
 {% endhighlight %}
+
 #### Partial updates of Record types
+
+In this function _G_, which is of type _gridzipper_ is updated partially. _above_ and _below_ 
+are not updated. The keyword _with_ enables us to do this.
+
+{% highlight OCaml %}
+let left g =
+match g.left with
+ [] -> None 
+| hd::tl ->  let newgridzipper = { g  with focus = hd; left = tl; right = g.right @ [g.focus] } in
+             Some(newgridzipper)
+;;
+{% endhighlight %}
 
 ### Basic containers
 
