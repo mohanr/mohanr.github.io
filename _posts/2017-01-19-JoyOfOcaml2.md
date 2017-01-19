@@ -1,14 +1,26 @@
 
 ---
 layout: post
-title: Joy of OCaml - Part III
-published: false
+title: Joy of OCaml - Part III(Unfinished post)
+published: true
 ---
+
+In this installment of this series there is OCaml functional code that shows a 'Game of life'
+implementation. As usual I will explain the functional part of the code. I specifically point out
+functional pieces because there is indispensable boilerplate code needed because I use _lablgtk_ which is a UI toolkit. And unfortunately this toolkit uses the Object-oriented parts of OCaml.
+
+Did I mention that OCaml is a practical functional language ? Unlike Haskell it includes many imperative constructs and OO features. I do not explain the OO part of it because that is not the focus of this series.
+
+{% highlight OCaml %}
+{let evolve area (backing:GDraw.pixmap ref) x y width height= 
+          let update_rect = Gdk.Rectangle.create ~x ~y ~width ~height in
+          !backing#set_foreground (`RGB (154*256, 205*256, 50*256));
+          !backing#rectangle ~x ~y ~width ~height ();
+          area#misc#draw (Some update_rect);
+;;% endhighlight %}
+
 {% highlight OCaml %}
 
-let locale = GtkMain.Main.init ()
-;;
-{% highlight OCaml %}
 let drawrect area (backing:GDraw.pixmap ref)= 
 let rec loop1 m y=
   match m with
@@ -18,10 +30,7 @@ let rec loop1 m y=
         | n when n < 5 ->
           let x = x + 20 in
           let width, height = 20,20 in
-          let update_rect = Gdk.Rectangle.create ~x ~y ~width ~height in
-          !backing#set_foreground (`RGB (154, 205, 50));
-          !backing#rectangle ~x ~y ~width ~height ();
-          area#misc#draw (Some update_rect);
+          evolve area backing x y width height;
           (*Printf.printf "%3d %3d\n" x y;*)
           loop x   (n + 1)
         | n when n >= 5 -> loop1 (m + 1) (y + 20)
