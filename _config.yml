@@ -2,6 +2,7 @@
 # This file contains configuration flags to customize your site
 #
 highlighter: rouge
+paginate: 5
 # Name of your site (displayed in the header)
 name: Your Name
 
