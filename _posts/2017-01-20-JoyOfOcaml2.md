@@ -3,8 +3,7 @@ layout: post
 title: Joy of OCaml - Part III(Unfinished post)
 published: true
 ---
-In this installment of this series there is OCaml functional code that shows a 'Game of life'
-implementation. As usual I will explain the functional part of the code. I specifically point out
+In this installment of this series there is OCaml functional code that shows a 'Game of life' implementation. As usual I will explain the functional part of the code. I specifically point out
 functional pieces because there is indispensable boilerplate code needed because I use _lablgtk_ which is a UI toolkit. And unfortunately this toolkit uses the Object-oriented parts of OCaml.
 
 Did I mention that OCaml is a practical functional language ? Unlike Haskell it includes many imperative constructs and OO features. I do not explain the OO part of it because that is not the focus of this series.
