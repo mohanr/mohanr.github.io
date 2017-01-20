@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Joy of OCaml - Part III(Unfinished post)
-published: true
+published: false
 ---
 In this installment of this series there is OCaml functional code that shows a 'Game of life'
 implementation. As usual I will explain the functional part of the code. I specifically point out
