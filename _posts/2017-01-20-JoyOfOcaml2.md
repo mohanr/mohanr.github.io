@@ -43,7 +43,7 @@ in loop1 0 0
 let backing = ref (GDraw.pixmap ~width:200 ~height:200 ())
 {% endhighlight %}
 
-% highlight OCaml %}
+{% highlight OCaml %}
 {(* Create a new backing pixmap of the appropriate size *)
 let configure window backing ev =
   let width = GdkEvent.Configure.width ev in
