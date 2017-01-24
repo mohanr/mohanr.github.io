@@ -9,12 +9,12 @@ functional pieces because there is indispensable boilerplate code needed because
 Did I mention that OCaml is a practical functional language ? Unlike Haskell it includes many imperative constructs and OO features. I do not explain the OO part of it because that is not the focus of this series.
 
 {% highlight OCaml %}
-{let evolve area (backing:GDraw.pixmap ref) x y width height= 
+let evolve area (backing:GDraw.pixmap ref) x y width height= 
           let update_rect = Gdk.Rectangle.create ~x ~y ~width ~height in
           !backing#set_foreground (`RGB (154*256, 205*256, 50*256));
           !backing#rectangle ~x ~y ~width ~height ();
           area#misc#draw (Some update_rect);
-;;% endhighlight %}
+;;{% endhighlight %}
 
 {% highlight OCaml %}
 
@@ -44,7 +44,7 @@ let backing = ref (GDraw.pixmap ~width:200 ~height:200 ())
 {% endhighlight %}
 
 {% highlight OCaml %}
-{(* Create a new backing pixmap of the appropriate size *)
+(* Create a new backing pixmap of the appropriate size *)
 let configure window backing ev =
   let width = GdkEvent.Configure.width ev in
   let height = GdkEvent.Configure.height ev in
