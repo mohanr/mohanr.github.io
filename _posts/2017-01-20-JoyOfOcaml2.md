@@ -57,7 +57,7 @@ let configure window backing ev =
 {% endhighlight %}
 
 {% highlight OCaml %}
-{(* Redraw the screen from the backing pixmap *)
+(* Redraw the screen from the backing pixmap *)
 let expose (drawing_area:GMisc.drawing_area) (backing:GDraw.pixmap ref) ev =
   let area = GdkEvent.Expose.area ev in
   let x = Gdk.Rectangle.x area in
@@ -70,7 +70,7 @@ let expose (drawing_area:GMisc.drawing_area) (backing:GDraw.pixmap ref) ev =
   in
   drawing#put_pixmap ~x ~y ~xsrc:x ~ysrc:y ~width ~height !backing#pixmap;
   false
-;;% endhighlight %}
+;;{% endhighlight %}
 
 {% highlight OCaml %}
 let main () =
