@@ -8,12 +8,12 @@ functional pieces because there is indispensable boilerplate code needed because
 
 Did I mention that OCaml is a practical functional language ? Unlike Haskell it includes many imperative constructs and OO features. I do not explain the OO part of it because that is not the focus of this series.
 
+{% highlight OCaml %}
 (*1) Any live cell with fewer than two live neighbors dies, as if caused by underpopulation.
   2) Any live cell with more than three live neighbors dies, as if by overcrowding.
   3) Any live cell with two or three live neighbors lives on to the next generation.
   4) Any dead cell with exactly three live neighbors becomes a live cell.*)
   
-{% highlight OCaml %}
   let locale = GtkMain.Main.init ()
 ;;
 {% endhighlight %}
