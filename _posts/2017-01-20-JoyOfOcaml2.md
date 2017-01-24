@@ -70,6 +70,9 @@ in loop1 0 0
 ;;
 {% endhighlight %}
 
+[lablgtk](http://lablgtk.forge.ocamlcore.org/) is the UI toolkit that was recommended to me. So most
+of the code shown below is library code.
+
 {% highlight OCaml %}
 (* Backing pixmap for drawing area *)
 let backing = ref (GDraw.pixmap ~width:200 ~height:200 ()){% endhighlight %}
