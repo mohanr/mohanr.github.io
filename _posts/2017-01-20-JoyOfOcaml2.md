@@ -71,8 +71,8 @@ in loop1 0 0
 {% endhighlight %}
 
 {% highlight OCaml %}
-{(* Backing pixmap for drawing area *)
-let backing = ref (GDraw.pixmap ~width:200 ~height:200 ())% endhighlight %}
+(* Backing pixmap for drawing area *)
+let backing = ref (GDraw.pixmap ~width:200 ~height:200 ()){% endhighlight %}
 
 {% highlight OCaml %}
 ((* Create a new backing pixmap of the appropriate size *)
