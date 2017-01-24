@@ -8,6 +8,39 @@ functional pieces because there is indispensable boilerplate code needed because
 
 Did I mention that OCaml is a practical functional language ? Unlike Haskell it includes many imperative constructs and OO features. I do not explain the OO part of it because that is not the focus of this series.
 
+(*1) Any live cell with fewer than two live neighbors dies, as if caused by underpopulation.
+  2) Any live cell with more than three live neighbors dies, as if by overcrowding.
+  3) Any live cell with two or three live neighbors lives on to the next generation.
+  4) Any dead cell with exactly three live neighbors becomes a live cell.*)
+  
+{% highlight OCaml %}
+  let locale = GtkMain.Main.init ()
+;;
+{% endhighlight %}
+
+{% highlight OCaml %}
+let displayrectangle area (backing:GDraw.pixmap ref) x y width height= 
+          let update_rect = Gdk.Rectangle.create ~x ~y ~width ~height in
+          !backing#set_foreground (`RGB (154*256, 205*256, 50*256));
+          !backing#rectangle ~x ~y ~width ~height ();
+          area#misc#draw (Some update_rect);
+;;
+{% endhighlight %}
+
+{% highlight OCaml %}
+let  triominoevolve area  (backing:GDraw.pixmap ref)  x y width height solid= 
+   let rec loop i x y=
+     if i < 3 then
+         let update_rect = Gdk.Rectangle.create ~x ~y:(y + 20) ~width ~height in
+          !backing#set_foreground (`RGB (154*256, 205*256, 50*256));
+          !backing#rectangle ~x ~y ~width ~height ~filled:solid ();
+          area#misc#draw (Some update_rect);
+    else
+        loop ( i + 1) x y
+  in
+  loop 0 (x + 40) (y + 40);;
+{% endhighlight %}
+
 {% highlight OCaml %}
 let evolve area (backing:GDraw.pixmap ref) x y width height= 
           let update_rect = Gdk.Rectangle.create ~x ~y ~width ~height in
@@ -17,34 +50,32 @@ let evolve area (backing:GDraw.pixmap ref) x y width height=
 ;;{% endhighlight %}
 
 {% highlight OCaml %}
-
-let drawrect area (backing:GDraw.pixmap ref)= 
-let rec loop1 m y=
+let drawrect area (backing:GDraw.pixmap ref) limit= 
+let rec loop1 m y =
   match m with
-    | m when m < 5 ->
-      (let rec loop x  n =
+    | m when m < limit ->
+      (let rec loop x n =
         match n with
-        | n when n < 5 ->
+        | n when n < limit ->
           let x = x + 20 in
           let width, height = 20,20 in
-          evolve area backing x y width height;
+          displayrectangle area backing x y width height;
           (*Printf.printf "%3d %3d\n" x y;*)
           loop x   (n + 1)
-        | n when n >= 5 -> loop1 (m + 1) (y + 20)
+        | n when n >= limit -> loop1 (m + 1) (y + 20)
       in loop 0  0)
-   (* when m >= 5 *)  
-    | m when m >= 5 ->  ()
+   (* when m >= limit *)  
+    | m when m >= limit ->  ()
 in loop1 0 0
 ;;
 {% endhighlight %}
 
 {% highlight OCaml %}
-(* Backing pixmap for drawing area *)
-let backing = ref (GDraw.pixmap ~width:200 ~height:200 ())
-{% endhighlight %}
+{(* Backing pixmap for drawing area *)
+let backing = ref (GDraw.pixmap ~width:200 ~height:200 ())% endhighlight %}
 
 {% highlight OCaml %}
-(* Create a new backing pixmap of the appropriate size *)
+((* Create a new backing pixmap of the appropriate size *)
 let configure window backing ev =
   let width = GdkEvent.Configure.width ev in
   let height = GdkEvent.Configure.height ev in
@@ -73,10 +104,16 @@ let expose (drawing_area:GMisc.drawing_area) (backing:GDraw.pixmap ref) ev =
 ;;{% endhighlight %}
 
 {% highlight OCaml %}
+let triominorepeat drawing_area= 
+     triominoevolve drawing_area backing 20 0 20 20 true;
+;;
+{% endhighlight %}
+
+{% highlight OCaml %}
 let main () =
  
 
-  let window = GWindow.window ~width:320 ~height:240 () in
+  let window = GWindow.window ~width:320 ~height:240 ~position:`CENTER () in
   window#connect#destroy ~callback:GMain.Main.quit;
   
   let aspect_frame = GBin.aspect_frame 
@@ -91,13 +128,11 @@ let main () =
     drawing_area#event#connect#configure ~callback:(configure window backing);
     drawing_area#event#add [`EXPOSURE];
     window#show ();
-    drawrect drawing_area backing;
- 
+    drawrect drawing_area backing 7;
+    triominorepeat drawing_area;
   GMain.Main.main ()
 ;;
-{% endhighlight %}
-
-{% highlight OCaml %}
 let _ = main ()
 ;;
 {% endhighlight %}
+
