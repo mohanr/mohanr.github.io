@@ -253,9 +253,9 @@ in loop grid
 {% endhighlight %}
 
 {% highlight OCaml %}
-{let triominorepeat drawing_area grid= 
+let triominorepeat drawing_area grid= 
      triominoevolve drawing_area backing 20 0 20 20 true grid;
-;;% endhighlight %}
+;;{% endhighlight %}
 
 {% highlight OCaml %}
 let main () =
