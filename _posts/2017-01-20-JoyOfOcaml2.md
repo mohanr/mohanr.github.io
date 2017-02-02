@@ -3,6 +3,11 @@ layout: post
 title: Joy of OCaml - Part III
 published: true
 ---
+
+_At this time this article is quite unwieldy and contains hundreds of lines of code without proper explanation.
+ It has to be split up , edited and published as another series. Moreover I learnt more about how to code a functional
+ language by consulting some experts. I will edit it in due course._
+
 In this installment of the series there is OCaml functional code that shows a 'Game of life' implementation. As usual I will explain the functional part of the code. I specifically point out
 functional pieces because there is indispensable boilerplate code needed because I use _lablgtk_ which is a UI toolkit. And unfortunately this toolkit uses the Object-oriented parts of OCaml.
 
@@ -299,6 +304,9 @@ let main () =
 let _ = main ()
 ;;
 {% endhighlight %}
+
+I think I have a logical representation of the status of the cells in this game of life. Still I have to fire the game
+and look at the game visually. To be continued.
 ___
 [ 0  0  0  0  0 ] [ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ]
 
