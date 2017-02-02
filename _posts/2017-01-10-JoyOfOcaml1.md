@@ -197,6 +197,7 @@ match g.left with
 {% highlight OCaml %}
 (*pattern-matches on the list (of lists) , which should be non-empty, and introduces two bindings,
  line for the head, and above for the tail.*)
+
 let up g =
  match g.above,g.below with
    |  {gamegrid = line :: above},{gamegrid = below} -> (
@@ -206,28 +207,20 @@ let up g =
                            Some (left, focus, right) ->
                                                                let above =  { gamegrid = above } in
                                                                let below = { gamegrid = below'} in
-                            { above
+                            Some{ above
                             ; below
                             ; left
                             ; right
                             ; focus }
                           |None -> 
-                            { above = g.above
-                            ; below = g.below
-                            ; left = g.left
-                            ; right = g.right
-                            ; focus = g.focus }
+                           None
                          )
-   |({gamegrid=[]},_) ->  { above = g.above
-                            ; below = g.below
-                            ; left = g.left
-                            ; right = g.right
-                            ; focus = g.focus }
+   |({gamegrid=[]},_) ->  None
 ;;
-
 {% endhighlight %}
 
 {% highlight OCaml %}
+
 let down g = 
    match g.below,g.above with
    |  {gamegrid = line :: below},{gamegrid = above} -> (
@@ -237,23 +230,15 @@ let down g =
                            Some (left, focus, right) ->
                                                                let above =  { gamegrid = above } in
                                                                let below = { gamegrid = above'} in
-                            { above
+                            Some{ above
                             ; below
                             ; left
                             ; right
                             ; focus }
                           |None -> 
-                            { above = g.above
-                            ; below = g.below
-                            ; left = g.left
-                            ; right = g.right
-                            ; focus = g.focus }
+                            None
                          )
-   | ({gamegrid=[]},_)->    { above = g.above
-                            ; below = g.below
-                            ; left = g.left
-                            ; right = g.right
-                            ; focus = g.focus }
+   | ({gamegrid=[]},_)->    None
 
 ;;
 {% endhighlight %}
