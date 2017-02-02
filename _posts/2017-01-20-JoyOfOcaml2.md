@@ -306,7 +306,17 @@ let _ = main ()
 {% endhighlight %}
 
 I think I have a logical representation of the status of the cells in this game of life. Still I have to fire the game
-and look at the game visually. To be continued.
+and look at the game visually. This is the unfinished part that should start the game.
+
+{% highlight OCaml %}
+    (*let rec play newgrid1 =
+
+      play newgrid1 in
+      play newgrid1
+    printgrid newgrid1;*)
+{% endhighlight %}
+    
+    To be continued.
 
 ___
 [ 0  0  0  0  0 ] [ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ]
