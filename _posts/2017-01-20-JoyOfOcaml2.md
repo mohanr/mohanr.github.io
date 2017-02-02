@@ -101,7 +101,7 @@ let tryup  gf =
 {% endhighlight %}
 
 {% highlight OCaml %}
-{let trydown  gf = 
+let trydown  gf = 
  match  gf with
    | Some(gridzipper) -> (let offorongrid = down gridzipper in
                           match offorongrid with
@@ -109,7 +109,7 @@ let tryup  gf =
                               then 1 else 0
                           |  None -> 0 )
    | None -> 0
-;;% endhighlight %}
+;;{% endhighlight %}
 
 {% highlight OCaml %}
 let evolve area (backing:GDraw.pixmap ref) x y width height= 
