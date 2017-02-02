@@ -316,7 +316,7 @@ and look at the game visually. This is the unfinished part that should start the
     printgrid newgrid1;*)
 {% endhighlight %}
     
-    To be continued.
+To be continued.
 
 ___
 [ 0  0  0  0  0 ] [ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ]
