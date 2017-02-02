@@ -307,6 +307,7 @@ let _ = main ()
 
 I think I have a logical representation of the status of the cells in this game of life. Still I have to fire the game
 and look at the game visually. To be continued.
+
 ___
 [ 0  0  0  0  0 ] [ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ][ 0  0  0  0  0 ]
 
