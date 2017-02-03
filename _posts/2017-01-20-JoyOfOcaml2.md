@@ -206,7 +206,7 @@ in loop1 (List.length grid) 0 0 grid
 ;;
 {% endhighlight %}
 
-[lablgtk](http://lablgtk.forge.ocamlcore.org/) is the UI toolkit that was recommended to me. So most
+[lablgtk](http://lablgtk.forge.ocamlcore.org/) is the UI toolkit that was recommended to me. So some
 of the code shown below is library code.
 
 {% highlight OCaml %}
