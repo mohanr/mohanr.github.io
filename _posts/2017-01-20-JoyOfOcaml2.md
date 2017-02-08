@@ -305,7 +305,13 @@ let _ = main ()
 ;;
 {% endhighlight %}
 
-I think I have a logical representation of the status of the cells in this game of life. Still I have to fire the game
+I think I have a logical representation of the status of the cells in this game of life. 
+
+![image-title-here](../images/cellstatus.tex.preview.pdf.png){:class="img-responsive"}
+
+
+Still I have to fire the game
+
 and look at the game visually. This is the unfinished part that should start the game.
 
 {% highlight OCaml %}
