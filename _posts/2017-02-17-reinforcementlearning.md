@@ -4,7 +4,7 @@ title: Reinforcement Learning
 published: true
 ---
 
-{% highlight hs %}
+```haskell
 module RL where
 import Control.Monad.State
 import qualified Data.Map as Map
@@ -23,4 +23,4 @@ retrieve roworcolumn = do
   return (Map.lookup roworcolumn fun) 
 
 main =  print (runState (do {store "row" 1; retrieve "row"}) fun) 
-{% endhighlight %}
+```
