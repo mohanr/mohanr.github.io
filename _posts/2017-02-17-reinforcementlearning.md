@@ -4,7 +4,7 @@ title: Reinforcement Learning
 published: true
 ---
 
-{% highlight haskell %}
+{% highlight hs %}
 module RL where
 import Control.Monad.State
 import qualified Data.Map as Map
