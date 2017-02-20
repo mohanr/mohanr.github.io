@@ -11,7 +11,6 @@ published: true
 
 
 ```haskell
-```
 module RL where
 import Control.Monad.State
 import qualified Data.Map as Map
@@ -43,3 +42,4 @@ main =  do print (runState getrow fun)
            print (getboardsize)
            return ()
  
+```
