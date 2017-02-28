@@ -46,11 +46,27 @@ putmagicsquare = do { store "!" 2; store "2" 9;store "3" 4;
 ```
  
 
+```haskell
+translationaccumulator :: Float -> Float -> [Int] -> [Float] -> [Picture] -> [Picture]
+translationaccumulator _ _ _ [] ys = reverse ys
+translationaccumulator _ _ []  _ ys = reverse ys
+translationaccumulator x1 y (x:xs1) xs  ys = translationaccumulator (x1 + 90) (y + 90) xs1 xs ( (translate 0 (xs !! (x - 1)) $
+                                                                         rotate 45 $ pictures [ rectangleWire x1 y,rectangleWire y x1]) :ys) 
+
+```
 
 ```haskell
-drawpicture :: BoardState -> Picture
-drawpicture (BoardState xloc oloc index)=
-  Pictures [ translate x y $ rectangleWire 90 90 | x<-[0,90..180], y<-[0,90..180] ]
+drawBoard :: BoardState -> Picture
+drawBoard (BoardState xloc oloc index)=
+  Pictures $ [ translate x y $ rectangleWire 90 90| x<-[0,90..180], y<-[0,90..180] ] ++ [drawx]
+
+drawx :: Picture
+drawx = color black $ rotate 45 $
+        pictures [rectangleWire 90 0, rectangleWire 0 90]
+
+drawo :: Picture
+drawo = color black $ thickCircle 35 2
+
 ```
  
 ```haskell
