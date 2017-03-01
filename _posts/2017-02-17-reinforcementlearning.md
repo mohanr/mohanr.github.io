@@ -46,7 +46,7 @@ putmagicsquare = do { store "!" 2; store "2" 9;store "3" 4;
 ```
 ## Haskell Gloss 
 
-While porting the code I realized that a visual representation is helpful. I used Haskell Gloss UI toolkit draw the board and the pieces based on the _BoardState_
+While porting the code I realized that a visual representation is helpful. I used Haskell Gloss UI toolkit to draw the board and the pieces based on the _BoardState_
 
 ```haskell
 translationaccumulator ::   [Int] -> [Int] -> [(Float,Float)] -> [Picture] -> [Picture]
