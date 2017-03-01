@@ -4,7 +4,7 @@ title: Reinforcement Learning(Unfinished post)
 published: true
 ---
 
-##Introduction
+## Introduction
 
 
 
@@ -61,7 +61,7 @@ translationaccumulator  (head1:xs1) (head:xs) angle  ys = let (a,b) = (angle !!(
 
 ```
 
-![image-title-here](../images/grid.png){:class="img-responsive"}
+![image-title-here](../images/grid.PNG){:class="img-responsive"}
 
 ```haskell
 drawBoard :: BoardState -> Picture
