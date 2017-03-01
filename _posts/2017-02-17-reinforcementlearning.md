@@ -80,6 +80,16 @@ drawo = color rose $ thickCircle 25 2
 ```
  
 ```haskell
+powersof2  :: [Int]  
+powersof2  =  [ 2 ^ i | i <- [0..9]]
+
+stateindex :: [Int] -> [Int] -> Int  
+stateindex xloc oloc =  let powers = powersof2 in
+                           foldl (+) 0 [  ( powers !!n) | n <- [0..(length xloc - 1)]]
+ 
+```
+
+```haskell
 main =  do print (runState getrow fun)
            let x = (runState getrow fun)
            let y = (runState getcolumn fun)
