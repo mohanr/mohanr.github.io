@@ -114,8 +114,6 @@ writetoarray = do { a <- createarray; liftIO (runReaderT (writevalue 1 2) a) }
 
 ```haskell
 main =  do print (runState getrow fun)
-           -- getrow and getcolumn can be refactored
-           -- to remove 'store' 
            let x = (runState getrow fun)
            let y = (runState getcolumn fun)
 
