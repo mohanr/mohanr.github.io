@@ -89,11 +89,38 @@ stateindex xloc oloc =  let powers = powersof2 in
  
 ```
 
+The ReaderT Monad transformer for reading and writing to arrays.
+
+
+```haskell
+type ArrayAccess = ReaderT  (IOArray Int Int)  IO 
+type ArrayWriteAccess = ReaderT  (IOArray Int Int)  IO() 
+
+readvalue ::  Int -> ArrayAccess Int   
+readvalue x    = do 
+  a <- ask
+  b <- liftIO( readArray a x);    
+  return b
+
+writevalue ::  Int -> Int -> ArrayWriteAccess   
+writevalue x y   = do 
+  a <- ask
+  liftIO( writeArray a x y)    
+
+-- Test array accesses
+readfromarray = do { a <- createarray; liftIO (runReaderT (readvalue 1) a) }
+writetoarray = do { a <- createarray; liftIO (runReaderT (writevalue 1 2) a) }
+```
+
 ```haskell
 main =  do print (runState getrow fun)
+           -- getrow and getcolumn can be refactored
+           -- to remove 'store' 
            let x = (runState getrow fun)
            let y = (runState getcolumn fun)
-           print (getboardsize)
+
+           let ms = (runState putmagicsquare fun)
+           print (stateindex [1,2,3] [4,5,6])
            display (InWindow "Reinforcement Learning" (530,530) (220,220)) (greyN 0.5)  (drawBoard (BoardState [1,2,3] [4,5,6] 1))
            return ()
 
