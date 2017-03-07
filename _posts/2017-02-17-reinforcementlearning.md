@@ -120,6 +120,28 @@ isX X = True
 isX O = False 
 
 ```
+Get a list of empty positions in the board.
+
+```haskell
+-- Returns a list of unplayed locations
+possiblemoves :: BoardState -> [Int]
+possiblemoves (BoardState xloc oloc index) =
+  let xs =  [1,2,3,4,5,6,7,8,9] in
+    (xs \\ xloc) \\ oloc
+
+```
+
+Select an empty position randomly
+
+```haskell
+--   "Returns one of the unplayed locations, selected at random"
+randommove ::  BoardState -> IO Int
+randommove state = 
+  let possibles = possiblemoves state in
+    case possibles of
+      p ->   fmap (p !! ) $ randomRIO(0, length p - 1)
+```
+ 
 ```haskell
 main =  do print (runState getrow fun)
            let x = (runState getrow fun)
