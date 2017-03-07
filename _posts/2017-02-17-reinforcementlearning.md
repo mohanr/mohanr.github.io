@@ -111,7 +111,15 @@ writevalue x y   = do
 readfromarray = do { a <- createarray; liftIO (runReaderT (readvalue 1) a) }
 writetoarray = do { a <- createarray; liftIO (runReaderT (writevalue 1 2) a) }
 ```
+Haskell Enum to differentiate between players using X's and O's.
 
+```haskell
+data Player = X | O deriving Show
+isX :: Player -> Bool
+isX X = True
+isX O = False 
+
+```
 ```haskell
 main =  do print (runState getrow fun)
            let x = (runState getrow fun)
