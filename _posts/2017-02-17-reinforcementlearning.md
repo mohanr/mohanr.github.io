@@ -119,6 +119,42 @@ isX :: Player -> Bool
 isX X = True
 isX O = False 
 
+
+```
+
+### Calculate the next state in the board.
+
+
+```haskell
+append :: Int -> [Int] -> [Int]
+append elem l = l ++ [elem]
+
+readthevalue :: ( IOArray Int Int) -> Int -> IO Int
+readthevalue a index =  liftIO (runReaderT (readvalue index ) a) 
+
+writethevalue :: ( IOArray Int Int) -> Int -> Int -> IO ()
+writethevalue a index value =  liftIO (runReaderT (writevalue index value) a) 
+  
+nextstate :: Player -> BoardState -> Int -> BoardState
+nextstate  player (BoardState xloc oloc index) move= BoardState newx newo newindex where
+  newx = if isX player then (append move xloc) else xloc
+  newo = if isX player then (append move oloc) else oloc
+  newindex = stateindex newx newo
+
+magicnumber :: [Int]-> Int
+magicnumber l = sum $ ([magicsquare !! (x-1) | x <- l])
+
+
+newnextstate :: ( IOArray Int Int) -> BoardState-> IO ()
+newnextstate  a ( BoardState xloc oloc index) =  do
+  x <- readthevalue a index;
+  if (x == 0)
+  then if ((magicnumber xloc ) == 15)
+       then (writethevalue a index 0)
+       else if ((magicnumber oloc ) == 15)
+            then (writethevalue a index 1)
+            else pure ()
+  else pure ()
 ```
 Get a list of empty positions in the board.
 
