@@ -220,6 +220,8 @@ greedymove a player state =
 ```
 ### Abandoning the functional approach with this function
 
+This is basically the original _Lisp_ converted line by line to Haskell. The Haskell programmers who I consulted dissuaded me from doing this but at this time my Haskell knowledge does not measure up to the task.
+
 ```haskell
 randomgreedy :: Double -> Int -> Int -> Int
 randomgreedy r1 rm gm = if (r1 < 0.01)
