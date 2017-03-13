@@ -11,11 +11,19 @@ published: true
 
 
 ```haskell
-module RL where
+module ReinforcementLearning where
 import Control.Monad.State
 import qualified Data.Map as Map
 import Control.Applicative
 import Graphics.Gloss
+import Data.Array.IO
+import Control.Monad.Reader
+import System.Random
+import Data.List
+```
+
+
+```haskell
 
 fun :: Map.Map String Int
 fun = Map.empty
@@ -24,6 +32,7 @@ store :: String -> Int-> State (Map.Map String Int) ()
 store row value = do
   fun <- get
   put (Map.insert row value fun)
+
 retrieve :: String -> State (Map.Map String Int) (Maybe (Int))
 retrieve roworcolumn = do
   fun <- get
@@ -35,16 +44,19 @@ getboardsize = do
            let x = (runState getrow fun) in
              let y = (runState getcolumn fun) in
                 (Just (*) <*> (fst x)  <*>  (fst y) )
+```
 
- 
-```
 ```haskell
-putmagicsquare = do { store "!" 2; store "2" 9;store "3" 4;
-                      store "4" 7; store "5" 5;store "6" 4; 
-                      store "6" 7; store "1" 5;store "8" 4; 
-                    }
+magicsquare :: [Int]
+magicsquare = [2,9,4,7,5,4,7,5,4] 
+
+data BoardState = BoardState { xloc :: [Int],
+                               oloc :: [Int],
+                               index :: Int
+                             }  deriving (Show)
 ```
-## Haskell Gloss 
+
+### Haskell Gloss 
 
 While porting the code I realized that a visual representation is helpful. I used Haskell Gloss UI toolkit to draw the board and the pieces based on the _BoardState_
 
@@ -64,6 +76,7 @@ translationaccumulator  (head1:xs1) (head:xs) angle  ys = let (a,b) = (angle !!(
 ![image-title-here](../images/grid.PNG){:class="img-responsive"}
 
 ```haskell
+
 drawBoard :: BoardState -> Picture
 drawBoard (BoardState xloc oloc index)=
   Pictures $ [ translate x y $ rectangleWire 90 90| x<-[0,90..180], y<-[0,90..180] ] ++ (translationaccumulator xloc oloc [(0,180),(90,180),(180,180),(0,90),(90,90),(180,90),(0,0),(90,0),(180,0)] [])
@@ -80,12 +93,21 @@ drawo = color rose $ thickCircle 25 2
 ```
  
 ```haskell
+
 powersof2  :: [Int]  
 powersof2  =  [ 2 ^ i | i <- [0..9]]
 
+
+createarray :: IO ( IOArray Int Double)
+createarray =  do {
+                       arr <- newArray (512,512) 0;
+                       return arr
+                  }
+
 stateindex :: [Int] -> [Int] -> Int  
 stateindex xloc oloc =  let powers = powersof2 in
-                           foldl (+) 0 [  ( powers !!n) | n <- [0..(length xloc - 1)]]
+                          ((foldl (+) 0 [  ( powers !!n) | n <- [0..(length xloc - 1)]]) +
+                          ( 512 * foldl (+) 0 [  ( powers !!n) | n <- [0..(length oloc - 1)]]))
  
 ```
 
@@ -93,16 +115,16 @@ The ReaderT Monad transformer for reading and writing to arrays.
 
 
 ```haskell
-type ArrayAccess = ReaderT  (IOArray Int Int)  IO 
-type ArrayWriteAccess = ReaderT  (IOArray Int Int)  IO() 
+type ArrayAccess = ReaderT  (IOArray Int Double)  IO 
+type ArrayWriteAccess = ReaderT  (IOArray Int Double)  IO() 
 
-readvalue ::  Int -> ArrayAccess Int   
+readvalue ::  Int -> ArrayAccess  Double  
 readvalue x    = do 
   a <- ask
   b <- liftIO( readArray a x);    
   return b
 
-writevalue ::  Int -> Int -> ArrayWriteAccess   
+writevalue ::  Int -> Double -> ArrayWriteAccess   
 writevalue x y   = do 
   a <- ask
   liftIO( writeArray a x y)    
@@ -111,6 +133,8 @@ writevalue x y   = do
 readfromarray = do { a <- createarray; liftIO (runReaderT (readvalue 1) a) }
 writetoarray = do { a <- createarray; liftIO (runReaderT (writevalue 1 2) a) }
 ```
+```
+
 Haskell Enum to differentiate between players using X's and O's.
 
 ```haskell
@@ -141,7 +165,68 @@ randommove state =
     case possibles of
       p ->   fmap (p !! ) $ randomRIO(0, length p - 1)
 ```
+Greedy move
  
+```haskell
+greedymove :: ( IOArray Int Double) ->Player -> BoardState -> IO Int
+greedymove a player state = 
+  let possibles = possiblemoves state in
+    case possibles of
+      p  -> let bestvalue = -1.0 in
+              let bestmove = 0 in
+                choosebestmove p bestvalue bestmove
+                where
+                  choosebestmove (x:xs) bestvalue bestmove = do
+                    xvalue <- (readthevalue a (ReinforcementLearning.index (nextstate player state x)));
+                    case compare bestvalue xvalue of
+                      LT -> choosebestmove  xs bestvalue bestmove;
+                      GT -> return bestmove
+```
+### Abandoning the functional approach with this function
+
+```haskell
+randomgreedy :: Double -> Int -> Int -> Int
+randomgreedy r1 rm gm = if (r1 < 0.01)
+                  then rm
+                  else gm
+
+gameplan :: ( IOArray Int Double) -> BoardState -> BoardState -> IO Double 
+gameplan a state newstate = do 
+  r1 <- randombetween;
+  result <- (terminalstatep a (ReinforcementLearning.index newstate));
+    case result of
+      True -> do
+        update a state newstate
+        valueofnewstate <- readthevalue a (ReinforcementLearning.index newstate)
+        return valueofnewstate
+      False -> do
+        rm <- randommove newstate
+        gm <- greedymove a O newstate
+        let randomorgreedy = randomgreedy r1 rm gm in
+          let newstate = (nextstate O newstate randomorgreedy) in
+            if not (r1 < 0.01)
+            then (update a state newstate)
+            else (update a state state)
+        result <- (terminalstatep a (ReinforcementLearning.index newstate));
+        valueofnewstate <- readthevalue a (ReinforcementLearning.index newstate);
+        if result
+        then return valueofnewstate
+        else gameplan a newstate newstate
+  
+
+--   "Plays 1 game against the random player. Also learns and prints.
+--    :X moves first and is random.  :O learns"
+game :: IO ()
+game = do
+  a <- createarray
+  r <- randommove (BoardState [0,0,0] [0,0,0] 0)
+  let initialstate = BoardState [0,0,0] [0,0,0] 0 in
+    gameplan a initialstate (nextstate X initialstate r)
+  return ()
+
+```
+
+
 ```haskell
 main =  do print (runState getrow fun)
            let x = (runState getrow fun)
