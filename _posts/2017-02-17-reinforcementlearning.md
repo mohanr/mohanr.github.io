@@ -252,7 +252,7 @@ gameplan a state newstate = do
         else gameplan a newstate newstate
   
 
---   "Plays 1 game against the random player. Also learns and prints.
+--   "Plays 1 game against the random player. Also learns.
 --    :X moves first and is random.  :O learns"
 game :: IO ()
 game = do
