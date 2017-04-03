@@ -70,12 +70,7 @@ drawo :: Picture
 drawo = color rose $ thickCircle 25 2
 
 ```
-
 ![image-title-here](../images/grid.PNG){:class="img-responsive"}
-
-
- 
-
  
 ```haskell
 powersof2  :: [Int]  
@@ -95,10 +90,8 @@ addVal i (x:xs) = x * 512: addVal i xs
 stateindex :: [Int] -> [Int] -> Int
 stateindex xloc oloc = sum (map (2^) xloc)
                        + sum [2^n | n <- (addVal 512 oloc)]
- 
-```
-
 The ReaderT Monad transformer for reading and writing to arrays.
+```
 
 ```haskell
 
@@ -117,8 +110,9 @@ writevalue x y   = do
 readfromarray = do { a <- createarray; liftIO (runReaderT (readvalue 1) a) }
 writetoarray = do { a <- createarray; liftIO (runReaderT (writevalue 1 2) a) }
 ```
+
 ```
-```haskell
+
 data Player = X | O deriving Show
 isX :: Player -> Bool
 isX X = True
