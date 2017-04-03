@@ -5,8 +5,8 @@ published: true
 ---
 
 ## Introduction
-{% highlight haskell %}
-fun :: Map.Map String Int
+
+{% highlight haskell %}fun :: Map.Map String Int
 fun = Map.empty
 
 
@@ -27,7 +27,6 @@ getboardsize = do
            let x = (runState getrow fun) in
              let y = (runState getcolumn fun) in
                 (Just (*) <*> (fst x)  <*>  (fst y) )
-
 {% endhighlight %}
 
 ### Magic Square
