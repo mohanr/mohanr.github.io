@@ -10,46 +10,41 @@ published: true
 
 
 
-```haskell
-module ReinforcementLearning where
-import Control.Monad.State
-import qualified Data.Map as Map
-import Control.Applicative
-import Graphics.Gloss
-import Data.Array.IO
-import Control.Monad.Reader
-import System.Random
-import Data.List
-```
 
 
-```haskell
-
-fun :: Map.Map String Int
+`fun :: Map.Map String Int
 fun = Map.empty
 
+
 store :: String -> Int-> State (Map.Map String Int) ()
-store row value = do
+store x value = do
   fun <- get
-  put (Map.insert row value fun)
+  put (Map.insert x value fun)
 
 retrieve :: String -> State (Map.Map String Int) (Maybe (Int))
 retrieve roworcolumn = do
   fun <- get
   return (Map.lookup roworcolumn fun) 
 
+
 getrow = do {store "row" 1; retrieve "row"}  
 getcolumn = do {store "column" 1; retrieve "column"}  
 getboardsize = do   
            let x = (runState getrow fun) in
              let y = (runState getcolumn fun) in
-                (Just (*) <*> (fst x)  <*>  (fst y) )
+                (Just (*) <*> (fst x)  <*>  (fst y) )``haskell
+
 ```
+### Magic Square
 
 ```haskell
 magicsquare :: [Int]
 magicsquare = [2,9,4,7,5,4,7,5,4] 
+```
 
+### State of the board
+
+```haskell
 data BoardState = BoardState { xloc :: [Int],
                                oloc :: [Int],
                                index :: Int
@@ -58,7 +53,6 @@ data BoardState = BoardState { xloc :: [Int],
 
 ### Haskell Gloss 
 
-While porting the code I realized that a visual representation is helpful. I used Haskell Gloss UI toolkit to draw the board and the pieces based on the _BoardState_
 
 ```haskell
 translationaccumulator ::   [Int] -> [Int] -> [(Float,Float)] -> [Picture] -> [Picture]
@@ -69,13 +63,6 @@ translationaccumulator  (head1:xs1) (head:xs) angle  ys = let (a,b) = (angle !!(
                                                               translationaccumulator xs1 xs angle ( ((translate a b) $
                                                                                                  drawx ) : ((translate c d) $
                                                                                                  drawo ):ys)
-
-
-```
-
-![image-title-here](../images/grid.PNG){:class="img-responsive"}
-
-```haskell
 
 drawBoard :: BoardState -> Picture
 drawBoard (BoardState xloc oloc index)=
@@ -88,26 +75,32 @@ drawx = color green $ rotate 45 $
 drawo :: Picture
 drawo = color rose $ thickCircle 25 2
 
+```
+
+![image-title-here](../images/grid.PNG){:class="img-responsive"}
+
+
  
 
-```
  
 ```haskell
-
 powersof2  :: [Int]  
-powersof2  =  [ 2 ^ i | i <- [0..9]]
+powersof2  =  [ 2 ^ i | i <- [0..8]]
 
 
 createarray :: IO ( IOArray Int Double)
 createarray =  do {
-                       arr <- newArray (512,512) 0;
+                       arr <- newArray (0,512*512) (-1.0);
                        return arr
                   }
 
-stateindex :: [Int] -> [Int] -> Int  
-stateindex xloc oloc =  let powers = powersof2 in
-                          ((foldl (+) 0 [  ( powers !!n) | n <- [0..(length xloc - 1)]]) +
-                          ( 512 * foldl (+) 0 [  ( powers !!n) | n <- [0..(length oloc - 1)]]))
+addVal :: Int -> [Int] -> [Int]
+addVal i [] = []
+addVal i (x:xs) = x * 512: addVal i xs
+
+stateindex :: [Int] -> [Int] -> Int
+stateindex xloc oloc = sum (map (2^) xloc)
+                       + sum [2^n | n <- (addVal 512 oloc)]
  
 ```
 
@@ -150,35 +143,7 @@ isX O = False
 
 
 ```haskell
-append :: Int -> [Int] -> [Int]
-append elem l = l ++ [elem]
 
-readthevalue :: ( IOArray Int Int) -> Int -> IO Int
-readthevalue a index =  liftIO (runReaderT (readvalue index ) a) 
-
-writethevalue :: ( IOArray Int Int) -> Int -> Int -> IO ()
-writethevalue a index value =  liftIO (runReaderT (writevalue index value) a) 
-  
-nextstate :: Player -> BoardState -> Int -> BoardState
-nextstate  player (BoardState xloc oloc index) move= BoardState newx newo newindex where
-  newx = if isX player then (append move xloc) else xloc
-  newo = if isX player then (append move oloc) else oloc
-  newindex = stateindex newx newo
-
-magicnumber :: [Int]-> Int
-magicnumber l = sum $ ([magicsquare !! (x-1) | x <- l])
-
-
-newnextstate :: ( IOArray Int Int) -> BoardState-> IO ()
-newnextstate  a ( BoardState xloc oloc index) =  do
-  x <- readthevalue a index;
-  if (x == 0)
-  then if ((magicnumber xloc ) == 15)
-       then (writethevalue a index 0)
-       else if ((magicnumber oloc ) == 15)
-            then (writethevalue a index 1)
-            else pure ()
-  else pure ()
 ```
 Get a list of empty positions in the board.
 
@@ -204,75 +169,124 @@ randommove state =
 Greedy move
  
 ```haskell
-greedymove :: ( IOArray Int Double) ->Player -> BoardState -> IO Int
-greedymove a player state = 
+greedymove ::  (String -> IO()) ->( IOArray Int Double) ->Player -> BoardState -> IO (Int,IOArray Int Double)
+greedymove log a player state = 
   let possibles = possiblemoves state in
     case possibles of
+      [] -> return (0, a)
       p  -> let bestvalue = -1.0 in
               let bestmove = 0 in
-                choosebestmove p bestvalue bestmove
+                choosebestmove a p bestvalue bestmove
                 where
-                  choosebestmove (x:xs) bestvalue bestmove = do
-                    xvalue <- (readthevalue a (ReinforcementLearning.index (nextstate player state x)));
-                    case compare bestvalue xvalue of
-                      LT -> choosebestmove  xs bestvalue bestmove;
-                      GT -> return bestmove
+                  choosebestmove arr [] bestvalue1 bestmove1 = return (0,a)
+                  choosebestmove arr (x:xs) bestvalue1 bestmove1 = do
+                    (nv,b) <- nextvalue logs player x arr state
+                    xvalue <-  catch (readthevalue b (ReinforcementLearning.index (nv)))(\(SomeException e) -> printf "Reading [%d} in greedy move" x >> print e >> throwIO e)
+                    case compare bestvalue1 xvalue of
+                      LT -> choosebestmove b xs xvalue x;
+                      GT -> return (bestmove1,b)
+                      EQ -> return (bestmove1,b)
+  
+
 ```
 ### Abandoning the functional approach with this function
 
 This is basically the original _Lisp_ converted line by line to Haskell. The Haskell programmers who I consulted dissuaded me from doing this but at this time my Haskell knowledge does not measure up to the task.
 
 ```haskell
-randomgreedy :: Double -> Int -> Int -> Int
-randomgreedy r1 rm gm = if (r1 < 0.01)
-                  then rm
-                  else gm
-
-gameplan :: ( IOArray Int Double) -> BoardState -> BoardState -> IO Double 
-gameplan a state newstate = do 
+gameplan :: (String -> IO()) ->( IOArray Int Double) -> BoardState -> BoardState -> IO (IOArray Int Double,BoardState,Double) 
+gameplan log a state newstate = do 
   r1 <- randombetween;
-  result <- (terminalstatep a (ReinforcementLearning.index newstate));
+  initialvalue <- readthevalue  a 0
+  result <- (terminalstatep log a (ReinforcementLearning.index newstate));
     case result of
       True -> do
-        update a state newstate
-        valueofnewstate <- readthevalue a (ReinforcementLearning.index newstate)
-        return valueofnewstate
+        b <- update a state newstate
+        valueofnewstate <- catch (readthevalue b (ReinforcementLearning.index newstate)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index newstate)]>> throwIO e)
+        log $ printf "Gameplan returns(True branch) %f\n " valueofnewstate
+        return (b,newstate,valueofnewstate)
       False -> do
         rm <- randommove newstate
-        gm <- greedymove a O newstate
-        let randomorgreedy = randomgreedy r1 rm gm in
-          let newstate = (nextstate O newstate randomorgreedy) in
-            if not (r1 < 0.01)
-            then (update a state newstate)
-            else (update a state state)
-        result <- (terminalstatep a (ReinforcementLearning.index newstate));
-        valueofnewstate <- readthevalue a (ReinforcementLearning.index newstate);
-        if result
-        then return valueofnewstate
-        else gameplan a newstate newstate
+        (gm,c) <- greedymove log a O newstate
+        log $ printf "Greedy Move is %d \n " gm
+        valueofnewstate <-  catch (readthevalue c (ReinforcementLearning.index newstate)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index newstate)]>> throwIO e)
+        -- if (gm == 0)
+        --   then do
+        --   return(c,newstate,valueofnewstate)
+        --   else do
+        (nv,d) <- nextvalue logs O (randomgreedy log r1 rm gm) c newstate
+        d' <- if r1 < 0.01 then return d else update d state nv
+        result1 <- (terminalstatep log d' (ReinforcementLearning.index nv));
+        valueofnewstate1 <-  catch (readthevalue d' (ReinforcementLearning.index nv)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index nv)]>> throwIO e)
+        if (length (possiblemoves nv) == 0)
+          then
+          return (d',nv,valueofnewstate1)
+          else if result1
+               then do
+               log $ printf "Gameplan returns(False branch) %f\n " valueofnewstate1
+               return (d',nv,valueofnewstate1)
+               else do
+               r <- randommove newstate
+               (nv1,d1') <- nextvalue logs X r d' newstate
+               gameplan log d1' newstate (nv1)
   
-
---   "Plays 1 game against the random player. Also learns.
---    :X moves first and is random.  :O learns"
-game :: IO ()
-game = do
-  a <- createarray
-  r <- randommove (BoardState [0,0,0] [0,0,0] 0)
-  let initialstate = BoardState [0,0,0] [0,0,0] 0 in
-    gameplan a initialstate (nextstate X initialstate r)
-  return ()
 
 ```
 
 
 ```haskell
-main =  do print (runState getrow fun)
-           let x = (runState getrow fun)
-           let y = (runState getcolumn fun)
 
-           let ms = (runState putmagicsquare fun)
-           print (stateindex [1,2,3] [4,5,6])
-           display (InWindow "Reinforcement Learning" (530,530) (220,220)) (greyN 0.5)  (drawBoard (BoardState [1,2,3] [4,5,6] 1))
-           return ()
+playntimes :: IOArray Int Double -> (String -> IO()) ->Int -> IO (IOArray Int Double)
+playntimes a log n = do writethevalue a 0 0.5
+                        r <- (randommove (BoardState [] [] 0))
+                        playtime  a (BoardState [] [] 0) (nextvalue logs X r a (BoardState [] [] 0)) n 0 r
+                          where
+                            playtime :: IOArray Int Double -> BoardState -> IO (BoardState,IOArray Int Double) -> Int -> Double -> Int -> IO (IOArray Int Double)
+                            playtime newa s ns n acc r
+                              | n == 0 = do logsresult $ printf "Played 100 times %f  %f"  acc (acc/100.0)
+                                            return newa
+                              | n > 0 = do
+                                  (boardstate, b) <- ns 
+                                  (newa, state, result )<- game logs s  boardstate b; 
+                                  log $ printf "Game returns %f\n" result
+                                  r1 <- randommove (BoardState [] [] 0)
+                                  playtime newa (BoardState [] [] 0) (nextvalue logs X  r1 newa (BoardState [] [] 0)) (n - 1) (acc + result) r1
+  
+numruns :: IOArray Int Double ->Int -> Int -> Int -> IO()
+numruns a n bins binsize  
+  | n == 0 = printf "\nPlayed numruns times"
+  | n > 0 = do
+      arr <- newArray (0,bins) 0;
+      b <- playrepeatedly a arr n bins binsize
+      numruns b (n -1) bins binsize
 
+playrepeatedly ::  IOArray Int Double ->IOArray Int Double -> Int -> Int -> Int -> IO(IOArray Int Double)
+playrepeatedly a arr numrun numbins binsize = do 
+ loop a 0 binsize
+    where
+      loop a i bs
+        | i == numbins = let x = numrun
+                             y = numbins
+                             z = binsize in
+                           loop1 a x 0 y z 
+        | i < numbins = do
+            v <- readthevalue arr i 
+            writethevalue arr i (v+1)
+            b <- playntimes a logs bs;
+            loop b (i+1) bs
+        where 
+        loop1 a x j y z = if j < y
+                              then do
+                              fv <- readthevalue arr j
+                              printf " Runs %f Final Value %f Binsize %d Numruns %d \n" (fv / fromIntegral( z * x)) fv z x
+                              loop1 a x (j+1) y z
+                              else
+                              return a
+```
+
+```haskell
+main =  do
+   p <- createarray
+   ReinforcementLearning.numruns p 1 1 100
+   return ()
 ```
