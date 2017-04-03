@@ -69,8 +69,7 @@ drawx = color green $ rotate 45 $
 drawo :: Picture
 drawo = color rose $ thickCircle 25 2
 {% endhighlight %}
-```
- 
+
 {% highlight haskell %}
 powersof2  :: [Int]  
 powersof2  =  [ 2 ^ i | i <- [0..8]]
