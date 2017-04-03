@@ -5,13 +5,7 @@ published: true
 ---
 
 ## Introduction
-
-
-
-
-
-
-
+```haskell
 `fun :: Map.Map String Int
 fun = Map.empty
 
@@ -106,34 +100,29 @@ stateindex xloc oloc = sum (map (2^) xloc)
 
 The ReaderT Monad transformer for reading and writing to arrays.
 
-
 ```haskell
 
 type ArrayAccess = ReaderT  (IOArray Int Double)  IO 
 type ArrayWriteAccess = ReaderT  (IOArray Int Double)  IO() 
-
 readvalue ::  Int -> ArrayAccess  Double  
 readvalue x    = do 
   a <- ask
   b <- liftIO( readArray a x);    
   return b
-
 writevalue ::  Int -> Double -> ArrayWriteAccess   
 writevalue x y   = do 
   a <- ask
   liftIO( writeArray a x y)    
-
 -- Test array accesses
 readfromarray = do { a <- createarray; liftIO (runReaderT (readvalue 1) a) }
 writetoarray = do { a <- createarray; liftIO (runReaderT (writevalue 1 2) a) }
 ```
-
+```
 ```haskell
 data Player = X | O deriving Show
 isX :: Player -> Bool
 isX X = True
 isX O = False 
-
 
 ```
 
