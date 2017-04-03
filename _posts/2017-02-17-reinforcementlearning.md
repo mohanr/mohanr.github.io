@@ -127,11 +127,8 @@ writevalue x y   = do
 readfromarray = do { a <- createarray; liftIO (runReaderT (readvalue 1) a) }
 writetoarray = do { a <- createarray; liftIO (runReaderT (writevalue 1 2) a) }
 ```
-```
-
 
 ```haskell
-
 data Player = X | O deriving Show
 isX :: Player -> Bool
 isX X = True
