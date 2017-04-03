@@ -90,8 +90,9 @@ addVal i (x:xs) = x * 512: addVal i xs
 stateindex :: [Int] -> [Int] -> Int
 stateindex xloc oloc = sum (map (2^) xloc)
                        + sum [2^n | n <- (addVal 512 oloc)]
-The ReaderT Monad transformer for reading and writing to arrays.
 {% endhighlight %}
+
+The ReaderT Monad transformer for reading and writing to arrays.
 
 {% highlight haskell %}
 
