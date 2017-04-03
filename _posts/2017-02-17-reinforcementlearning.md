@@ -26,7 +26,7 @@ getcolumn = do {store "column" 1; retrieve "column"}
 getboardsize = do   
            let x = (runState getrow fun) in
              let y = (runState getcolumn fun) in
-                (Just (*) <*> (fst x)  <*>  (fst y) )``haskell
+                (Just (*) <*> (fst x)  <*>  (fst y) )
 
 {% endhighlight %}
 
