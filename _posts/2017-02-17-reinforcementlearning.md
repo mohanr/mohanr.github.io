@@ -129,9 +129,9 @@ writetoarray = do { a <- createarray; liftIO (runReaderT (writevalue 1 2) a) }
 ```
 ```
 
-Haskell Enum to differentiate between players using X's and O's.
 
 ```haskell
+
 data Player = X | O deriving Show
 isX :: Player -> Bool
 isX X = True
