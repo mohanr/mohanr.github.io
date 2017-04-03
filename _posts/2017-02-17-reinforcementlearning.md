@@ -208,21 +208,6 @@ gameplan log a state newstate = do
 
 {% highlight haskell %}
 
-playntimes :: IOArray Int Double -> (String -> IO()) ->Int -> IO (IOArray Int Double)
-playntimes a log n = do writethevalue a 0 0.5
-                        r <- (randommove (BoardState [] [] 0))
-                        playtime  a (BoardState [] [] 0) (nextvalue logs X r a (BoardState [] [] 0)) n 0 r
-                          where
-                            playtime :: IOArray Int Double -> BoardState -> IO (BoardState,IOArray Int Double) -> Int -> Double -> Int -> IO (IOArray Int Double)
-                            playtime newa s ns n acc r
-                              | n == 0 = do logsresult $ printf "Played 100 times %f  %f"  acc (acc/100.0)
-                                            return newa
-                              | n > 0 = do
-                                  (boardstate, b) <- ns 
-                                  (newa, state, result )<- game logs s  boardstate b; 
-                                  log $ printf "Game returns %f\n" result
-                                  r1 <- randommove (BoardState [] [] 0)
-                                  playtime newa (BoardState [] [] 0) (nextvalue logs X  r1 newa (BoardState [] [] 0)) (n - 1) (acc + result) r1
   
 numruns :: IOArray Int Double ->Int -> Int -> Int -> IO()
 numruns a n bins binsize  
@@ -232,28 +217,22 @@ numruns a n bins binsize
       b <- playrepeatedly a arr n bins binsize
       numruns b (n -1) bins binsize
 
-playrepeatedly ::  IOArray Int Double ->IOArray Int Double -> Int -> Int -> Int -> IO(IOArray Int Double)
-playrepeatedly a arr numrun numbins binsize = do 
- loop a 0 binsize
-    where
-      loop a i bs
-        | i == numbins = let x = numrun
-                             y = numbins
-                             z = binsize in
-                           loop1 a x 0 y z 
-        | i < numbins = do
-            v <- readthevalue arr i 
-            writethevalue arr i (v+1)
-            b <- playntimes a logs bs;
-            loop b (i+1) bs
-        where 
-        loop1 a x j y z = if j < y
-                              then do
-                              fv <- readthevalue arr j
-                              printf " Runs %f Final Value %f Binsize %d Numruns %d \n" (fv / fromIntegral( z * x)) fv z x
-                              loop1 a x (j+1) y z
-                              else
-                              return a
+playntimes :: IOArray Int Double -> (String -> IO()) ->Int -> IO (IOArray Int Double,Double)
+-- playntimes log n = do a <- createarray;
+playntimes a log n = do writethevalue a 0 0.5
+                        r <- (randommove (BoardState [] [] 0))
+                        playtime  a (BoardState [] [] 0) (nextvalue logs X r a (BoardState [] [] 0)) n 0 r
+                          where
+                            playtime :: IOArray Int Double -> BoardState -> IO (BoardState,IOArray Int Double) -> Int -> Double -> Int -> IO (IOArray Int Double,Double)
+                            playtime newa s ns n acc r
+                              | n == 0 = do logsresult $ printf "Played 100 times %f  %f"  acc (acc/100.0)
+                                            return (newa,acc)
+                              | n > 0 = do
+                                  (boardstate, b) <- ns 
+                                  (newa, state, result )<- game logs s  boardstate b; 
+                                  log $ printf "Game returns %f\n" result
+                                  r1 <- randommove (BoardState [] [] 0)
+                                  playtime newa (BoardState [] [] 0) (nextvalue logs X  r1 newa (BoardState [] [] 0)) (n - 1) (acc + result) r1
 {% endhighlight %}
 
 {% highlight Haskell %}
