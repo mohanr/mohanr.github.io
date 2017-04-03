@@ -236,6 +236,13 @@ playntimes a log n = do writethevalue a 0 0.5
 {% endhighlight %}
 
 {% highlight Haskell %}
+.highlight {
+  margin: 0;
+  padding: 1em;
+  font-family: $monospace;
+  font-size: $type-size-7;
+  line-height: 1.8;
+}
 main =  do
    p <- createarray
    ReinforcementLearning.numruns p 1 1 100
