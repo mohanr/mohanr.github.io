@@ -6,7 +6,7 @@ published: true
 
 ## Introduction
 {% highlight haskell %}
-`fun :: Map.Map String Int
+fun :: Map.Map String Int
 fun = Map.empty
 
 
