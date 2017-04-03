@@ -189,10 +189,6 @@ gameplan log a state newstate = do
         (gm,c) <- greedymove log a O newstate
         log $ printf "Greedy Move is %d \n " gm
         valueofnewstate <-  catch (readthevalue c (ReinforcementLearning.index newstate)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index newstate)]>> throwIO e)
-        -- if (gm == 0)
-        --   then do
-        --   return(c,newstate,valueofnewstate)
-        --   else do
         (nv,d) <- nextvalue logs O (randomgreedy log r1 rm gm) c newstate
         d' <- if r1 < 0.01 then return d else update d state nv
         result1 <- (terminalstatep log d' (ReinforcementLearning.index nv));
