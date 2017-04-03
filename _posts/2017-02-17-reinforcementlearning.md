@@ -91,7 +91,8 @@ stateindex :: [Int] -> [Int] -> Int
 stateindex xloc oloc = sum (map (2^) xloc)
                        + sum [2^n | n <- (addVal 512 oloc)]
 The ReaderT Monad transformer for reading and writing to arrays.
-```
+``````
+
 
 ```haskell
 
@@ -109,9 +110,7 @@ writevalue x y   = do
 -- Test array accesses
 readfromarray = do { a <- createarray; liftIO (runReaderT (readvalue 1) a) }
 writetoarray = do { a <- createarray; liftIO (runReaderT (writevalue 1 2) a) }
-```
 
-```
 
 data Player = X | O deriving Show
 isX :: Player -> Bool
