@@ -5,7 +5,7 @@ published: true
 ---
 
 ## Introduction
-{% highlight Haskell %}
+{% highlight haskell %}
 `fun :: Map.Map String Int
 fun = Map.empty
 
@@ -32,14 +32,14 @@ getboardsize = do
 
 ### Magic Square
 
-{% highlight Haskell %}
+{% highlight haskell %}
 magicsquare :: [Int]
 magicsquare = [2,9,4,7,5,4,7,5,4] 
 {% endhighlight %}
 
 ### State of the board
 
-{% highlight Haskell %}
+{% highlight haskell %}
 data BoardState = BoardState { xloc :: [Int],
                                oloc :: [Int],
                                index :: Int
@@ -49,7 +49,7 @@ data BoardState = BoardState { xloc :: [Int],
 ### Haskell Gloss 
 
 
-{% highlight Haskell %}
+{% highlight haskell %}
 translationaccumulator ::   [Int] -> [Int] -> [(Float,Float)] -> [Picture] -> [Picture]
 translationaccumulator  [] _ _ ys = reverse ys
 translationaccumulator  _ []  _ ys = reverse ys
@@ -73,7 +73,7 @@ drawo = color rose $ thickCircle 25 2
 ```
 ![image-title-here](../images/grid.PNG){:class="img-responsive"}
  
-{% highlight Haskell %}
+{% highlight haskell %}
 powersof2  :: [Int]  
 powersof2  =  [ 2 ^ i | i <- [0..8]]
 
@@ -94,7 +94,7 @@ stateindex xloc oloc = sum (map (2^) xloc)
 The ReaderT Monad transformer for reading and writing to arrays.
 {% endhighlight %}
 
-{% highlight Haskell %}
+{% highlight haskell %}
 
 type ArrayAccess = ReaderT  (IOArray Int Double)  IO 
 type ArrayWriteAccess = ReaderT  (IOArray Int Double)  IO() 
@@ -112,7 +112,7 @@ readfromarray = do { a <- createarray; liftIO (runReaderT (readvalue 1) a) }
 writetoarray = do { a <- createarray; liftIO (runReaderT (writevalue 1 2) a) }
 {% endhighlight %}
 
-{% highlight Haskell %}
+{% highlight haskell %}
 data Player = X | O deriving Show
 isX :: Player -> Bool
 isX X = True
@@ -125,7 +125,7 @@ isX O = False
 
 Get a list of empty positions in the board.
 
-{% highlight Haskell %}
+{% highlight haskell %}
 -- Returns a list of unplayed locations
 possiblemoves :: BoardState -> [Int]
 possiblemoves (BoardState xloc oloc index) =
@@ -136,7 +136,7 @@ possiblemoves (BoardState xloc oloc index) =
 
 Select an empty position randomly
 
-{% highlight Haskell %}
+{% highlight haskell %}
 --   "Returns one of the unplayed locations, selected at random"
 randommove ::  BoardState -> IO Int
 randommove state = 
@@ -147,7 +147,7 @@ randommove state =
 
 ### Greedy move
 
-{% highlight Haskell %}
+{% highlight haskell %}
 greedymove ::  (String -> IO()) ->( IOArray Int Double) ->Player -> BoardState -> IO (Int,IOArray Int Double)
 greedymove log a player state = 
   let possibles = possiblemoves state in
@@ -173,7 +173,7 @@ greedymove log a player state =
 
 This is basically the original _Lisp_ converted line by line to Haskell. The Haskell programmers who I consulted dissuaded me from doing this but at this time my Haskell knowledge does not measure up to the task.
 
-{% highlight Haskell %}
+{% highlight haskell %}
 gameplan :: (String -> IO()) ->( IOArray Int Double) -> BoardState -> BoardState -> IO (IOArray Int Double,BoardState,Double) 
 gameplan log a state newstate = do 
   r1 <- randombetween;
@@ -211,7 +211,7 @@ gameplan log a state newstate = do
                gameplan log d1' newstate (nv1)
 {% endhighlight %}
 
-{% highlight Haskell %}
+{% highlight haskell %}
 
 playntimes :: IOArray Int Double -> (String -> IO()) ->Int -> IO (IOArray Int Double)
 playntimes a log n = do writethevalue a 0 0.5
