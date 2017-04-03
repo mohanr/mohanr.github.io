@@ -70,6 +70,7 @@ drawo :: Picture
 drawo = color rose $ thickCircle 25 2
 {% endhighlight %}
 
+![image-title-here](../images/grid.PNG){:class="img-responsive"}
 {% highlight haskell %}
 powersof2  :: [Int]  
 powersof2  =  [ 2 ^ i | i <- [0..8]]
