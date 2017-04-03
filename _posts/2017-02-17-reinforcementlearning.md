@@ -5,7 +5,7 @@ published: true
 ---
 
 ## Introduction
-```haskell
+{% highlight haskell %}
 `fun :: Map.Map String Int
 fun = Map.empty
 
@@ -28,27 +28,28 @@ getboardsize = do
              let y = (runState getcolumn fun) in
                 (Just (*) <*> (fst x)  <*>  (fst y) )``haskell
 
-```
+{% endhighlight %}
+
 ### Magic Square
 
-```haskell
+{% highlight haskell %}
 magicsquare :: [Int]
 magicsquare = [2,9,4,7,5,4,7,5,4] 
-```
+{% endhighlight %}
 
 ### State of the board
 
-```haskell
+{% highlight haskell %}
 data BoardState = BoardState { xloc :: [Int],
                                oloc :: [Int],
                                index :: Int
                              }  deriving (Show)
-```
+{% endhighlight %}
 
 ### Haskell Gloss 
 
 
-```haskell
+{% highlight haskell %}
 translationaccumulator ::   [Int] -> [Int] -> [(Float,Float)] -> [Picture] -> [Picture]
 translationaccumulator  [] _ _ ys = reverse ys
 translationaccumulator  _ []  _ ys = reverse ys
@@ -68,11 +69,11 @@ drawx = color green $ rotate 45 $
 
 drawo :: Picture
 drawo = color rose $ thickCircle 25 2
-
+{% endhighlight %}
 ```
 ![image-title-here](../images/grid.PNG){:class="img-responsive"}
  
-```haskell
+{% highlight haskell %}
 powersof2  :: [Int]  
 powersof2  =  [ 2 ^ i | i <- [0..8]]
 
@@ -91,10 +92,9 @@ stateindex :: [Int] -> [Int] -> Int
 stateindex xloc oloc = sum (map (2^) xloc)
                        + sum [2^n | n <- (addVal 512 oloc)]
 The ReaderT Monad transformer for reading and writing to arrays.
-``````
+{% endhighlight %}
 
-
-```haskell
+{% highlight haskell %}
 
 type ArrayAccess = ReaderT  (IOArray Int Double)  IO 
 type ArrayWriteAccess = ReaderT  (IOArray Int Double)  IO() 
@@ -110,45 +110,44 @@ writevalue x y   = do
 -- Test array accesses
 readfromarray = do { a <- createarray; liftIO (runReaderT (readvalue 1) a) }
 writetoarray = do { a <- createarray; liftIO (runReaderT (writevalue 1 2) a) }
+{% endhighlight %}
 
-
+{% highlight haskell %}
 data Player = X | O deriving Show
 isX :: Player -> Bool
 isX X = True
 isX O = False 
+{% endhighlight %}
 
-```
 
 ### Calculate the next state in the board.
 
 
-```haskell
-
-```
 Get a list of empty positions in the board.
 
-```haskell
+{% highlight haskell %}
 -- Returns a list of unplayed locations
 possiblemoves :: BoardState -> [Int]
 possiblemoves (BoardState xloc oloc index) =
   let xs =  [1,2,3,4,5,6,7,8,9] in
     (xs \\ xloc) \\ oloc
-
+{% endhighlight %}
 ```
 
 Select an empty position randomly
 
-```haskell
+{% highlight haskell %}
 --   "Returns one of the unplayed locations, selected at random"
 randommove ::  BoardState -> IO Int
 randommove state = 
   let possibles = possiblemoves state in
     case possibles of
       p ->   fmap (p !! ) $ randomRIO(0, length p - 1)
-```
-Greedy move
- 
-```haskell
+{% endhighlight %}
+
+### Greedy move
+
+{% highlight haskell %}
 greedymove ::  (String -> IO()) ->( IOArray Int Double) ->Player -> BoardState -> IO (Int,IOArray Int Double)
 greedymove log a player state = 
   let possibles = possiblemoves state in
@@ -168,12 +167,13 @@ greedymove log a player state =
                       EQ -> return (bestmove1,b)
   
 
-```
+{% endhighlight %}
+
 ### Abandoning the functional approach with this function
 
 This is basically the original _Lisp_ converted line by line to Haskell. The Haskell programmers who I consulted dissuaded me from doing this but at this time my Haskell knowledge does not measure up to the task.
 
-```haskell
+{% highlight haskell %}
 gameplan :: (String -> IO()) ->( IOArray Int Double) -> BoardState -> BoardState -> IO (IOArray Int Double,BoardState,Double) 
 gameplan log a state newstate = do 
   r1 <- randombetween;
@@ -209,12 +209,11 @@ gameplan log a state newstate = do
                r <- randommove newstate
                (nv1,d1') <- nextvalue logs X r d' newstate
                gameplan log d1' newstate (nv1)
-  
-
-```
+{% endhighlight %}
 
 
-```haskell
+
+{% highlight haskell %}
 
 playntimes :: IOArray Int Double -> (String -> IO()) ->Int -> IO (IOArray Int Double)
 playntimes a log n = do writethevalue a 0 0.5
@@ -262,11 +261,11 @@ playrepeatedly a arr numrun numbins binsize = do
                               loop1 a x (j+1) y z
                               else
                               return a
-```
+{% endhighlight %}
 
-```haskell
+{% highlight haskell %}
 main =  do
    p <- createarray
    ReinforcementLearning.numruns p 1 1 100
    return ()
-```
+{% endhighlight %}
