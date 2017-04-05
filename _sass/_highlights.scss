@@ -9,7 +9,11 @@
   margin: 20px 0 20px 0;
   overflow: scroll;
 }
-
+pre,
+code {
+    font-size: 15px;
+   
+}
 code {
   font-family:'Bitstream Vera Sans Mono','Courier', monospace;
 }
