@@ -8,6 +8,10 @@ published: true
 
 I am going through Reinforcement Learning: An Introduction by Richard S. Sutton and Andrew G. Barto and porting the lisp examples to Haskell in order to learn RL mainly but also to hone my functional programming skills. I chose the lisp examples over C examples obviously because I am coding Haskell. Not that lisp and Haskell are similar. Far from it. They are dissimilar but I find that it is helpful to work off a language that is not procedural.
 
+### What is reinforcement learning ?
+
+![image-title-here](../images/TE_temp_preview2092.pdf.PNG){:class="img-responsive"}
+
 {% highlight haskell %}fun :: Map.Map String Int
 fun = Map.empty
 
