@@ -10,7 +10,7 @@ I am going through Reinforcement Learning: An Introduction by Richard S. Sutton 
 
 ### What is reinforcement learning ?
 
-![image-title-here](../images/TE_temp_preview2092.pdf.PNG){:class="img-responsive"}
+![image-title-here](../images/TE_temp_preview2092.pdf.png){:class="img-responsive"}
 
 {% highlight haskell %}fun :: Map.Map String Int
 fun = Map.empty
