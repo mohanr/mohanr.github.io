@@ -299,6 +299,7 @@ playrepeatedly a arr numrun numbins binsize = do
 {% highlight Haskell %}
 main =  do
    p <- createarray
+   writethevalue p 0 0.5
    ReinforcementLearning.numruns p 1 1 100
    return ()
 {% endhighlight %}
