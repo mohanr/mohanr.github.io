@@ -96,6 +96,7 @@ stateindex xloc oloc = sum [2^(n-1)| n <- xloc]
                        + 512 * sum [2^(n-1) | n <- oloc]
 {% endhighlight %}
 
+{% highlight haskell %}
 createarray :: IO ( IOArray Int Double)
 createarray =  do {
                        arr <- newArray (0,512*512) (-1.0);
