@@ -117,6 +117,7 @@ The ReaderT Monad transformer for reading and writing to arrays.
 {% highlight haskell %}
 
 type ArrayAccess = ReaderT  (IOArray Int Double)  IO 
+{% endhighlight %}
 
 {% highlight haskell %}
 
