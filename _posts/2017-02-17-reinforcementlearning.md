@@ -191,7 +191,6 @@ This is basically the original _Lisp_ converted line by line to Haskell. The Has
 exploratorymove :: Double -> Bool
 exploratorymove r = do
   r < 0.01
-
 gameplanrevised :: (String -> IO()) ->( IOArray Int Double) -> BoardState -> BoardState -> IO (IOArray Int Double,BoardState,Double) 
 gameplanrevised log a state newstate = do 
                         exploremove a state newstate
@@ -200,21 +199,40 @@ gameplanrevised log a state newstate = do
                             exploremove a state newstate =
                               do
                                 r <- randombetween;
-        (nv,d) <- nextvalue logs O (randomgreedy log r1 rm gm) c newstate
-        d' <- if r1 < 0.01 then return d else update d state nv
-        result1 <- (terminalstatep log d' (ReinforcementLearning.index nv));
-        valueofnewstate1 <-  catch (readthevalue d' (ReinforcementLearning.index nv)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index nv)]>> throwIO e)
-        if (length (possiblemoves nv) == 0)
-          then
-          return (d',nv,valueofnewstate1)
-          else if result1
-               then do
-               log $ printf "Gameplan returns(False branch) %f\n " valueofnewstate1
-               return (d',nv,valueofnewstate1)
-               else do
-               r <- randommove newstate
-               (nv1,d1') <- nextvalue logs X r d' newstate
-               gameplan log d1' newstate (nv1)
+                                let em = exploratorymove r in
+                                  case em of
+                                    True ->
+                                      do
+                                        result <- (terminalstatep log a (ReinforcementLearning.index newstate));
+                                        case result of
+                                          True -> do
+                                            b <- update a state newstate
+                                            valueofnewstate <- catch (readthevalue b (ReinforcementLearning.index newstate)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index newstate)]>> throwIO e)
+                                            return (b,newstate,valueofnewstate)
+                                          False -> do
+                                            rm <- randommove newstate
+                                            (gm,c) <- greedymove log a O newstate
+                                            log $ printf "Greedy Move is %d \n " gm
+                                            valueofnewstate <-  catch (readthevalue c (ReinforcementLearning.index newstate)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index newstate)]>> throwIO e)
+                                            (nv,d) <- nextvalue logs O (randomgreedy log r rm gm) c newstate
+                                            d' <- if em then return d else update d state nv
+                                            result1 <- (terminalstatep log d' (ReinforcementLearning.index nv));
+                                            valueofnewstate1 <-  catch (readthevalue d' (ReinforcementLearning.index nv)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index nv)]>> throwIO e)
+                                            if (length (possiblemoves nv) == 0)
+                                              then
+                                              return (d',nv,valueofnewstate1)
+                                              else if result1
+                                                   then do
+                                                   return (d',nv,valueofnewstate1)
+                                                   else do
+                                                   r <- randommove newstate
+                                                   (nv1,d1') <- nextvalue logs X r d' newstate
+                                                   exploremove d1' newstate nv1
+                                    False -> do
+                                      r1 <- randommove newstate
+                                      (ns,na) <- nextvalue logs X r1 a newstate
+                                      exploremove na ns newstate
+  
 {% endhighlight %}
 
 
