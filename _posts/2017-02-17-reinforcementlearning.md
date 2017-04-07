@@ -81,10 +81,20 @@ drawo = color rose $ thickCircle 25 2
 {% endhighlight %}
 
 ![image-title-here](../images/grid.PNG){:class="img-responsive"}
-{% highlight haskell %}
-powersof2  :: [Int]  
-powersof2  =  [ 2 ^ i | i <- [0..8]]
 
+### Value table 
+The representation of the board state when Player X has moved to position 1 and Player O has learned to move to position 1 is [1] and [1]. This means that the two lists, representing the positions played by the two players X and O, each contain _1_
+
+This is stored as a set of higher-order bits and a set of lower-order bits like this in the value table.
+
+
+![image-title-here](../images/bits.png){:class="img-responsive"}
+
+{% highlight haskell %}
+stateindex :: [Int] -> [Int] -> Int
+stateindex xloc oloc = sum [2^(n-1)| n <- xloc]
+                       + 512 * sum [2^(n-1) | n <- oloc]
+{% endhighlight %}
 
 createarray :: IO ( IOArray Int Double)
 createarray =  do {
@@ -102,6 +112,10 @@ stateindex xloc oloc = sum (map (2^) xloc)
 {% endhighlight %}
 
 The ReaderT Monad transformer for reading and writing to arrays.
+
+{% highlight haskell %}
+
+type ArrayAccess = ReaderT  (IOArray Int Double)  IO 
 
 {% highlight haskell %}
 
@@ -195,39 +209,21 @@ gameplanrevised log a state newstate = do
                             exploremove a state newstate =
                               do
                                 r <- randombetween;
-                                let em = exploratorymove r in
-                                  case em of
-                                    True ->
-                                      do
-                                        result <- (terminalstatep log a (ReinforcementLearning.index newstate));
-                                        case result of
-                                          True -> do
-                                            b <- update a state newstate
-                                            valueofnewstate <- catch (readthevalue b (ReinforcementLearning.index newstate)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index newstate)]>> throwIO e)
-                                            return (b,newstate,valueofnewstate)
-                                          False -> do
-                                            rm <- randommove newstate
-                                            (gm,c) <- greedymove log a O newstate
-                                            log $ printf "Greedy Move is %d \n " gm
-                                            valueofnewstate <-  catch (readthevalue c (ReinforcementLearning.index newstate)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index newstate)]>> throwIO e)
-                                            (nv,d) <- nextvalue logs O (randomgreedy log r rm gm) c newstate
-                                            d' <- if em then return d else update d state nv
-                                            result1 <- (terminalstatep log d' (ReinforcementLearning.index nv));
-                                            valueofnewstate1 <-  catch (readthevalue d' (ReinforcementLearning.index nv)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index nv)]>> throwIO e)
-                                            if (length (possiblemoves nv) == 0)
-                                              then
-                                              return (d',nv,valueofnewstate1)
-                                              else if result1
-                                                   then do
-                                                   return (d',nv,valueofnewstate1)
-                                                   else do
-                                                   r <- randommove newstate
-                                                   (nv1,d1') <- nextvalue logs X r d' newstate
-                                                   exploremove d1' newstate nv1
-                                    False -> do
-                                      r1 <- randommove newstate
-                                      (ns,na) <- nextvalue logs X r1 a newstate
-                                      exploremove na ns newstate
+        (nv,d) <- nextvalue logs O (randomgreedy log r1 rm gm) c newstate
+        d' <- if r1 < 0.01 then return d else update d state nv
+        result1 <- (terminalstatep log d' (ReinforcementLearning.index nv));
+        valueofnewstate1 <-  catch (readthevalue d' (ReinforcementLearning.index nv)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index nv)]>> throwIO e)
+        if (length (possiblemoves nv) == 0)
+          then
+          return (d',nv,valueofnewstate1)
+          else if result1
+               then do
+               log $ printf "Gameplan returns(False branch) %f\n " valueofnewstate1
+               return (d',nv,valueofnewstate1)
+               else do
+               r <- randommove newstate
+               (nv1,d1') <- nextvalue logs X r d' newstate
+               gameplan log d1' newstate (nv1)
 {% endhighlight %}
 
 
@@ -294,7 +290,6 @@ playrepeatedly a arr numrun numbins binsize = do
 {% highlight Haskell %}
 main =  do
    p <- createarray
-   writethevalue p 0 0.5
    ReinforcementLearning.numruns p 1 1 100
    return ()
 {% endhighlight %}
