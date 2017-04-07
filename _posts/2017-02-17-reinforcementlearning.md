@@ -85,7 +85,7 @@ drawo = color rose $ thickCircle 25 2
 ### Value table 
 The representation of the board state when Player X has moved to position 1 and Player O has learned to move to position 1 is [1] and [1]. This means that the two lists, representing the positions played by the two players X and O, each contain _1_
 
-This is stored as a set of higher-order bits and a set of lower-order bits like this in the value table.
+This is stored as a set of higher-order bits and a set of lower-order bits like this in the value table. The value of this set of bits shown in the image is _513_.
 
 
 ![image-title-here](../images/bits.png){:class="img-responsive"}
