@@ -96,30 +96,17 @@ stateindex xloc oloc = sum [2^(n-1)| n <- xloc]
                        + 512 * sum [2^(n-1) | n <- oloc]
 {% endhighlight %}
 
+
+The ReaderT Monad transformer for reading and writing to arrays.
+
+
 {% highlight haskell %}
+
 createarray :: IO ( IOArray Int Double)
 createarray =  do {
                        arr <- newArray (0,512*512) (-1.0);
                        return arr
                   }
-
-addVal :: Int -> [Int] -> [Int]
-addVal i [] = []
-addVal i (x:xs) = x * 512: addVal i xs
-
-stateindex :: [Int] -> [Int] -> Int
-stateindex xloc oloc = sum (map (2^) xloc)
-                       + sum [2^n | n <- (addVal 512 oloc)]
-{% endhighlight %}
-
-The ReaderT Monad transformer for reading and writing to arrays.
-
-{% highlight haskell %}
-
-type ArrayAccess = ReaderT  (IOArray Int Double)  IO 
-{% endhighlight %}
-
-{% highlight haskell %}
 
 type ArrayAccess = ReaderT  (IOArray Int Double)  IO 
 type ArrayWriteAccess = ReaderT  (IOArray Int Double)  IO() 
