@@ -124,6 +124,8 @@ readfromarray = do { a <- createarray; liftIO (runReaderT (readvalue 1) a) }
 writetoarray = do { a <- createarray; liftIO (runReaderT (writevalue 1 2) a) }
 {% endhighlight %}
 
+### The representation of a Player
+
 {% highlight haskell %}
 data Player = X | O deriving Show
 isX :: Player -> Bool
