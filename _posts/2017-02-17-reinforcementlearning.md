@@ -58,6 +58,7 @@ data BoardState = BoardState { xloc :: [Int],
 
 ### Haskell Gloss 
 
+The UI toolkit Gloss was used to initially display a grid. I hoped that eventually I could debug the visually. That hope turned out to be false as I misjudged the number of times one trains an algorithm like this. So this code is not usefule for debugging.
 
 {% highlight haskell %}
 translationaccumulator ::   [Int] -> [Int] -> [(Float,Float)] -> [Picture] -> [Picture]
@@ -99,10 +100,10 @@ stateindex xloc oloc = sum [2^(n-1)| n <- xloc]
 
 ### How do we know that a Player has won ?
 
-{% highlight haskell %}
 
 Just store all the winning combinations and check because we have less board positions.
 
+{% highlight haskell %}
 winningcombination :: [[Int]]
 winningcombination = [[1,2,3],[4,5,6],[7,8,9],
                       [1,4,7],[2,5,8],[3,6,9],
