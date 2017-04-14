@@ -21,7 +21,7 @@ Except the Haskell code everything I explain is based on the references cited at
 
 I started with a proper Haskell state management workflow but soon abandoned it in favour of mutable IOarrays. Global mutable state is virtually non-existent in Haskell code. 
 
-This code just manages the board size.
+This code just manages the board size but is unused now. The board is small and is of fixed size.
 
 {% highlight haskell %}fun :: Map.Map String Int
 fun = Map.empty
