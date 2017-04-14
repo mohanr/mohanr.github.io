@@ -2,7 +2,7 @@
 layout: post
 title: Reinforcement Learning
 published: true
-comments: true
+comment: true
 ---
 
 ## Introduction
@@ -40,12 +40,6 @@ getboardsize = do
                 (Just (*) <*> (fst x)  <*>  (fst y) )
 {% endhighlight %}
 
-### Magic Square
-
-{% highlight haskell %}
-magicsquare :: [Int]
-magicsquare = [2,9,4,7,5,4,7,5,4] 
-{% endhighlight %}
 
 ### State of the board
 
