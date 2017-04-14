@@ -311,7 +311,7 @@ The Reinforcement Learning agent should become unbeatable. That is what I used t
 I think the winning rate of Player O should be more. It is less because somewhere in my code there may be a bug. I will continue to test it and the latest code will be in my [repository](https://github.com/mohanr/Reinforcement-Learning-An-Introduction-by-Richard-S.-Sutton-and-Andrew-G.-Barto)
 
 
-             	"Played 100 times 45.0  0.45"
+		"Played 100 times 45.0  0.45"
 		"Played 100 times 53.0  0.53"
 		"Played 100 times 51.0  0.51"
 		"Played 100 times 52.0  0.52"
