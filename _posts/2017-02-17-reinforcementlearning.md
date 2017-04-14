@@ -1,7 +1,8 @@
 ---
 layout: post
-title: Reinforcement Learning(Unfinished post)
+title: Reinforcement Learning
 published: true
+comments: true
 ---
 
 ## Introduction
@@ -96,6 +97,34 @@ stateindex xloc oloc = sum [2^(n-1)| n <- xloc]
                        + 512 * sum [2^(n-1) | n <- oloc]
 {% endhighlight %}
 
+### How do we know that a Player has won ?
+
+{% highlight haskell %}
+
+Just store all the winning combinations and check because we have less board positions.
+
+winningcombination :: [[Int]]
+winningcombination = [[1,2,3],[4,5,6],[7,8,9],
+                      [1,4,7],[2,5,8],[3,6,9],
+                      [1,5,9],[3,5,8]]
+
+
+checkallcombination ::  [Int] -> Bool
+checkallcombination l = let wc = winningcombination in
+                          loop wc
+                            where
+                              loop :: [[Int]] -> Bool
+                              loop wc =
+                                case wc of
+                                  [] ->  False
+                                  (x:xs) -> if containscombination x l then True else loop xs
+
+containscombination :: [Int] -> [Int] -> Bool
+containscombination xs xs1 =
+  case xs of
+    [] -> True 
+    (x:xss) -> if (x `elem` xs1) then containscombination xss xs1 else False
+{% endhighlight %}
 
 The ReaderT Monad transformer for reading and writing to arrays.
 
@@ -167,8 +196,8 @@ greedymove log a player state =
   let possibles = possiblemoves state in
     case possibles of
       [] -> return (0, a)
-      p  -> let bestvalue = -1.0 in
-              let bestmove = 0 in
+      p  -> let bestvalue = -1.0 in-- Since default value in array is -1.0
+              let bestmove = (head p) in
                 choosebestmove a p bestvalue bestmove
                 where
                   choosebestmove arr [] bestvalue1 bestmove1 = return (0,a)
@@ -188,9 +217,6 @@ greedymove log a player state =
 This is basically the original _Lisp_ converted line by line to Haskell. The Haskell programmers who I consulted dissuaded me from doing this but at this time my Haskell knowledge does not measure up to the task.
 
 {% highlight haskell %}
-exploratorymove :: Double -> Bool
-exploratorymove r = do
-  r < 0.01
 gameplanrevised :: (String -> IO()) ->( IOArray Int Double) -> BoardState -> BoardState -> IO (IOArray Int Double,BoardState,Double) 
 gameplanrevised log a state newstate = do 
                         exploremove a state newstate
@@ -200,39 +226,40 @@ gameplanrevised log a state newstate = do
                               do
                                 r <- randombetween;
                                 let em = exploratorymove r in
-                                  case em of
-                                    True ->
-                                      do
-                                        result <- (terminalstatep log a (ReinforcementLearning.index newstate));
-                                        case result of
-                                          True -> do
-                                            b <- update a state newstate
-                                            valueofnewstate <- catch (readthevalue b (ReinforcementLearning.index newstate)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index newstate)]>> throwIO e)
-                                            return (b,newstate,valueofnewstate)
-                                          False -> do
+                                  do
+                                    result <- (terminalstatep log a (ReinforcementLearning.index newstate));
+                                    case result of
+                                      True -> do
+                                        b <- update a state newstate
+                                        valueofnewstate <- catch (readthevalue b (ReinforcementLearning.index newstate)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index newstate)]>> throwIO e)
+                                        return (b,newstate,valueofnewstate)
+                                      False -> do
+                                        if em
+                                          then do
                                             rm <- randommove newstate
+                                            (nv,d) <- nextvalue logs O rm a newstate
+                                            result1 <- (terminalstatep log d (ReinforcementLearning.index nv));
+                                            valueafterrandommove <-  catch (readthevalue d (ReinforcementLearning.index nv)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index nv)]>> throwIO e)
+                                            if result1
+                                              then do
+                                              return (d,nv,valueafterrandommove)
+                                              else do
+                                              r1 <- randommove nv
+                                              (ns,na) <- nextvalue logs X r1 d nv
+                                              exploremove na nv ns 
+                                          else do
                                             (gm,c) <- greedymove log a O newstate
-                                            log $ printf "Greedy Move is %d \n " gm
-                                            valueofnewstate <-  catch (readthevalue c (ReinforcementLearning.index newstate)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index newstate)]>> throwIO e)
-                                            (nv,d) <- nextvalue logs O (randomgreedy log r rm gm) c newstate
-                                            d' <- if em then return d else update d state nv
-                                            result1 <- (terminalstatep log d' (ReinforcementLearning.index nv));
-                                            valueofnewstate1 <-  catch (readthevalue d' (ReinforcementLearning.index nv)) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index nv)]>> throwIO e)
-                                            if (length (possiblemoves nv) == 0)
-                                              then
-                                              return (d',nv,valueofnewstate1)
-                                              else if result1
-                                                   then do
-                                                   return (d',nv,valueofnewstate1)
-                                                   else do
-                                                   r <- randommove newstate
-                                                   (nv1,d1') <- nextvalue logs X r d' newstate
-                                                   exploremove d1' newstate nv1
-                                    False -> do
-                                      r1 <- randommove newstate
-                                      (ns,na) <- nextvalue logs X r1 a newstate
-                                      exploremove na ns newstate
-  
+                                            (nv',d') <- nextvalue logs O gm c newstate
+                                            d'' <- update d' state nv'
+                                            result2 <- (terminalstatep log d'' (ReinforcementLearning.index nv'));
+                                            valueaftergreedymove <-  catch (readthevalue d'' (ReinforcementLearning.index nv')) (\(SomeException e) -> print e >> mapM_ (putStr . show) [ (ReinforcementLearning.index nv')]>> throwIO e)
+                                            if result2
+                                              then do
+                                              return (d'',nv',valueaftergreedymove)
+                                              else do
+                                              r1 <- randommove nv'
+                                              (ns,na) <- nextvalue logs X r1 d'' nv'
+                                              exploremove na nv' ns 
 {% endhighlight %}
 
 
@@ -246,43 +273,46 @@ playntimes :: IOArray Int Double -> (String -> IO()) ->Int -> IO (IOArray Int Do
 -- playntimes log n = do a <- createarray;
 playntimes a log n = do writethevalue a 0 0.5
                         r <- (randommove (BoardState [] [] 0))
-                        playtime  a (BoardState [] [] 0) (nextvalue logs X r a (BoardState [] [] 0)) n 0 r
+                        playtime  (BoardState [] [] 0) (nextvalue logs X r a (BoardState [] [] 0)) n 0 r
                           where
-                            playtime :: IOArray Int Double -> BoardState -> IO (BoardState,IOArray Int Double) -> Int -> Double -> Int -> IO (IOArray Int Double,Double)
-                            playtime finala s ns n acc r --finala is the consolidation for the next run
+                            playtime ::  BoardState -> IO (BoardState,IOArray Int Double) -> Int -> Double -> Int -> IO (IOArray Int Double,Double)
+                            playtime  s ns n acc r --finala is the consolidation for the next run
                               | n == 0 = do logsresult $ printf "Played 100 times %f  %f"  acc (acc/100.0)
-                                            return (finala,acc)
+                                            (_, b) <- ns 
+                                            return (b,acc)
                               | n > 0 = do
                                   (boardstate, b) <- ns 
                                   (updatedarray, _, result) <- game logs s  boardstate b; 
-                                  log $ printf "Game returns %f\n" result
                                   r1 <- randommove (BoardState [] [] 0)
-                                  playtime updatedarray (BoardState [] [] 0) (nextvalue logs X  r1 updatedarray (BoardState [] [] 0)) (n - 1) (acc + result) r1
+                                  playtime (BoardState [] [] 0) (nextvalue logs X  r1 updatedarray (BoardState [] [] 0)) (n - 1) (acc + result) r1
+  
 {% endhighlight %}
 
 ### Equivalent of 'runs' function in the example
+
 {% highlight haskell %}
-numruns :: IOArray Int Double ->Int -> Int -> Int -> IO()
-numruns a n bins binsize  
+numruns :: IOArray Int Double ->Int -> Int -> Int -> Int -> IO()
+numruns  arr n1 n bins binsize  
   | n == 0 = printf "\nPlayed numruns times"
   | n > 0 = do
-      arr <- newArray (0,bins) 0;
-      b <- playrepeatedly a arr n bins binsize
-      numruns b (n -1) bins binsize
+      p <- createarray
+      writethevalue p 0 0.5
+      b <- playrepeatedly p arr n1 bins binsize
+      numruns arr n1 (n -1) bins binsize
 
-playrepeatedly ::  IOArray Int Double ->IOArray Int Double -> Int -> Int -> Int -> IO(IOArray Int Double)
-playrepeatedly a arr numrun numbins binsize = do 
+playrepeatedly ::  IOArray Int Double ->IOArray Int Double ->  Int -> Int -> Int -> IO(IOArray Int Double)
+playrepeatedly a arr numrun1  numbins binsize = do 
  loop a 0 binsize
     where
       loop a i bs
-        | i == numbins = let x = numrun
+        | i == numbins = let x = numrun1
                              y = numbins
                              z = binsize in
                            loop1 a x 0 y z 
         | i < numbins = do
-            v <- readthevalue arr i 
             (b,acc) <- playntimes a logs bs;
-            writethevalue arr i acc 
+            lastvalue <- readthevalue arr i
+            writethevalue arr i (lastvalue + acc) 
             loop b (i+1) bs
         where 
         loop1 a x j y z = if j < y
@@ -297,11 +327,11 @@ playrepeatedly a arr numrun numbins binsize = do
 ### Main function
 
 {% highlight Haskell %}
-main =  do
-   p <- createarray
-   writethevalue p 0 0.5
-   ReinforcementLearning.numruns p 1 1 100
-   return ()
+main = let numbins = 30 in 
+         do
+           arr <- newArray (0,numbins) 0.0;
+           ReinforcementLearning.numruns  arr 1 1 numbins 100 -- numruns numruns numbins binsize
+           return ()
 {% endhighlight %}
 
 ### Number of times Player O wins over X
@@ -341,3 +371,7 @@ I think the winning rate of Player O should be more. It is less because somewher
 		"Played 100 times 51.0  0.51"
 		"Played 100 times 51.0  0.51"
 		"Played 100 times 56.0  0.56"
+References :
+
+1. https://mitpress.mit.edu/books/reinforcement-learning
+2. The code from 1998 when the book was  published is http://incompleteideas.net/sutton/book/code/TTT.lisp
