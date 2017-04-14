@@ -371,7 +371,8 @@ I think the winning rate of Player O should be more. It is less because somewher
 		"Played 100 times 51.0  0.51"
 		"Played 100 times 51.0  0.51"
 		"Played 100 times 56.0  0.56"
-References :
+
+#### References
 
 1. https://mitpress.mit.edu/books/reinforcement-learning
 2. The code from 1998 when the book was  published is http://incompleteideas.net/sutton/book/code/TTT.lisp
