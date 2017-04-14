@@ -303,3 +303,40 @@ main =  do
    ReinforcementLearning.numruns p 1 1 100
    return ()
 {% endhighlight %}
+
+### Number of times Player O wins over X
+
+The Reinforcement Learning agent should become unbeatable. That is what I used to think. But my code makes Player O learn and win roughly more than 50 % but less than or equal to 60%. But I have only played 100 games, 30 times each.
+
+I think the winning rate of Player O should be more. It is less because somewhere in my code there may be a bug. I will continue to test it and the latest code will be in my [repository](https://github.com/mohanr/Reinforcement-Learning-An-Introduction-by-Richard-S.-Sutton-and-Andrew-G.-Barto)
+
+             	"Played 100 times 45.0  0.45"
+		"Played 100 times 53.0  0.53"
+		"Played 100 times 51.0  0.51"
+		"Played 100 times 52.0  0.52"
+		"Played 100 times 44.0  0.44"
+		"Played 100 times 46.0  0.46"
+		"Played 100 times 52.0  0.52"
+		"Played 100 times 51.0  0.51"
+		"Played 100 times 38.0  0.38"
+		"Played 100 times 39.0  0.39"
+		"Played 100 times 39.0  0.39"
+		"Played 100 times 43.0  0.43"
+		"Played 100 times 48.0  0.48"
+		"Played 100 times 49.0  0.49"
+		"Played 100 times 52.0  0.52"
+		"Played 100 times 56.0  0.56"
+		"Played 100 times 50.0  0.5"
+		"Played 100 times 43.0  0.43"
+		"Played 100 times 50.0  0.5"
+		"Played 100 times 51.0  0.51"
+		"Played 100 times 64.0  0.64"
+		"Played 100 times 50.0  0.5"
+		"Played 100 times 61.0  0.61"
+		"Played 100 times 58.0  0.58"
+		"Played 100 times 46.0  0.46"
+		"Played 100 times 60.0  0.6"
+		"Played 100 times 55.0  0.55"
+		"Played 100 times 51.0  0.51"
+		"Played 100 times 51.0  0.51"
+		"Played 100 times 56.0  0.56"
