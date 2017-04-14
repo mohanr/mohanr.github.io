@@ -17,6 +17,12 @@ Except the Haskell code everything I explain is based on the references cited at
 
 ![image-title-here](../images/TE_temp_preview2092.pdf.png){:class="img-responsive"}
 
+### State Monad
+
+I started with a proper Haskell state management workflow but soon abandoned it in favour of mutable IOarrays. Global mutable state is virtually non-existent in Haskell code. 
+
+This code just manages the board size.
+
 {% highlight haskell %}fun :: Map.Map String Int
 fun = Map.empty
 
