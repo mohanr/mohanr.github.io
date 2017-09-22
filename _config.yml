@@ -1,6 +1,7 @@
 #
 # This file contains configuration flags to customize your site
 #
+theme: jekyll-theme-slate
 highlighter: rouge
 paginate: 5
 paginate_path: "page:num"
