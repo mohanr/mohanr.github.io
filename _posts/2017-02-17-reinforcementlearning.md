@@ -58,7 +58,7 @@ data BoardState = BoardState { xloc :: [Int],
 
 ### Haskell Gloss 
 
-The UI toolkit Gloss was used to initially display a grid. I hoped that eventually I could debug the visually. That hope turned out to be false as I misjudged the number of times one trains an algorithm like this. So this code is not usefule for debugging.
+The UI toolkit Gloss was used to initially display a grid. I hoped that eventually I could debug this visually. That hope turned out to be false as I misjudged the number of times one trains an algorithm like this. So this code is not usefule for debugging.
 
 {% highlight haskell %}
 translationaccumulator ::   [Int] -> [Int] -> [(Float,Float)] -> [Picture] -> [Picture]
