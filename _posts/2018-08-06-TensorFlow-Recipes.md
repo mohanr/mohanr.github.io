@@ -4,7 +4,7 @@ title: TensorFlow Recipes
 published: true
 ---
 
-### 
+### How to get values of each row in a matrix according to the max and secondary value indexes which I got from another matrix ?
 
 {% highlight Python %}
 
