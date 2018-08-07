@@ -7,7 +7,7 @@ paginate: 5
 paginate_path: "page:num"
 future: true
 # Name of your site (displayed in the header)
-name: Your Name
+name: Mohan Radhakrishnan
 
 # Short bio or description (displayed in the header)
 description: Web Developer from Somewhere
@@ -36,6 +36,11 @@ footer-links:
   googleplus: # anything in your profile username that comes after plus.google.com/
 
 
+#Stackoverflow flair is optional
+stackoverflow:
+   profileurl: https://stackoverflow.com/users/1234909/mohan-radhakrishnan
+   flairimageurl: https://stackoverflow.com/users/flair/1234909.png
+   
 # Enter your Disqus shortname (not your username) to enable commenting on posts
 # You can find your shortname on the Settings page of your Disqus account
 disqus:
