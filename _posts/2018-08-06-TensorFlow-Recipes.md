@@ -4,6 +4,14 @@ title: TensorFlow Recipes
 published: true
 ---
 
+As part of my effort to engage with the Open-source community I started answering Stackoverflow questions. I started by asking
+a few decent questions and then answered some of my own questions and accepted them. Gradually I understood that this community site is not only about answering but also asking good questions that others can answer.
+
+That is how one builds one's [reputation](https://stackoverflow.com/help/whats-reputation). I believe a key skill one develops by answering is the ability to clearly understand what is being asked.
+
+Here I've collected some Tensorflow recipes some of which are my answers to Stackoverflow questions. Not all though. Some are code
+samples I built for myself to understand Tensorflow. I plan to add more explanations and some diagrams to make the code clearer.
+
 ### How to get values of each row in a matrix according to the max and secondary value indexes which I got from another matrix ?
 
 {% highlight Python %}
@@ -44,6 +52,65 @@ for i in range(0, row.get_shape()[0] ) :
 r = tf.gather_nd(A,template)
 print(sess.run(template))
 
+{% endhighlight %}
 
+### Finding roots of a polynomial by Halley's method using tensorflow 
+
+{% highlight Python %}
+
+import tensorflow as tf
+
+h = tf.constant(.00000001, dtype='float64')
+eps = tf.constant(.000001, dtype='float64')
+b = tf.constant(2.0, tf.float64)
+
+def f(x):
+    return tf.subtract( tf.multiply(x , x ) , 2. )
+
+def fp(x):
+    return  tf.divide( tf.subtract( f(tf.add(x, h)) ,
+                                    f(x)
+                                  ) ,
+                       h
+                     )
+
+def fpp(x):
+    return tf.divide( tf.subtract( fp( tf.add(x , h)) ,
+                                   fp(x)
+                                 ),
+                       h
+                     )
+
+def cond(i, x_new, x_prev):
+    return tf.logical_and( i < 5,
+                           tf.less_equal( tf.abs( tf.cast(tf.subtract( x_new ,
+                                                                       x_prev),dtype='float64')),
+                                          eps
+                                        )
+                         )
+
+def body( i, x_new, x_prev ):
+    fx = f( x_prev )
+    fpx = fp( x_prev )
+    x_new = tf.subtract( x_prev ,
+                          tf.divide( b * fx * fpx  ,
+                                     tf.subtract(b * fpx * fpx,
+                                                 fx * fpp( x_prev )
+                                                )
+                                   )
+                       )
+    xnew = tf.Print(x_new, [x_new], message="The root is : ")
+
+    with tf.control_dependencies([x_new,xnew]):
+        x_prev = tf.identity(xnew)
+
+    return [i + 1, xnew, x_prev ]
+
+sess = tf.Session()
+sess.run(tf.global_variables_initializer())
+
+
+print( sess.run(tf.while_loop(cond, body, [1, b - fpp(b), b])) )
 
 {% endhighlight %}
+
