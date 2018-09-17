@@ -151,43 +151,46 @@ with tf.Session() as sess:
 
 The output is this.
 
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
+.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+</style>
 <table class="tg">
   <tr>
-    <th class="tg-baqh" colspan="5"></th>
+    <th class="tg-0pky">0</th>
+    <th class="tg-0pky">0</th>
+    <th class="tg-0pky">0</th>
+    <th class="tg-0pky">0</th>
+    <th class="tg-0pky">0</th>
   </tr>
   <tr>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
+    <td class="tg-0pky">3</td>
+    <td class="tg-0pky">2</td>
+    <td class="tg-0pky">4</td>
+    <td class="tg-0pky">1</td>
+    <td class="tg-0pky">0</td>
   </tr>
   <tr>
-    <td class="tg-baqh">3</td>
-    <td class="tg-baqh">2</td>
-    <td class="tg-baqh">4</td>
-    <td class="tg-baqh">1</td>
-    <td class="tg-baqh">0</td>
+    <td class="tg-0pky">0</td>
+    <td class="tg-0pky">0</td>
+    <td class="tg-0pky">0</td>
+    <td class="tg-0pky">0</td>
+    <td class="tg-0pky">0</td>
   </tr>
   <tr>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
+    <td class="tg-0pky">0</td>
+    <td class="tg-0pky">0</td>
+    <td class="tg-0pky">0</td>
+    <td class="tg-0pky">0</td>
+    <td class="tg-0pky">0</td>
   </tr>
   <tr>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
-  </tr>
-  <tr>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
-    <td class="tg-baqh">0</td>
+    <td class="tg-0pky">0</td>
+    <td class="tg-0pky">0</td>
+    <td class="tg-0pky">0</td>
+    <td class="tg-0pky">0</td>
+    <td class="tg-0pky">0</td>
   </tr>
 </table>
