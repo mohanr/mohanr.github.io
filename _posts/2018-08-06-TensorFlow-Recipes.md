@@ -128,8 +128,6 @@ input = tf.constant([3, 2, 4, 1, 0],tf.int16)
 
 zeros = tf.Variable(tf.zeros(5,5),tf.int32)
 
-index = tf.Variable(0)
-
 def modify(zeros, x):
     row1, row2, row3, row4, row5 = zeros
     x_tensor = tf.convert_to_tensor([x])
