@@ -120,6 +120,8 @@ print( sess.run(tf.while_loop(cond, body, [1, b - fpp(b), b])) )
 
 I will add more explanation is due time. But for now this code one row of a _tf.zeros(5,5)_ tensor. But this is way more powerful than this.
 
+{% highlight Python %}
+
 import tensorflow as tf
 
 input = tf.constant([3, 2, 4, 1, 0],tf.int16)
@@ -145,13 +147,17 @@ with tf.Session() as sess:
 
     print(sess.run([update]))
 
-
+{% endhighlight %}
 
 The output is this.
 
-| 0 | 0 | 0 | 0 | 0 |
-|---|---|---|---|---|
-| 3 | 2 | 4 | 1 | 0 |
-| 0 | 0 | 0 | 0 | 0 |
-| 0 | 0 | 0 | 0 | 0 |
-| 0 | 0 | 0 | 0 | 0 |
+\begin{table}[]
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+0 & 0 & 0 & 0 & 0 \\ \hline
+3 & 2 & 4 & 1 & 0 \\ \hline
+0 & 0 & 0 & 0 & 0 \\ \hline
+0 & 0 & 0 & 0 & 0 \\ \hline
+0 & 0 & 0 & 0 & 0 \\ \hline
+\end{tabular}
+\end{table}
