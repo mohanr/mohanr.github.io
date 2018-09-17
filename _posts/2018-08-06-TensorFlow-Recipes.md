@@ -153,7 +153,7 @@ The output is this.
 
 <table class="tg">
   <tr>
-    <th class="tg-baqh" colspan="2">Some values</th>
+    <th class="tg-baqh" colspan="5"></th>
   </tr>
   <tr>
     <td class="tg-baqh">0</td>
