@@ -151,13 +151,43 @@ with tf.Session() as sess:
 
 The output is this.
 
-\begin{table}[]
-\begin{tabular}{|l|l|l|l|l|}
-\hline
-0 & 0 & 0 & 0 & 0 \\ \hline
-3 & 2 & 4 & 1 & 0 \\ \hline
-0 & 0 & 0 & 0 & 0 \\ \hline
-0 & 0 & 0 & 0 & 0 \\ \hline
-0 & 0 & 0 & 0 & 0 \\ \hline
-\end{tabular}
-\end{table}
+<table class="tg">
+  <tr>
+    <th class="tg-baqh" colspan="2">Some values</th>
+  </tr>
+  <tr>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+  </tr>
+  <tr>
+    <td class="tg-baqh">3</td>
+    <td class="tg-baqh">2</td>
+    <td class="tg-baqh">4</td>
+    <td class="tg-baqh">1</td>
+    <td class="tg-baqh">0</td>
+  </tr>
+  <tr>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+  </tr>
+  <tr>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+  </tr>
+  <tr>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+    <td class="tg-baqh">0</td>
+  </tr>
+</table>
