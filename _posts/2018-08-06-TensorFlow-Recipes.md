@@ -118,7 +118,7 @@ print( sess.run(tf.while_loop(cond, body, [1, b - fpp(b), b])) )
 
 ### How does _tf.scan_ work ?
 
-I will add more explanation is due time. But for now this code one row of a _tf.zeros(5,5)_ tensor. But this is way more powerful than this.
+I will add more explanation is due time. But for now this code updates one row of a _tf.zeros(5,5)_ tensor. But _tf.scan_ is way more powerful than this.
 
 {% highlight Python %}
 
