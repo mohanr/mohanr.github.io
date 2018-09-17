@@ -12,6 +12,8 @@ That is how one builds one's [reputation](https://stackoverflow.com/help/whats-r
 Here I've collected some Tensorflow recipes some of which are my answers to Stackoverflow questions. Not all though. Some are code
 samples I built for myself to understand Tensorflow. I plan to add more explanations and some diagrams to make the code clearer.
 
+The Tensorflow version that I used was 1.10. I mention this because the framework is under constant development. 
+
 ### How to get values of each row in a matrix according to the max and secondary value indexes which I got from another matrix ?
 
 {% highlight Python %}
@@ -114,3 +116,42 @@ print( sess.run(tf.while_loop(cond, body, [1, b - fpp(b), b])) )
 
 {% endhighlight %}
 
+### How does _tf.scan_ work ?
+
+I will add more explanation is due time. But for now this code one row of a _tf.zeros(5,5)_ tensor. But this is way more powerful than this.
+
+import tensorflow as tf
+
+input = tf.constant([3, 2, 4, 1, 0],tf.int16)
+
+zeros = tf.Variable(tf.zeros(5,5),tf.int32)
+
+index = tf.Variable(0)
+
+def modify(zeros, x):
+    row1, row2, row3, row4, row5 = zeros
+    x_tensor = tf.convert_to_tensor([x])
+
+    return [row1, x_tensor, row3, row4, row5]
+
+update = tf.scan(modify, input, initializer=[zeros[0:1],
+                                             zeros[1:2],
+                                             zeros[2:3],
+                                             zeros[4:5],
+                                             zeros[4:5]])
+
+with tf.Session() as sess:
+    sess.run(tf.global_variables_initializer())
+
+    print(sess.run([update]))
+
+
+
+The output is this.
+
+| 0 | 0 | 0 | 0 | 0 |
+|---|---|---|---|---|
+| 3 | 2 | 4 | 1 | 0 |
+| 0 | 0 | 0 | 0 | 0 |
+| 0 | 0 | 0 | 0 | 0 |
+| 0 | 0 | 0 | 0 | 0 |
