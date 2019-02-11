@@ -192,3 +192,29 @@ The output is this.
     <td class="tg-0pky">0</td>
   </tr>
 </table>
+
+### How do you use TensorArray ?
+
+{% highlight Python %}
+
+import numpy as np
+import tensorflow as tf
+
+a = tf.get_variable("a",[5,2],dtype=tf.float32,initializer=tf.constant_initializer(np.array([[1.5,0.2],[2.3,0.1],[1.3,0.2],[2.2,0.09],[4.4,0.8]],dtype=np.float32)))
+
+rows = tf.shape(a)[0]
+results = tf.TensorArray(dtype=tf.float32, size=0, dynamic_size=True,infer_shape=False)
+
+init_state = (0, results)
+condition = lambda i, _: i < rows
+body = lambda i, results: (i + 1, results.write(i, a[i] ))
+n, r = tf.while_loop(condition, body, init_state)
+unstacked_result = r.stack()
+
+# run the graph
+with tf.Session() as sess:
+    init = tf.initialize_all_variables()
+    sess.run(init)
+    # print the output of unstacked_result
+    print(sess.run(unstacked_result))
+{% endhighlight %}
