@@ -16,6 +16,10 @@ The Tensorflow version that I use is 1.xx. I mention this because the framework 
 
 # Table of contents
 1. [Index one matrix based on another](#matrixindex)
+2. [Roots of a polynomial by Halley's method](#Halleysmethod)
+3. [How does _tf.scan_ work ?](#tfscan)
+4. [How do you use TensorArray ?](#tensorarray)
+5. [Initialize a variable by feeding a placeholder](#variableinitialization)
 
 ### How to get values of each row in a matrix according to the max and secondary value indexes which I got from another matrix ? <a name="matrixindex">
 
@@ -59,7 +63,7 @@ print(sess.run(template))
 
 {% endhighlight %}
 
-### Finding roots of a polynomial by Halley's method using tensorflow 
+### Finding roots of a polynomial by Halley's method using tensorflow <a name="Halleysmethod">
 
 {% highlight Python %}
 
@@ -119,7 +123,7 @@ print( sess.run(tf.while_loop(cond, body, [1, b - fpp(b), b])) )
 
 {% endhighlight %}
 
-### How does _tf.scan_ work ?
+### How does _tf.scan_ work ? <a name="tfscan">
 
 I will add more explanation in due time. But for now this code updates one row of a _tf.zeros(5,5)_ tensor. But _tf.scan_ is way more powerful than this.
 
@@ -196,7 +200,7 @@ The output is this.
   </tr>
 </table>
 
-### How do you use TensorArray ?
+### How do you use TensorArray ? <a name="tensorarray">
 
 {% highlight Python %}
 
@@ -221,3 +225,28 @@ with tf.Session() as sess:
     # print the output of unstacked_result
     print(sess.run(unstacked_result))
 {% endhighlight %}
+
+### Can variable initialization depend on the fed value of a placeholder ? <a name="variableinitialization">
+     
+{% highlight Python %}
+import tensorflow as tf
+
+sess = tf.InteractiveSession()
+
+X = tf.placeholder(tf.float32, name="X")
+
+W = tf.Variable([1, 2, 1], dtype=tf.float32, name="weights")
+W = tf.reshape(W, [1, 3])
+
+var = tf.reshape([X*X,X,1],[3,1])
+F = tf.get_variable('F', dtype=tf.float32, initializer=var)
+
+init = tf.global_variables_initializer()
+Y=tf.matmul(W,F)
+
+for i in range(10):
+    sess.run([init], feed_dict={X: i})
+    print(sess.run(Y))
+
+{% endhighlight %}
+
