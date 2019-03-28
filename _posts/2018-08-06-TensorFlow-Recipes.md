@@ -228,6 +228,11 @@ with tf.Session() as sess:
 
 ### Can variable initialization depend on the fed value of a placeholder ? <a name="variableinitialization">
      
+Even though we can initialize a variable that depends on a placeholder like this, independent variables like W will get initialized repeatedly. More checks are needed to initialize only variables like F which are dependent on placeholders. 
+
+This is so because everytime a value is fed to the placeholder the dependent variable F will be initialized. But other independent variables need not be.
+
+     
 {% highlight Python %}
 import tensorflow as tf
 
