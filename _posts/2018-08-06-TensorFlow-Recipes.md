@@ -12,9 +12,12 @@ That is how one builds one's [reputation](https://stackoverflow.com/help/whats-r
 Here I've collected some Tensorflow recipes some of which are my answers to Stackoverflow questions. Not all though. Some are code
 samples I built for myself to understand Tensorflow. I plan to add more explanations and some diagrams to make the code clearer.
 
-The Tensorflow version that I used was 1.10. I mention this because the framework is under constant development. 
+The Tensorflow version that I use is 1.xx. I mention this because the framework is under constant development. 
 
-### How to get values of each row in a matrix according to the max and secondary value indexes which I got from another matrix ?
+# Table of contents
+1. [Index one matrix based on another](#matrixindex)
+
+### How to get values of each row in a matrix according to the max and secondary value indexes which I got from another matrix ? <a name="matrixindex">
 
 {% highlight Python %}
 
