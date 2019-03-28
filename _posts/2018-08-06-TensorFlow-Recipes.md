@@ -9,7 +9,7 @@ a few decent questions and then answered some of my own questions and accepted t
 
 That is how one builds one's [reputation](https://stackoverflow.com/help/whats-reputation). I believe a key skill one develops by answering is the ability to clearly understand what is being asked.
 
-Here I've collected some Tensorflow recipes some of which are my answers to Stackoverflow questions. Not all though. Some are code
+Here I've collected some Tensorflow recipes most of which are my answers to Stackoverflow questions. Not all though. Some are code
 samples I built for myself to understand Tensorflow. I plan to add more explanations and some diagrams to make the code clearer.
 
 The Tensorflow version that I use is 1.xx. I mention this because the framework is under constant development. 
