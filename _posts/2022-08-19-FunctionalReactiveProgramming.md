@@ -7,7 +7,8 @@ comment: true
 
 ## Introduction
 
-There are details that are yet to be added to this post but this code works.
+There are details that are yet to be added to this post but this code works. Since I am a Haskell novice
+I can explain a part of the code. The program itself will be refactored as I understand it better.
 
 The code uses [reactive-banana](https://hackage.haskell.org/package/reactive-banana)
 
@@ -47,7 +48,7 @@ main = do
    eventLoop sources
 
    Gloss.playIO
-    (InWindow "Reactive-Banana Example" (320, 240) (800, 200))
+    (InWindow "Event-driven" (320, 240) (800, 200))
     white
     30
     ()
