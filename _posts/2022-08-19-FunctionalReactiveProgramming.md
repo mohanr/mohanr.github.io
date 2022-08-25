@@ -5,6 +5,20 @@ published: true
 comment: true
 ---
 
+## Spacemacs
+
+THe following are the keystrokes I needed to use Spacemacs editor for Haskell so that I could focus on the code
+without too much distraction. More advanced customizations are possible but for now this suffices.
+
+| KeyStroke    |                |                |                
+|--------------|----------------|----------------|
+|              | Windows        |        <       |
+|==============|----------------|----------------|
+| C-x b        |   Switch Buffer|        <       |
+| SPC b x      |   Kill Buffer  |        <       |
+| SPC w x      |   Kill Window  |        <       |
+
+
 ## Introduction
 
 There are details that are yet to be added to this post but this code works. Since I am a Haskell novice
@@ -19,8 +33,10 @@ The code uses [reactive-banana](https://hackage.haskell.org/package/reactive-ban
 
 {% highlight haskell %}
 
+
 ------------------------------------------------------------------------------}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE BlockArguments #-}
 
 module Main where
 import Data.IORef
@@ -46,14 +62,19 @@ main = do
    network <- compile $ networkDescriptor picRef sources
    actuate network
    eventLoop sources
+   let handleEvent e@(EventKey k Down _ _) = case k of
+            (SpecialKey KeySpace) -> putStrLn "Space" 
+            _                   -> putStrLn "Case"
+       handleEvent e = event e
 
    Gloss.playIO
-    (InWindow "Event-driven" (320, 240) (800, 200))
+    (InWindow "Functional Reactive" (320, 240) (800, 200))
     white
     30
     ()
     (\() -> readIORef picRef)
-    (\ ev   _ → quit ev >> () <$ event ev)
+    -- (\ ev   _ → quit ev >> () <$ handleEvent ev)
+    (\ ev () -> handleEvent ev)
     (\_ () -> pure ())
   where
     quit (EventKey (Char 's' )
@@ -63,9 +84,6 @@ main = do
 reactToKeyPress :: IO ()
 reactToKeyPress = putStrLn "Key Pressed"
 
-window :: Display
-window = InWindow "Functional Reactive" (300, 300) (10, 10)
-  
 
 makeNewEvent :: MomentIO (Reactive.Banana.Event ())
 makeNewEvent = do
@@ -79,7 +97,7 @@ makeNewEvent = do
 
 drawBoard :: Picture
 drawBoard =
-   Pictures $ [ translate x y $ rectangleWire 90 90| x<-[0,90..180], y<-[0,90..180] ] 
+   Pictures $ [ color violet $ translate x y $ rectangleWire 90 90| x<-[0,90..180], y<-[0,90..180] ] 
 
 
 makeSources =  newAddHandler
@@ -93,7 +111,8 @@ addHandler :: EventSource a -> AddHandler a
 addHandler = fst
 
 eventLoop :: EventSource ()  -> IO ()
-eventLoop ( displayvalueevent)  =
+eventLoop ( displayvalueevent)  = do
+  putStrLn "Fired Event"
   fire displayvalueevent ()
 
 fire :: EventSource a -> a -> IO ()
@@ -104,10 +123,13 @@ fire = snd
 networkDescriptor :: IORef Picture -> EventSource() -> MomentIO ()
 networkDescriptor lastFrame  displayGlossEvent = do
   glossEvent <- fromAddHandler (addHandler displayGlossEvent )
-  picture <- liftMoment (handleKeys displayGlossEvent )
   reactimate $ putStrLn . showValue <$> glossEvent
+
+  picture <- liftMoment (handleKeys displayGlossEvent )
   changes picture >>= reactimate' . fmap (fmap (writeIORef lastFrame))
   valueBLater picture >>= liftIO . writeIORef lastFrame
+
+
 
 
 showValue value = "Value is " ++ show value
@@ -116,9 +138,9 @@ handleKeys :: EventSource ()  -> Moment (Behavior Picture)
 handleKeys glossEvent = do
 
 
-    let picture = drawBoard
+  let picture = drawBoard
+  return $ pure picture
 
-    return $ pure picture
 
 
 
