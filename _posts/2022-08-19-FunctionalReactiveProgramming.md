@@ -10,12 +10,23 @@ comment: true
 THe following are the keystrokes I needed to use Spacemacs editor for Haskell so that I could focus on the code
 without too much distraction. More advanced customizations are possible but for now this suffices.
 
-| KeyStroke    |                |                |                
+|KeyStroke     |                |                 |                            
 |--------------|----------------|----------------|
 |              | Windows        |        <       |
 |==============|----------------|----------------|
 | C-x b        |   Switch Buffer|        <       |
 | SPC b x      |   Kill Buffer  |        <       |
+| SPC w x      |   Kill Window  |        <       |
+| C-x 2        |   Split Window |        <       |
+| C-x k        |   Kill Buffer  |        <       |
+
+
+| KeyStroke    |                |                |                
+|--------------|----------------|----------------|
+|              | Files          |        <       |
+|==============|----------------|----------------|
+| C-x f        |   Open File    |        <       |
+| C-x C-s      |   Save File    |        <       |
 | SPC w x      |   Kill Window  |        <       |
 
 
