@@ -4,7 +4,7 @@ title: Functional Reactive Programming( FRP )
 published: true
 comment: true
 ---
-
+![image-title-here](../images/spacemacs.png){:class="img-responsive"} 
 ## Spacemacs
 
 THe following are the keystrokes I needed to use Spacemacs editor for Haskell so that I could focus on the code
