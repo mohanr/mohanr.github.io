@@ -35,10 +35,14 @@ without too much distraction. More advanced customizations are possible but for 
 There are details that are yet to be added to this post but this code works. Since I am a Haskell novice
 I can explain only part of the code. The program itself will be refactored as I understand it better.
 
+
 The code uses [reactive-banana](https://hackage.haskell.org/package/reactive-banana)
 
 ### What is functional reactive programming ?
 
+Functional Reactive Programming (FRP) integrates time flow and compositional events into functional programming. This provides an elegant way to express computation in domains such as interactive animations, robotics, computer vision, user interfaces, and simulation.
+
+But this definition is from the Haskell Wiki. I am just showing a piece of code which is trivial anyway.
 
 ### Pattern 1
 
