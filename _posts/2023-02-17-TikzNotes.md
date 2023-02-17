@@ -1,10 +1,12 @@
-
 ---
 layout: post
 title: Tikz Notes
 published: true
 ---
 
+![image-title-here](../images/tikzeditor.png){:class="img-responsive"} 
+
+Latex code that I use to draw various types of diagrams.
 
 {% highlight OCaml %}
 
@@ -35,4 +37,4 @@ published: true
 
 {% endhighlight %}
 
-![image-title-here](../images/TLAPlus.png){:class="img-responsive"} 
+![image-title-here](../images/policy.png){:class="img-responsive"} 
