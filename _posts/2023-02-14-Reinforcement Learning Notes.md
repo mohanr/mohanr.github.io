@@ -12,7 +12,7 @@ understand but I have tried to read and search.
 
 #Proximal Policy Optimization
 
-{% highlight python $}
+{% highlight python %}
 import argparse
 import os
 from torch.utils.tensorboard import SummaryWriter
