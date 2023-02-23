@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Notes(Work in Progress)
+title: Reinforcement Learning Notes(Work in Progress)
 published: true
 ---
 These are the notes I collected while I was taking the [Hugging Face](https://huggingface.co/docs/hub/index)
