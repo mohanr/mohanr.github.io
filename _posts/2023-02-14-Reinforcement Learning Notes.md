@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Reinforcement Learning Notes(Work in Progress)
-published: true
+published: false
 ---
 These are the notes I collected while I was taking the [Hugging Face](https://huggingface.co/docs/hub/index)
 Reinforcement Learning course. I have mentioned the Video lectures, Arxiv papers and books that I referred.
