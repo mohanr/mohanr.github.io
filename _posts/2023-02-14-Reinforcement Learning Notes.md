@@ -36,3 +36,6 @@ if __name__ == "__main__":
     for i in range(100):
         writer.add_scalar("test",i * 2, global_step=i)
 {% endhighlight %}
+
+
+![image-title-here](../images/Tensorboard.png){:class="img-responsive"} 
