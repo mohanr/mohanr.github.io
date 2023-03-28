@@ -8,12 +8,12 @@ I started dabbling in Programs and proofs recently by using Spacemacs and its
 Coq layer. Since I didn't study this subject before I start by setting up and
 using the tools.
 
-#IDE setup
+# IDE setup
 
 The colour scheme of Spacemacs is very pleasing. I think. So Spacemacs is what I
 like to use whenever possible. The other option is VSCode.
 
-##.spacemacs configuration
+## .spacemacs configuration
 
 Enable the _coq_ layer like this.
 
@@ -50,6 +50,7 @@ Enable the _coq_ layer like this.
      treemacs)
 {% endhighlight %}
 
+I added _add-hook_ to activate _Company-coq_ to enable auto-completion features.
 
 {% highlight lisp %}
 
@@ -67,7 +68,10 @@ before packages are loaded."
 (add-hook 'coq-mode-hook #'company-coq-mode)
 )
 
-I added _add-hook_ to activate _Company-coq_ to enable auto-completion features.
+The _auto-completion_ feature is powerful enough.
+
+![image-title-here](../images/coq2.png){:class="img-responsive"}
+
 
 {% endhighlight %}
 
