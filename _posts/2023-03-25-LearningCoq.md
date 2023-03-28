@@ -11,10 +11,29 @@ using the tools.
 My primary learning material is [CS6225 Programs and Proofs @ IITM (Coq + F*)](https://www.youtube.com/playlist?list=PLt0HgEXFOHdkfd7phdKKmTIuwHEvPX0qb)
 but I will add more once I am past the preliminary stage.
 
+# Install Coq
+
+During the installation of _coq_ using _homebrew_ an issue was identified which
+I reported [here](https://stackoverflow.com/questions/75843422/coqc-does-not-find-findlib-conf/75857649#75857649)
+and it seems to have been fixed promptly.
+
+_coqc_ the compiler works like when it is invoked by C-c C-RET
+
+There is something pleasing about this IDE.
+
 # IDE setup
 
 The colour scheme of Spacemacs is very pleasing. I think. So Spacemacs is what I
-like to use whenever possible. The other option is VSCode.
+like to use whenever possible. The other options are VSCode and CoqIDE.
+
+## Install Proof-general
+
+[Proof-general](https://proofgeneral.github.io) is a generic Emacs interface for proof assistants.
+
+Commands are M-x package-install and install-package
+
+![image-title-here](../images/coq3.png){:class="img-responsive"}
+
 
 ## .spacemacs configuration
 
@@ -77,12 +96,5 @@ The _auto-completion_ feature is powerful enough.
 
 ![image-title-here](../images/coq2.png){:class="img-responsive"}
 
-During the installation of _coq_ using _homebrew_ an issue was identified which
-I reported [here](https://stackoverflow.com/questions/75843422/coqc-does-not-find-findlib-conf/75857649#75857649)
-and it seems to have been fixed promptly.
-
-_coqc_ the compiler works like when it is invoked by C-c C-RET
-
-There is something pleasing about this IDE.
 
 ![image-title-here](../images/coq1.png){:class="img-responsive"}
