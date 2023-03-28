@@ -8,6 +8,9 @@ I started dabbling in Programs and proofs recently by using Spacemacs and its
 Coq layer. Since I didn't study this subject before I start by setting up and
 using the tools.
 
+My primary learning material is [CS6225 Programs and Proofs @ IITM (Coq + F*)](https://www.youtube.com/playlist?list=PLt0HgEXFOHdkfd7phdKKmTIuwHEvPX0qb)
+but I will add more once I am past the preliminary stage.
+
 # IDE setup
 
 The colour scheme of Spacemacs is very pleasing. I think. So Spacemacs is what I
