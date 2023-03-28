@@ -71,12 +71,11 @@ before packages are loaded."
 (add-hook 'coq-mode-hook #'company-coq-mode)
 )
 
+{% endhighlight %}
+
 The _auto-completion_ feature is powerful enough.
 
 ![image-title-here](../images/coq2.png){:class="img-responsive"}
-
-
-{% endhighlight %}
 
 During the installation of _coq_ using _homebrew_ an issue was identified which
 I reported [here](https://stackoverflow.com/questions/75843422/coqc-does-not-find-findlib-conf/75857649#75857649)
