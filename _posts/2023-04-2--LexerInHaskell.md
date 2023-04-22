@@ -13,7 +13,7 @@ were built with such pattern matching in mind.
 
 So I decided to code part of it using Haskell.
 
-![image-title-here](../images/Craftinginterpreters.png){:class="img-responsive"}
+![image-title-here](../images/Craftinginterpreters.jpeg){:class="img-responsive"}
 
 # Explanation
 
