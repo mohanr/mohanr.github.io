@@ -8,18 +8,22 @@ published: true
 # Crafting Interpreters
 
 This is the book I am reading and I started to code the interpreter using JDK19's preview features.
-These features introduce _record_ pattern matching and I realized languages like Haskell and OCaml
+These features introduce _record_ pattern matching but I realized languages like Haskell and OCaml
 were built with such pattern matching in mind.
 
 So I decided to code part of it using Haskell.
 
-![image-title-here](../images/Craftinginterpreters.jpg){:class="img-responsive"}
+![image-title-here](../images/CraftingInterpreters.jpg){:class="img-responsive"}
 
-# Explanation
+# Explanation(TODO)
 
-TODO
+ As I mention every time I am still learning Functional Programming principles. So I put together
+ this code based on data structures generally used for such purposes. The intention is to drive
+ this test based on structure like these.
 
 # Code
+
+I will refactor this code and probably create a Git repo.
 
 {% highlight haskell %}
 {-# LANGUAGE OverloadedStrings #-}
@@ -75,4 +79,11 @@ main = do
         Left err -> putStrLn $ "Error: " ++ show err
         Right tokens -> putStrLn $ "Tokens: " ++ show tokens
 
+{% endhighlight %}
+
+The result is this. The error condition is not tested.
+
+{% highlight haskell %}
+λ> :main
+Tokens: [Literal '1',Plus,InvalidChar 'x',Literal '2']
 {% endhighlight %}
