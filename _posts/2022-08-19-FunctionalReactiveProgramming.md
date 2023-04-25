@@ -28,6 +28,13 @@ without too much distraction. More advanced customizations are possible but for 
 | C-x C-s      |   Save File    |        <       |
 | SPC w x      |   Kill Window  |        <       |
 
+| KeyStroke    |                |                |                
+|--------------|----------------|----------------|
+|              |HASKELL code    |        <       |
+|==============|----------------|----------------|
+| SPC m s b    |Compile and load|        <       |
+|              |in REPL         |        <       |
+
 
 ## Introduction
 
