@@ -1,0 +1,50 @@
+---
+layout: post
+title: Exploring Transformer Architecture (Work in Progress)
+published: false
+---
+
+
+{% highlight OCaml %}
+import string
+import tensorflow as tf
+
+input = tf.io.read_file("/Users/anu/PycharmProjects/TensorFlow2/shakespeare.txt")
+input = tf.strings.strip(input)
+input = tf.strings.regex_replace(input,' +', '')
+input = tf.strings.regex_replace(input,'\n', '')
+length = int(tf.strings.length(input))
+
+table = tf.lookup.StaticHashTable(
+    initializer=tf.lookup.KeyValueTensorInitializer(
+        keys=tf.constant([c for c in string.printable]),
+        values=tf.constant([ind for ind,x in enumerate([c for c in string.printable])]),
+    ),
+    default_value=tf.constant(-1),
+    name="printable"
+)
+
+def random_sample(text):
+    rand = tf.random.uniform(shape=[], minval=1, maxval=length - 200)
+    start = int(rand)
+    print(f'Start={int(rand)} Length={length} End={start + 200 + 1}')
+    return tf.strings.substr(text,start, 200, unit='BYTE')
+
+
+def draw_random_sample(text):
+    return random_sample(input)
+
+list = []
+
+def map_fn(bytes):
+    list.append(table.lookup(bytes))
+    return bytes
+
+sample = draw_random_sample(input)
+
+split_sample = tf.strings.bytes_split(sample)
+tf.map_fn(map_fn, tf.strings.bytes_split(split_sample))
+print(tf.stack(list))
+
+
+{% endhighlight %}
