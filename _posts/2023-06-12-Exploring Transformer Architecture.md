@@ -165,4 +165,4 @@ history = model.fit(train_dataset,epochs=EPOCHS,callbacks=[tensorboard_callback]
 
 I expected the epoch loss to be driven down lower than what the graph shows. This can be investigated.
 
-![image-title-here](../images/epochloss.png){:class="img-responsive"}
+![image-title-here](../images/epoch_loss.png){:class="img-responsive"}
