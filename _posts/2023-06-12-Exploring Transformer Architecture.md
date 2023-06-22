@@ -19,8 +19,28 @@ that it improves like _Recurrent Neural Nets_. So here I start with an RNN, a si
 characters. There are several steps before reaching the target Transformer Architecture.
 
 
-
 # Tensorflow Code
+
+## tf.lookup.StaticHashTable
+
+There are simpler ways to store data in _lookup_ datastructures but there is also a _HashTable_
+which I use to store the individual character in the text and the associated indexes.
+
+There is one for looking up the index of a character and one for looking up the character with
+an index.
+
+{% highlight Python %}
+
+indextoelem = tf.lookup.StaticHashTable(
+    initializer=tf.lookup.KeyValueTensorInitializer(
+        keys=tf.strings.as_string([idx  for idx, inp in enumerate(elem)]),
+        values=elem,
+    ),
+    default_value=tf.constant('-1'),
+    name="indextoelem"
+)
+{% endhighlight %}
+
 
 ## Part I
 
@@ -49,7 +69,6 @@ table = tf.lookup.StaticHashTable(
     initializer=tf.lookup.KeyValueTensorInitializer(
         keys=elem,
         values=tf.constant([idx  for idx, inp in enumerate(elem)]),
-
     ),
     default_value=tf.constant(-1),
     name="elemtoindex"
@@ -59,7 +78,6 @@ indextoelem = tf.lookup.StaticHashTable(
     initializer=tf.lookup.KeyValueTensorInitializer(
         keys=tf.strings.as_string([idx  for idx, inp in enumerate(elem)]),
         values=elem,
-
     ),
     default_value=tf.constant('-1'),
     name="indextoelem"
