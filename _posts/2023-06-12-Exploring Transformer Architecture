@@ -15,10 +15,14 @@ then a few algorithms can be coded and executed either on CPU or GPU as the case
 I believe both these efforts should be parallel to understand the algorithm and the math.
 
 But before understanding the _Transformer_ architecture we need some intuition of the architectures
-that if improves like _Recurrent Neural Nets_. So here I start with an RNN, a simple LSTM to generate
+that it improves like _Recurrent Neural Nets_. So here I start with an RNN, a simple LSTM to generate
 characters. There are several steps before reaching the target Transformer Architecture.
 
-#Part I
+
+
+# Tensorflow Code
+
+## Part I
 
 The first part can be coded using our Tensorflow knowledge as this is about data preparation. My code
 is not based on any established pattern like Part 2. It may not be even idiomatic. This is a learning exercise and
@@ -32,7 +36,7 @@ from keras import Sequential
 from keras.layers import Embedding
 from tensorflow import keras
 
-input = tf.io.read_file("/Users/anu/PycharmProjects/TensorFlow2/shakespeare.txt")
+input = tf.io.read_file("/PycharmProjects/TensorFlow2/shakespeare.txt")
 input = tf.strings.strip(input)
 input = tf.strings.regex_replace(input,' +', '')
 input = tf.strings.regex_replace(input,'\n', '')
@@ -105,7 +109,7 @@ OUTPUT_DIM=len(elem)
 EPOCHS = 200
 {% endhighlight %}
 
-#Part 2
+## Part 2
 
 This is the part that can be copied if one understands most of the meaning of the network
 architecture.
