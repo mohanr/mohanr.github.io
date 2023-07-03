@@ -170,5 +170,6 @@ I expected the epoch loss to be driven down lower than what the graph shows. Thi
 # Self-Attention
 Explanation follows. This diagram is drawn based on [Sebastian Raschka's](https://sebastianraschka.com/blog/2021/dl-course.html#l19-self-attention-and-transformer-networks)
 explanatory diagram. I use Tikz and code is [here](https://mohanr.github.io/TikzNotes/)
+
 ![image-title-here](../images/selfattention.png){:class="img-responsive"}
 
