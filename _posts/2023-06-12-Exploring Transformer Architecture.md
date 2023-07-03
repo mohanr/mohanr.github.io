@@ -4,7 +4,7 @@ title: Exploring Transformer Architecture (Work in Progress)
 published: true
 ---
 
-I set about learning the Transformet Architecture from first principles. Before long I realized
+I set about learning the Transformer Architecture from first principles. Before long I realized
 I need to read many Arxiv research papers starting with ['Attention is All you need'](https://arxiv.org/abs/1706.03762).
 But there are other older foundational papers dealing with this.
 
