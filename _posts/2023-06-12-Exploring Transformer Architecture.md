@@ -166,3 +166,9 @@ history = model.fit(train_dataset,epochs=EPOCHS,callbacks=[tensorboard_callback]
 I expected the epoch loss to be driven down lower than what the graph shows. This can be investigated.
 
 ![image-title-here](../images/epochloss.png){:class="img-responsive"}
+
+# Self-Attention
+Explanation follows. This diagram is drawn based on [Sebastian Raschka's](https://sebastianraschka.com/blog/2021/dl-course.html#l19-self-attention-and-transformer-networks)
+explanatory diagram. I use Tikz and code is [here](https://mohanr.github.io/TikzNotes/)
+![image-title-here](../images/selfattention.png){:class="img-responsive"}
+
