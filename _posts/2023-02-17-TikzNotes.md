@@ -39,7 +39,7 @@ Latex code that I use to draw various types of diagrams.
 
 ![image-title-here](../images/policy.png){:class="img-responsive"} 
 
-{% highlight OCaml %}
+{% highlight Tex %}
 
 
 \Large
