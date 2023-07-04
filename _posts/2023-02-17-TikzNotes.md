@@ -39,42 +39,42 @@ Latex code that I use to draw various types of diagrams.
 
 ![image-title-here](../images/policy.png){:class="img-responsive"} 
 
-{% highlight Tex %}
-
+```
+{% raw %}
 
 \Large
    \tikzstyle{block} = [draw=none,,rounded corners=2.9mm,minimum width=4.2mm,minimum height=3.7mm, draw=violet!80,thick, text width=.9cm,,font=\bfseries, align=center, fill=cyan!14]  
 
-        {% raw %}
+        
         %nodes  
         \node[block, anchor=north] (q) {\color{black}{\boldmath$Q_{1}$}};
         \node[block, above=40mm of q] (k) {\color{black}{\boldmath$K_{1}$}};
         \node at ($(q.north)-(2,-2)$) [block] (x1) {\color{black}{\boldmath$x_{1}$}};
          \node[block, right=2cm of x1.center, anchor=center] (v) {\color{black}{\boldmath$V_{1}$}};
-        {% endraw %}
+        
 		 
         %lines
         \draw[{Stealth[scale=1.3,angle'=45,open]}-,semithick][rounded corners=2] (q) -- node[midway, label=above:{{\boldmath$W^{q}$}}] {}($(q)-(1,0)$) |- ($(x1.east)+(0,.1)$);
         \draw [{Stealth[scale=1.3,angle'=45,open]}-,semithick][rounded corners=2] (k) -- node[midway, label=above:{{\boldmath$W^{k}$}}] {}($(k)-(1,0)$) |- ($(x1.east)+(0,.1)$);
         \draw [{Stealth[scale=1.3,angle'=45,open]}-,semithick][rounded corners=2] (v) -- node[midway, label=above:{{\boldmath$W^{v}$}}] {}($(v)-(1,0)$) |- ($(x1.east)+(0,.1)$);
-        {% raw %} 
+        
         %nodes  
         \node[-{Latex[black,length=5mm,width=2mm]},semithick][block, below=54mm of k] (k1) {{\boldmath$K_{2}$}};
         \node[block, anchor=north, below=43mm of k1] (q1) {\color{black}{\boldmath$Q_{2}$}};
 		       \node at ($(q1.north)-(2,-2)$) [block , below=57mm of x1] (x2) {\color{black}{\boldmath$x_{2}$}};
                 \node[block, right=2cm of x2.center, anchor=center] (v1) {\color{black}{\boldmath$V_{2}$}};
-       {% endraw %}
+       
         %lines
         \draw[{Stealth[scale=1.3,angle'=45,open]}-,semithick][rounded corners=2pt] (q1) -- node[midway, label=:{{\boldmath$W^{q}$}}] {}($(q1)-(1,0)$) |- ($(x2.east)+(0,.1)$);
         \draw [{Stealth[scale=1.3,angle'=45,open]}-,semithick][rounded corners=2] (k1) -- node[midway, label=left:{{\boldmath$W^{k}$}}] {}($(k1)-(1,0)$) |- ($(x2.east)+(0,.1)$);
         \draw [{Stealth[scale=1.3,angle'=45,open]}-,semithick][rounded corners=2] (v1) -- node[midway, label=above:{{\boldmath$W^{v}$}}] {}($(v1)-(1,0)$) |- ($(x2.east)+(0,.1)$);
-       {% raw %}
+       
 	%nodes  
         \node[block, below=57mm of k1] (k2) {\color{black}{\boldmath$K_{T}$}};
         \node[block, anchor=north, below=40mm of k2] (q2) {\color{black}{\boldmath$Q_{T}$}};
 	\node at ($(q2.north)-(2,-2)$) [block , below=57mm of x2] (x3) {\color{black}{\boldmath$x_{T}$}};
         \node[block, right=2cm of x3.center, anchor=center] (v2) {\color{black}{\boldmath$V_{T}$}};
-        {% endraw %}
+        
         %lines
         \draw [{Stealth[scale=1.3,angle'=45,open]}-,semithick][ rounded corners=2] (q2) -- node[midway, label=above:{{\boldmath$W^{q}$}}] {}($(q2)-(1,0)$) |- ($(x3.east)+(0,.1)$);
         \draw [{Stealth[scale=1.3,angle'=45,open]}-,semithick][rounded corners=2] (k2) -- node[midway, label=left:{{\boldmath$W^{k}$}}] {}($(k2)-(1,0)$) |- ($(x3.east)+(0,.1)$);
@@ -86,7 +86,7 @@ Latex code that I use to draw various types of diagrams.
         \node (r3) [draw=none,rounded corners=.5cm,line width=.5mm, below=37mm of r2, draw=blue!80, minimum width=3.5cm,minimum height=1.6cm]{};
         \node (r4) [draw=none,rounded corners=.5cm,line width=.5mm, below=56mm of r3, draw=blue!80, minimum width=3.5cm,minimum height=1.4cm]{};
 		
-	{% raw %}
+	
         \node [block , right=37mm of v] (q21) {\color{black}{\boldmath$Q_{2}$}};;
         \node [block , right=3mm of q21] (k11) {\color{black}{\boldmath$K_{1}$}};;
 	\node [below=of r2.north] {\color{black}{\boldmath$T$}};;
@@ -108,7 +108,7 @@ Latex code that I use to draw various types of diagrams.
         \draw [-{Stealth[scale=1.3,angle'=45,open]},color=Orange,line width=1.95pt,dotted][rounded corners=2](5.2,0) -- ($(A2)-(0.7,0)$);
         \draw [-{Stealth[scale=1.3,angle'=45,open]},line width=1.95pt,color=Orange,dotted][rounded corners=2](5.2,-8) -- ($(A2)-(0.7,0)$);
         \draw [line width=1.95pt,color=Orange,dotted][rounded corners=2] (v2) -- (5.2,-8);
- 	{% endraw %}
+ 	
        
         
         
@@ -131,7 +131,8 @@ $}};
 		
 	\node[above,font=\huge\bfseries] at (current bounding box.north) {Self-Attention Mechanism};
 
-{% endhighlight %}
+{% endraw %}
+```
 
 ![image-title-here](../images/selfattention.png){:class="img-responsive"} 
 
