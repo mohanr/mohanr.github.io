@@ -161,7 +161,7 @@ train_dataset = tf.data.Dataset.from_generator(
 history = model.fit(train_dataset,epochs=EPOCHS,callbacks=[tensorboard_callback],)
 {% endhighlight %}
 
-#Graph of epoch loss
+# Graph of epoch loss
 
 I expected the epoch loss to be driven down lower than what the graph shows. This can be investigated.
 
