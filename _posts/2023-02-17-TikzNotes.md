@@ -133,8 +133,9 @@ $}};
 
 {% endraw %}
 ```
-{% highlight OCaml %}
 ![image-title-here](../images/selfattention.png){:class="img-responsive"} 
+
+{% highlight OCaml %}
 
 [fill=blue!35,fill opacity=.5445]
 \matrix[left delimiter=(,right delimiter=)] (magic) [matrix of nodes]
