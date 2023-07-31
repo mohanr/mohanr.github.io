@@ -133,6 +133,29 @@ $}};
 
 {% endraw %}
 ```
-
+{% highlight OCaml %}
 ![image-title-here](../images/selfattention.png){:class="img-responsive"} 
+
+[fill=blue!35,fill opacity=.5445]
+\matrix[left delimiter=(,right delimiter=)] (magic) [matrix of nodes]
+{
+0 & 1 & 2 & 3 & 4\\
+0 & 0 & 5 & 6 & 7\\
+0 & 0 & 0 & 8 & 9\\
+0 & 0 & 0 & 0 & 10\\
+0 & 0 & 0 & 0 & 0\\
+};
+\fill
+(magic-1-1.north west) |- (magic-5-5.north east) |- 
+(magic-5-1.south west) |- (magic-5-5.east) |- 
+(magic-5-5.south) |- (magic-5-5.east)|-
+(magic-5-1.north west) |- (magic-5-5.west)|-
+(magic-5-2.north west) |- (magic-5-5.west)|-
+(magic-5-3.north west) |- (magic-5-5.west)|-
+(magic-5-4.north west) |- (magic-5-5.west)|-
+(magic-5-5.north west) |- (magic-5-5.east);
+
+{% endhighlight OCaml %}
+
+![image-title-here](../images/matrixhighlighter.png){:class="img-responsive"} 
 
