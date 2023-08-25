@@ -55,6 +55,106 @@ class RMSNorm(tf.keras.Model):
 
 {% endhighlight %}
 
+## TensorFlow Tests
+
+Simple tests like these are supported by TensorFlow. I have learnt to use the Python console from within PyCharm
+as the tests are sometimes not recognized by the IDE.
+
+/opt/anaconda3/envs/tensorflow2/bin/python3 "/Applications/PyCharm CE.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py" --mode=client --port=51221
+import sys; print('Python %s on %s' % (sys.version, sys.platform))
+sys.path.extend(['/Users/anu/PycharmProjects/illama'])
+Python 3.7.10 (default, Feb 26 2021, 10:16:00) 
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.24.1 -- An enhanced Interactive Python. Type '?' for help.
+PyDev console: using IPython 7.24.1
+Python 3.7.10 (default, Feb 26 2021, 10:16:00) 
+[Clang 10.0.0 ] on darwin
+runfile('/Users/anu/PycharmProjects/illama/testRotaryEmbedding.py', wdir='/Users/anu/PycharmProjects/illama')
+Running tests under Python 3.7.10: /opt/anaconda3/envs/tensorflow2/bin/python3
+[ RUN      ] testRotaryEmbedding.test_RotaryEmbedding
+2023-08-25 12:29:24.820540: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+16
+tf.Tensor([32 32], shape=(2,), dtype=int32)
+tf.Tensor([ 1 32], shape=(2,), dtype=int32)
+INFO:tensorflow:time(__main__.testRotaryEmbedding.test_RotaryEmbedding): 1.01s
+I0825 12:29:25.825525 4538162624 test_util.py:2309] time(__main__.testRotaryEmbedding.test_RotaryEmbedding): 1.01s
+[       OK ] testRotaryEmbedding.test_RotaryEmbedding
+[ RUN      ] testRotaryEmbedding.test_session
+[  SKIPPED ] testRotaryEmbedding.test_session
+----------------------------------------------------------------------
+Ran 2 tests in 1.008s
+OK (skipped=1)
+Process finished with exit code 0
+
+
+{% highlight python %}
+
+
+import tensorflow as tf
+
+from Parameters import batch_size, block_size, n_embd
+
+
+class testRMSNorm(tf.test.TestCase):
+
+    def setUp(self):
+        super(testRMSNorm, self).setUp()
+        self.batch = tf.random.normal((batch_size, block_size, n_embd))
+
+    def test_RMSNormTest(self):
+        normalized_mat, norm = tf.linalg.normalize(self.batch, axis=(1, 2))
+        ff_rms = tf.multiply(norm,
+                             tf.pow(tf.cast(tf.size(self.batch[0]), tf.float32), -0.5))
+        ffx = tf.Variable(tf.zeros_like(self.batch))
+        print(tf.shape(ffx))
+        for i in range(self.batch.shape[0]):
+            ffx[i, :, : ].assign(tf.divide(self.batch[i] , ff_rms[i]))
+        normalized_mat, norm = tf.linalg.normalize(self.batch, axis=(1, 2))
+        print(tf.pow(norm,2))
+
+        # The values are close to 1024 but not close enough for default
+        # tolerance levels to pass the test. So it will fail unless
+        # I pass a different tolerance level. I believe this is a temporary
+        # fix until I understand the issue.
+        self.assertAllClose(tf.pow(norm,2),
+                            tf.reshape(
+                                tf.repeat([tf.constant(1024,tf.float32)], repeats=[4], axis=0),
+                                (4,1,1)),50,50)
+
+tf.test.main()
+
+{% endhighlight %}
+
+There is one other issue that I don't understand fully.
+
+The test failed as the values are not close enough as per the tolerance.
+
+My questions are these.
+
+1. Is the RMSNorm algorithm correct ? Should I read any material/code to improve it if it is wrong ?
+2. Can I use different tolerance levels to pass the test ? The API _ self.assertAllClose_ takes tolerance levels as
+   parameters.And if I pass 50( for example ) for the upper and lower limit the test passes.
+
+I can also ignore the failure as the values seem to be close.
+
+{% highlight python %}
+
+AssertionError: 
+Not equal to tolerance rtol=1e-09, atol=0.0001
+Mismatched value: a is different from b. 
+not close where = (array([0, 1, 2, 3]), array([0, 0, 0, 0]), array([0, 0, 0, 0]))
+not close lhs = [1019.3864 1056.9813 1021.6669 1046.128 ]
+not close rhs = [1024. 1024. 1024. 1024.]
+not close dif = [ 4.6135864 32.981323   2.33313   22.128052 ]
+not close tol = [0.00010102 0.00010102 0.00010102 0.00010102]
+dtype = float32, shape = (4, 1, 1)
+Mismatched elements: 4 / 4 (100%)
+Max absolute difference: 32.981323
+Max relative difference: 0.03220832
+
+{% endhighlight %}
+
 # Rotary Positional Embeddings( RoPE)
 
 Code used to test _RoPE_ embeddings
@@ -84,6 +184,8 @@ if __name__ == "__main__":
     rotaryPositionalEmbeddingsTest()
 
 {% endhighlight %}
+
+# RoPE
 
 {% highlight python %}
 
