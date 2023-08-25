@@ -60,6 +60,8 @@ class RMSNorm(tf.keras.Model):
 Simple tests like these are supported by TensorFlow. I have learnt to use the Python console from within PyCharm
 as the tests are sometimes not recognized by the IDE.
 
+{% highlight python %}
+
 /opt/anaconda3/envs/tensorflow2/bin/python3 "/Applications/PyCharm CE.app/Contents/plugins/python-ce/helpers/pydev/pydevconsole.py" --mode=client --port=51221
 import sys; print('Python %s on %s' % (sys.version, sys.platform))
 sys.path.extend(['/Users/anu/PycharmProjects/illama'])
@@ -86,6 +88,7 @@ I0825 12:29:25.825525 4538162624 test_util.py:2309] time(__main__.testRotaryEmbe
 Ran 2 tests in 1.008s
 OK (skipped=1)
 Process finished with exit code 0
+{% endhighlight %}
 
 
 {% highlight python %}
