@@ -10,7 +10,8 @@ published: true
    TensorFlow is very verbose and sometimes it poses difficulties as every line of PyTorch has to be ported.
 4. In very few cases the code can be directly ported with minimal changes. But this situation isn't common.
 5. The math supporting the algorithm is only partially understood. There are several research papers to read.
-6. The RoPE embeddings need more insight and explanation.
+6. The RoPE embeddings and attention need more insight and explanation.In fact each section will need multiple
+   diagrams and descriptions.
 
 
 # Batches
@@ -229,5 +230,17 @@ class RotaryPositionalEmbeddings(tf.keras.Model):
 {% endhighlight %}
 
 ![image-title-here](../images/rotaryembeddings.png){:class="img-responsive"}
+
+# RoPEAttention
+
+This is one section that exemplifies the lack of diagrams and descriptions. This can be added as more intuition
+is gained. But for now the code is [here](https://github.com/mohanr/Llama)
+
+This visualization of attention weights seems to be different from the PyTorch code I was using as reference.
+The difference is in terms of the shape of the attention weights. But by slightly changing the indexing mechanism
+we can still visualize it. I need to revise this later.
+
+![image-title-here](../images/RoPEAttention.png){:class="img-responsive"}
+
 
 
