@@ -231,7 +231,7 @@ class RotaryPositionalEmbeddings(tf.keras.Model):
 
 ![image-title-here](../images/rotaryembeddings.png){:class="img-responsive"}
 
-# RoPEAttention
+# RoPE Attention
 
 This is one section that exemplifies the lack of diagrams and descriptions. This can be added as more intuition
 is gained. But for now the code is [here](https://github.com/mohanr/Llama)
@@ -242,5 +242,32 @@ we can still visualize it. I need to revise this later.
 
 ![image-title-here](../images/RoPEAttention.png){:class="img-responsive"}
 
+# Masked RoPE Attention
+
+At this stage one loses count of the shapes and sizes of matrices. It is hard to keep track
+of the _ranks_ and _shapes_ as it is not possible to visually inspect them.
+
+But based on concept of upper and lower triangular matrices we can mask so that data from
+newer time steps because it is supposed to predict it.
+
+I am _block_size(tf.shape(x)[1]_ for this as the shape of the data is (batch_size, block_size, embedding_dim)
+
+{% highlight python %}
+
+        activations, attn_weights = self.multihead(query=q_out,
+                                                   value=v_out,
+                                                   key=k_out,
+                                                   return_attention_scores=True,
+                                                   attention_mask = (1 - tf.linalg.band_part(tf.ones((tf.shape(x)[1],
+                                                                                                      tf.shape(x)[1])), -1, 0)) * -1e9
+{% endhighlight %}
+
+Even though the mask seems to work I couldn't debug too deeply.
+
+![image-title-here](../images/maskedRoPEAttention.png){:class="img-responsive"}
+
+The loss after all this effort it shown here.
+
+![image-title-here](../images/illama_loss.png){:class="img-responsive"}
 
 
