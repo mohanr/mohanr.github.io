@@ -247,10 +247,10 @@ we can still visualize it. I need to revise this later.
 At this stage one loses count of the shapes and sizes of matrices. It is hard to keep track
 of the _ranks_ and _shapes_ as it is not possible to visually inspect them.
 
-But based on concept of upper and lower triangular matrices we can mask so that data from
-newer time steps because it is supposed to predict it.
+But based on the concept of upper and lower triangular matrices we can mask so that data from
+newer time steps is not visible because the model is supposed to predict it.
 
-I am _block_size(tf.shape(x)[1]_ for this as the shape of the data is (batch_size, block_size, embedding_dim)
+I use _block_size(tf.shape(x)[1]_ for this as the shape of the data is (batch_size, block_size, embedding_dim)
 
 {% highlight python %}
 
@@ -266,7 +266,7 @@ Even though the mask seems to work I couldn't debug too deeply.
 
 ![image-title-here](../images/maskedRoPEAttention.png){:class="img-responsive"}
 
-The loss after all this effort it shown here.
+The loss after all this effort is shown here.
 
 ![image-title-here](../images/illama_loss.png){:class="img-responsive"}
 
