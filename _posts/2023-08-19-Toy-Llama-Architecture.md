@@ -270,4 +270,71 @@ The loss after all this effort is shown here.
 
 ![image-title-here](../images/illama_loss.png){:class="img-responsive"}
 
+# Stacking multiple blocks
+
+In this final part we segragate these blocks and stack them in the mode.
+
+{% highlight python %}
+
+class Block(tf.keras.Model):
+    def __init__(self):
+        super().__init__()
+
+        self.rms = RMSNorm([block_size, n_embd])
+        self.rope_attention = MaskedRoPEAttention()
+
+        self.net = tf.keras.Sequential(
+            layers=[
+                tf.keras.layers.Dense(n_embd, input_shape=(None,n_embd), activation=None, use_bias=False),
+                # tf.keras.layers.ReLU(),
+                SwiGLU(n_embd),
+            ]
+        )
+
+    def call(self, x):
+        x = self.rms(x) # rms pre-normalization
+        x = x + self.rope_attention(x)
+
+        x = self.rms(x) # rms pre-normalization
+        x = x + self.net(x)
+        return x
+
+{% endhighlight %}
+
+There are now 4 of them stacked like this.
+
+{% highlight python %}
+
+    def __init__(self):
+        super().__init__()
+        self.token_embedding_table = Embedding(vocab_size,n_embd)
+        layers = [Block() for _ in range(num_layers)]
+        self.llama_blocks = tf.keras.Sequential(
+            layers
+        )
+        self.net = tf.keras.Sequential(
+            layers=[
+                tf.keras.layers.Dense(n_embd, input_shape=(None,n_embd), activation=None, use_bias=False),
+                # tf.keras.layers.ReLU(),
+                SwiGLU(n_embd),
+                tf.keras.layers.Dense(vocab_size, input_shape=(n_embd,), activation=None, use_bias=False),
+            ]
+        )
+
+    def call(self,idx,targets=None):
+        x = self.token_embedding_table(idx)
+
+        x = self.llama_blocks(x)
+        logits = self.net(x)
+
+{% endhighlight %}
+
+# Hyper-parameter tuning
+
+This is a separate task that is pending. We need GPUs and more training epochs But the Llama Transformer architecture itself works now.
+
+The final losses are worse than before. Moreover the test generated after this minimal training is gibberish and is not even as good as
+the text from a general GPT model with a similar architecture.
+
+![image-title-here](../images/illama_finalloss.png){:class="img-responsive"}
 
