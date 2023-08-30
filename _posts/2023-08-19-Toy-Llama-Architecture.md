@@ -338,3 +338,9 @@ the text from a general GPT model with a similar architecture.
 
 ![image-title-here](../images/illama_finalloss.png){:class="img-responsive"}
 
+_References_
+
+1. https://blog.briankitano.com/llama-from-scratch/
+2. https://nn.labml.ai/transformers/rope/index.html
+
+
