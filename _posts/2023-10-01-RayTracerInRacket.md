@@ -12,7 +12,7 @@ The IDE is the venerable emacs.
 
 # _Vec3d_ module
 
-{% highlight Scheme %}
+{% highlight racket %}
 #lang racket
 
   (require rackunit (submod  "rays.rkt" Vec3d ))
@@ -24,7 +24,7 @@ The IDE is the venerable emacs.
 
 # _rackunit_ tests
 
-{% highlight Scheme %}
+{% highlight racket %}
 #lang racket
 (module Vec3d racket
   (provide vadd vminus)
@@ -38,7 +38,39 @@ The IDE is the venerable emacs.
     (vector-map / v v1))
 )
 
-
 {% endhighlight %}
 
+# Reading and writing files
+
+{% highlight racket %}
+
+#lang racket
+
+(require rackunit (submod  "rays.rkt" Vec3d )(submod  "rays.rkt" IO))
+  (check-equal? (vadd '#(1 2 3)  '#(0 1 2)) '#(1 3 5))
+  (check-equal? (vminus '#(1 2 3)  '#(0 1 2)) '#(1 1 1))
+  (with-handlers ([exn:fail?
+                   (lambda (v)
+                     (displayln "File operation problem")
+                     (displayln (exn-message v) ))])
+  (write-file))
+  (print(read-file
+           ))
+  (check-equal? (read-file) "P3")
+{% endhighlight %}
+
+# _rackunit_ tests
+
+{% highlight racket %}
+
+ (with-handlers ([exn:fail?
+                   (lambda (v)
+                     (displayln "File operation problem")
+                     (displayln (exn-message v) ))])
+  (write-file))
+  (print(read-file
+           ))
+  (check-equal? (read-file) "P3")
+
+{% endhighlight %}
 
