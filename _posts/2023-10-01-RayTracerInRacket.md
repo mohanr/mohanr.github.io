@@ -6,6 +6,15 @@ published: true
 
 This is my attempt to code a Ray Tracer in Racket. Details are forthcoming.
 
+The [Book Series]([http://arxiv.org/pdf/2302.13971.pdf](https://raytracing.github.io)) is cited
+by many who code ray tracers using any languages they are familiar with. Recently some OCaml developers
+showed how to code simple ray tracers. These videos inspired me to port their code to Racket.
+
+1. I post code here as I develop it. It will eventually be committed to Git.
+2. I also learn Racket as I code this. So I will add some explanation of the functional
+   programming paradigm that Racket is based on.
+
+
 # Development environment
 
 The IDE is the venerable emacs. 
@@ -72,5 +81,29 @@ The IDE is the venerable emacs.
            ))
   (check-equal? (read-file) "P3")
 
+{% endhighlight %}
+
+# The _Pixel_ module
+
+{% highlight racket %}
+
+(module Pixel racket
+(provide create write-pixel)
+(define (create r g b)
+  
+  (let ((r (arithmetic-shift 16 ( bitwise-and r 255 )))
+        (g  (arithmetic-shift 8 ( bitwise-and g 255 ) ))
+        (b  (bitwise-and b 255 ))
+        (x  ( bitwise-ior r ( bitwise-ior g b))))
+     x)
+) 
+(define (write-pixel t)
+  
+  (format "~a ~a ~a" (bitwise-ior t 16)
+                     (bitwise-ior 8 (bitwise-and t 255))
+                     (bitwise-and t 255))
+  
+  )
+)
 {% endhighlight %}
 
