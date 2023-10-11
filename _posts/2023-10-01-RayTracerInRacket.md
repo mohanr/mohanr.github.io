@@ -107,3 +107,52 @@ The IDE is the venerable emacs.
 )
 {% endhighlight %}
 
+# Racket Data Structures
+## Arrays
+
+I pause here to understand how to operate arrays. As soon as I started to code I faced problems.
+No explanation is profferred at this stage.
+
+1. {% highlight racket %}inexact->exact{% endhighlight %} seems to be needed when I use function
+   parameters.
+2. {% highlight racket %}array->mutable-array{% endhighlight %} and _vector_ are used together.
+3. Arrays have to mutable to be changed.
+4. Two different versions of the _for_ loop are used. I may have to refactor the first one depending
+   on what the outcome should be.
+
+{% highlight racket %}
+(module Image racket
+(require math/array)
+(provide create-image-array )
+
+
+(define (make-array rows columns)
+  (array->mutable-array  ( axis-index-array (vector (inexact->exact rows) (inexact->exact columns))  0) ))
+
+(define (create-image-array height width )
+  (let
+      ((pixels (make-array  height width)))
+      (for* ([i  (in-range (inexact->exact (- height 1 )))]
+             [j  (in-range (inexact->exact (- width 1 )))])
+            (array-set! pixels  (vector i j) '(0 0 0))
+        )
+      pixels 
+      )
+      )
+) 
+
+{% endhighlight %}
+
+{% highlight racket %}
+(define (pretty-print array)
+    (for ((i (in-range ( vector-ref  (array-shape array) 0))))
+    (for ((j (in-range (vector-ref  (array-shape array) 1 ))))
+        (printf "~a\t" (array-ref array (vector i j) )))
+      (newline)))
+    ;; print( vector-ref  (array-shape array) 0))
+
+  (pretty-print (create-image-array 22 2))
+
+{% endhighlight %}
+
+
