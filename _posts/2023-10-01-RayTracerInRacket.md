@@ -113,9 +113,9 @@ The IDE is the venerable emacs.
 I pause here to understand how to operate arrays. As soon as I started to code I faced problems.
 No explanation is profferred at this stage.
 
-1. {% highlight racket %}inexact->exact{% endhighlight %} seems to be needed when I use function
-   parameters.
-2. {% highlight racket %}array->mutable-array{% endhighlight %} and _vector_ are used together.
+1. The annotation _inexact->exact_ seems to be needed when I use function
+   parameters directly inside the code.
+2. _array->mutable-array_ and _vector_ are used together.
 3. Arrays have to mutable to be changed.
 4. Two different versions of the _for_ loop are used. I may have to refactor the first one depending
    on what the outcome should be.
