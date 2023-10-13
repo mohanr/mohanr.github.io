@@ -155,4 +155,137 @@ No explanation is profferred at this stage.
 
 {% endhighlight %}
 
+# The first version
+
+The following version produces an image but with the wrong color. But the code is complete and can be debugged.
+
+![image-title-here](../images/ray.png){:class="img-responsive"}
+
+## The IO module used to write the pixels to a file
+
+{% highlight racket %}
+
+#lang racket
+(module IO racket
+  (require math/array (submod "rays.rkt" Pixel))
+  (provide write-file read-file )
+  (define (write-file pixels render)
+    (with-handlers ([exn:fail?
+                     (lambda (v)
+                       (display "write-file File operation problem")
+                       (displayln (exn-message v) ))])
+
+      (with-output-to-file  "sample.ppm"
+         (
+          lambda() (printf "P3~n~a ~a~n255~n" ( vector-ref   (array-shape pixels) 0) ( vector-ref   (array-shape pixels) 1 ))
+          (for ((i (in-range ( vector-ref  (array-shape pixels) 1))))
+            (for ((j (in-range (vector-ref  (array-shape pixels) 0 ))))
+              ( printf (write-pixel (array-ref pixels  (vector i j)))))
+              )
+          )
+          
+        #:exists 'replace )
+      )
+    )
+  
+  (define (read-file) 
+    (call-with-input-file "sample.ppm"
+      (lambda(in) (read-string 2 in) )
+      )
+    )
+  
+  )
+{% endhighlight %}
+
+## Other modules
+
+{% highlight racket %}
+
+#lang racket
+
+
+(module Vec3d racket
+  (provide vadd vminus)
+  (define ( vadd  v v1)
+  (vector-map + v v1))
+  (define ( vminus  v v1)
+    (vector-map - v v1))
+  (define ( vmult  v v1)
+    (vector-map * v v1))
+  (define ( vdiv  v v1)
+    (vector-map / v v1))
+)
+
+(module Pixel racket
+(provide create write-pixel)
+(define (create r g b)
+  
+  (let ((r (arithmetic-shift ( bitwise-and r 255 )  16 ))
+        (g  (arithmetic-shift  ( bitwise-and g 255 ) 8))
+        (b  (bitwise-and b 255 ))
+        (x  ( bitwise-ior r ( bitwise-ior g b))))
+     x)
+) 
+(define (write-pixel t)
+  
+  (format "~a ~a ~a~n" (bitwise-ior t 16)
+                     (bitwise-ior 8 (bitwise-and t 255))
+                     (bitwise-and t 255))
+  
+  )
+)
+
+(module Image racket
+(provide create-image-array )
+
+(require math/array)
+
+(define (make-array rows columns)
+  (array->mutable-array  ( axis-index-array (vector (inexact->exact rows) (inexact->exact columns))  0) ))
+
+(define (create-image-array height width render )
+  (let
+      ((pixels (make-array  height width)))
+      (for ((i (in-range ( vector-ref  (array-shape pixels) 0))))
+      (for ((j (in-range (vector-ref  (array-shape pixels) 1 ))))
+         (array-set! pixels  (vector i j) (render i j))
+      ))
+
+      pixels 
+      )
+      )
+) 
+{% endhighlight %}
+
+## main.rkt
+
+{% highlight racket %}
+
+
+#lang racket
+(provide sample_image render)
+(require (submod  "rays.rkt" Pixel)(submod  "rays.rkt" Image)(submod  "io.rkt" IO))
+(define  (render row col) 
+  (let* ([image_width  256] 
+        [image_height 256]
+        [r  [/ row   (- image_height 1)]]
+        [g  [/ col   (- image_width  1)]]
+        [ b  0.1]
+        [factor  255.999]
+        [r1 [ * factor  r]]
+        [g1 [  * factor  g]]
+        [b1 [* factor  b]])
+        (create (exact-round r1) (exact-round g1) (exact-round b1))
+    )
+)
+
+(define (sample_image )
+    (write-file (create-image-array 256 256 render ) render )
+     
+ )
+
+
+(define raycast ( lambda () (sample_image)))
+
+{% endhighlight %}
 
