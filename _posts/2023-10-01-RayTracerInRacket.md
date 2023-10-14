@@ -296,7 +296,7 @@ The _for_ loop in the _Image_ module has been changed to the correct form.
 
 # The final version as of now
 
-![image-title-here](../images/ray.png){:class="img-responsive"}
+![image-title-here](../images/ray1.png){:class="img-responsive"}
 
 This is the image I was looking for. There may still be a bug  in the bit manipulation code but this works.
 
