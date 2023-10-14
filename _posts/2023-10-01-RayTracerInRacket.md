@@ -19,6 +19,9 @@ showed how to code simple ray tracers. These videos inspired me to port their co
 
 The IDE is the venerable emacs. 
 
+![image-title-here](../images/racket-development.png){:class="img-responsive"}
+
+
 # _Vec3d_ module
 
 {% highlight racket %}
@@ -161,6 +164,8 @@ The following version produces an image but with the wrong color. But the code i
 
 ![image-title-here](../images/ray.png){:class="img-responsive"}
 
+The _for_ loop in the _Image_ module has been changed to the correct form.
+
 ## The IO module used to write the pixels to a file
 
 {% highlight racket %}
@@ -289,3 +294,30 @@ The following version produces an image but with the wrong color. But the code i
 
 {% endhighlight %}
 
+# The final version as of now
+
+![image-title-here](../images/ray.png){:class="img-responsive"}
+
+This is the image I was looking for. There may still be a bug  in the bit manipulation code but this works.
+
+The key change is the bit manipulation code shown here.
+
+{% highlight racket %}
+
+(module Pixel racket
+(provide create write-pixel)
+(define (create r g b)
+  (bitwise-ior (arithmetic-shift (bitwise-and r #xFF) 16)
+               (bitwise-ior (arithmetic-shift (bitwise-and g #xFF) 8)
+                            (bitwise-and b #xFF)))
+)
+
+(define (write-pixel t)
+
+  (format "~a ~a ~a~n" (arithmetic-shift (bitwise-and t #xFF0000) -16)
+          (bitwise-and (arithmetic-shift t -8) #xFF)
+          (bitwise-and t #xFF))
+ 
+  )
+)
+{% endhighlight %}
