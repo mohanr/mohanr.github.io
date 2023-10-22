@@ -171,10 +171,11 @@ The _for_ loop in the _Image_ module has been changed to the correct form.
 {% highlight racket %}
 
 #lang racket
+#lang racket
 (module IO racket
   (require math/array (submod "rays.rkt" Pixel))
   (provide write-file read-file )
-  (define (write-file pixels render)
+  (define (write-file pixels)
     (with-handlers ([exn:fail?
                      (lambda (v)
                        (display "write-file File operation problem")
@@ -183,8 +184,8 @@ The _for_ loop in the _Image_ module has been changed to the correct form.
       (with-output-to-file  "sample.ppm"
          (
           lambda() (printf "P3~n~a ~a~n255~n" ( vector-ref   (array-shape pixels) 0) ( vector-ref   (array-shape pixels) 1 ))
-          (for ((i (in-range ( vector-ref  (array-shape pixels) 1))))
-            (for ((j (in-range (vector-ref  (array-shape pixels) 0 ))))
+          (for ((i (in-range ( vector-ref  (array-shape pixels) 0))))
+            (for ((j (in-range (vector-ref  (array-shape pixels) 1 ))))
               ( printf (write-pixel (array-ref pixels  (vector i j)))))
               )
           )
@@ -200,6 +201,7 @@ The _for_ loop in the _Image_ module has been changed to the correct form.
     )
   
   )
+
 {% endhighlight %}
 
 ## Other modules
@@ -248,18 +250,19 @@ The _for_ loop in the _Image_ module has been changed to the correct form.
 (define (make-array rows columns)
   (array->mutable-array  ( axis-index-array (vector (inexact->exact rows) (inexact->exact columns))  0) ))
 
-(define (create-image-array height width render )
+(define (create-image-array height width renderarray )
   (let
       ((pixels (make-array  height width)))
-      (for ((i (in-range ( vector-ref  (array-shape pixels) 0))))
-      (for ((j (in-range (vector-ref  (array-shape pixels) 1 ))))
-         (array-set! pixels  (vector i j) (render i j))
+      (for ((i (range ( vector-ref  (array-shape pixels) 0))))
+      (for ((j (range (vector-ref  (array-shape pixels) 1 ))))
+         (array-set! pixels  (vector i j) (renderarray i j))
       ))
 
       pixels 
       )
       )
 ) 
+
 {% endhighlight %}
 
 ## main.rkt
@@ -321,3 +324,79 @@ The key change is the bit manipulation code shown here.
   )
 )
 {% endhighlight %}
+
+# Ray Traced image
+
+## Color Module
+
+{% highlight racket %}
+
+(module Color racket 
+(provide to_pixel)
+(require (submod ".." Vec3d)(submod ".." Pixel))
+(define (to_pixel t)
+  (let* ([factor  255.99]
+         [vec (vmult factor  t)]
+         [r [vector-ref vec 0]]
+         [g [vector-ref vec 1]]
+         [b [vector-ref vec 2]])
+    (create (exact-round r) (exact-round g) (exact-round b))
+
+         )
+)
+)
+{% endhighlight %}
+
+## Function to create a ray traced imaged
+
+{% highlight racket %}
+
+(struct Ray (camera_centre ray_direction ) #:transparent)
+(define (ray_color ray)
+                   (let* ([v [ unit (Ray-ray_direction  ray)]]
+                        [ blend_factor  [* 0.6  (+ (vector-ref v 1)  1.0)]]
+                        [blend [vadd (vmult (- 0.9  blend_factor)  '#(1. 1. 1.))  (vmult blend_factor  '#(0.6 0.7 1.9))]])
+                        blend )
+)
+
+
+(define  (raytraced_image)
+  
+  (let* ([aspect_ratio [/ 16.  9.]]
+       [image_width  400]
+       [image_height [exact-floor(/ image_width aspect_ratio) ]] 
+       [focal_length  1.0] 
+       [viewport_height  2.] 
+       [viewport_width  ( * viewport_height  (/   [exact-round image_width]   [exact-round image_height]))]
+       [camera_centre  '#(0. 0. 0.)] 
+       [viewport_lr (vector viewport_width 0. 0.)] 
+       [viewport_td  (vector 0. (- 0 viewport_height) 0.)] 
+       [pixel_delta_lr  (vdiv viewport_lr  [exact-floor image_width]) ]
+       [pixel_delta_td  (vdiv viewport_td [exact-floor  image_height]) ]
+       [viewport_upperleft 
+                            (vminus (vminus (vminus camera_centre  (vector 0. 0. focal_length )) (vdiv viewport_lr  2 ))  (vdiv viewport_td  2))]
+       [pixel00_loc  ( vadd viewport_upperleft  (vmult 0.5  (vadd pixel_delta_lr  pixel_delta_td )))])
+       (define (renderray row col)
+         (let* ([pixel_centre [vadd pixel00_loc  [vadd [ vmult col  (vector-map exact-round pixel_delta_lr) ]  [vmult row  (vector-map exact-round  pixel_delta_td)]]]]
+               [ ray_direction  [vminus pixel_centre  camera_centre]]
+               [ a-ray (Ray camera_centre  ray_direction)]
+               [ray a-ray]
+               [color ( ray_color ray)])
+         (to_pixel color)
+         ;;  a-ray 
+         )
+       )
+ 
+  (write-file (create-image-array image_width  image_height  renderray ))
+  )
+ )
+
+(define raycast ( lambda () (raytraced_image)))
+;; (define raycast ( lambda () (sample_image)))
+
+{% endhighlight %}
+
+And the final image created by this code is this.
+
+![image-title-here](../images/ray2.png){:class="img-responsive"}
+
