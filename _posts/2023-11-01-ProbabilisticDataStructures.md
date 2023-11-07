@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Joy of OCaml - Part I
+title: Probabilistic and other Data Structures
 published: true
 ---
 
