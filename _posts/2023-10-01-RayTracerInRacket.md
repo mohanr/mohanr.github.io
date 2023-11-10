@@ -26,18 +26,6 @@ The IDE is the venerable emacs.
 
 {% highlight racket %}
 #lang racket
-
-  (require rackunit (submod  "rays.rkt" Vec3d ))
-  (check-equal? (vadd '#(1 2 3)  '#(0 1 2)) '#(1 3 5))
-  (check-equal? (vminus '#(1 2 3)  '#(0 1 2)) '#(1 1 1))
-
-{% endhighlight %}
-
-
-# _rackunit_ tests
-
-{% highlight racket %}
-#lang racket
 (module Vec3d racket
   (provide vadd vminus)
   (define ( vadd  v v1)
@@ -51,6 +39,19 @@ The IDE is the venerable emacs.
 )
 
 {% endhighlight %}
+
+
+# _rackunit_ tests
+
+{% highlight racket %}
+#lang racket
+
+  (require rackunit (submod  "rays.rkt" Vec3d ))
+  (check-equal? (vadd '#(1 2 3)  '#(0 1 2)) '#(1 3 5))
+  (check-equal? (vminus '#(1 2 3)  '#(0 1 2)) '#(1 1 1))
+
+{% endhighlight %}
+
 
 # Reading and writing files
 
