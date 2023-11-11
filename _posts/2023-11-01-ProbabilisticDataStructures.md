@@ -5,7 +5,7 @@ published: true
 ---
 
 # tl;dr
-1. The code will be gradually improved and finally will be committed to git.
+1. The code will be gradually improved and  be committed to git finally.
 2. Performance considerations are not paramount here.
 
 
@@ -37,3 +37,40 @@ published: true
    hash_accu  ((Int32.of_int 0 ),ss)
 
 {% endhighlight %} 
+
+## Initial set of tests
+
+As I mentioned I am not considering space allocation here as the focus is on
+working code.
+
+{% highlight OCaml %} 
+
+
+let string_to_print_list s =
+
+  let str = s |> String.to_seq |> List.of_seq in
+  let int_list = List.map int_of_char str in
+  List.iter (fun c -> Printf.printf "%d\n" c) int_list
+
+
+let string_to_int_list s =
+
+  let str = s |> String.to_seq |> List.of_seq in
+  let int_list = List.map int_of_char str in
+  List.map (fun c -> Int32.of_int c) int_list
+
+let%expect_test _=
+  let hash = Bloomfilter.Ds.jenkins (string_to_int_list "Hello") in
+  Printf.printf "%d\n" (Int32.to_int  hash);
+  [%expect {| 1901914092 |}]
+
+let%expect_test _=
+  string_to_print_list "Hello";
+  [%expect {|
+    72
+    101
+    108
+    108
+    111 |}]
+{% endhighlight %} 
+
