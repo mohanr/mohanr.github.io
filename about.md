@@ -4,7 +4,8 @@ title: About
 permalink: /about/
 ---
 
-Some information about you!
+Principal Engg. interested in Machine Learning Algorithms, TensorFlow, Distributed Computing and Functional
+Programming languages like Haskell, OCaml and Racket.
 
 ### More Information
 
