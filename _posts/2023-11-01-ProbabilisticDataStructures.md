@@ -7,6 +7,7 @@ published: true
 # tl;dr
 1. The code will be gradually improved and  be committed to git finally.
 2. Performance considerations are not paramount here.
+3. The language is OCaml and it is imperative even though I will attempt to use functional Data structures.
 
 
 # Probabilistic and other Data Structures
@@ -74,3 +75,34 @@ let%expect_test _=
     111 |}]
 {% endhighlight %} 
 
+## Initial version with a list of hash functions.
+
+{% highlight OCaml %} 
+type 'hf element =
+  { value : 'hf
+  ; mutable next : 'hf element option
+  }
+type 'hf  t = 'hf element option ref 
+
+let insert_hashfunc t value =
+  let new_hashfunc = { next = !t; value } in
+  (match !t with
+   | Some old_hashfunc  -> old_hashfunc.next
+                             <- Some new_hashfunc
+   | None -> ());
+  t := Some new_hashfunc;
+  new_hashfunc
+
+{% endhighlight %} 
+
+## Test
+{% highlight OCaml %} 
+let%expect_test "hash" =
+  let empty_list() : 'hf Bloomfilter.Ds.t = ref None in
+  let l = empty_list() in
+  let hf = Bloomfilter.Ds.insert_hashfunc l Bloomfilter.Ds.jenkins in
+  let hash = hf.value (string_to_int_list "Hello") in
+  Printf.printf "%d\n" (Int32.to_int  hash);
+  [%expect {| 1901914092 |}]
+
+{% endhighlight %} 
