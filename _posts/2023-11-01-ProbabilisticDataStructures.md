@@ -9,6 +9,7 @@ toc: true
 1. The code will be gradually improved and  be committed to git finally.
 2. Performance considerations are not paramount here.
 3. The language is OCaml and it is imperative even though I will attempt to use functional Data structures.
+4. The repository is [this](https://github.com/mohanr/Algorithms)
 
 # Development Environment
 
@@ -21,7 +22,7 @@ toc: true
 
 ## Bloom Filter
 
-{% highlight OCaml %} 
+{% highlight ocaml %} 
 
  let jenkins ss : int32 =
    let rec hash_accu ( accu, l ):int32  =
@@ -51,7 +52,7 @@ toc: true
 As I mentioned I am not considering space allocation here as the focus is on
 working code.
 
-{% highlight OCaml %} 
+{% highlight ocaml %} 
 
 
 let string_to_print_list s =
@@ -84,7 +85,7 @@ let%expect_test _=
 
 ## Initial version with a list of hash functions.
 
-{% highlight OCaml %} 
+{% highlight ocaml %} 
 type 'hf element =
   { value : 'hf
   ; mutable next : 'hf element option
@@ -103,7 +104,7 @@ let insert_hashfunc t value =
 {% endhighlight %} 
 
 ## Test
-{% highlight OCaml %} 
+{% highlight ocaml %} 
 let%expect_test "hash" =
   let empty_list() : 'hf Bloomfilter.Ds.t = ref None in
   let l = empty_list() in
@@ -112,4 +113,46 @@ let%expect_test "hash" =
   Printf.printf "%d\n" (Int32.to_int  hash);
   [%expect {| 1901914092 |}]
 
+{% endhighlight %} 
+
+# Test for Bit set and get
+
+{% highlight ocaml %} 
+let%expect_test "bitset" =
+  let empty_list() : 'hf Bloomfilter.Ds.t = ref None in
+  let l = empty_list() in
+  let hf = Bloomfilter.Ds.insert_hashfunc l Bloomfilter.Ds.jenkins in
+  let bit = Bloomfilter.Ds.set_indices (Bloomfilter.Ds.create_filter 9) "Hello" hf.value
+  in
+  Batteries.BitSet.print (BatInnerIO.output_channel stdout) bit ;
+  [%expect {| 0000000000001000 |}]
+
+let%expect_test "bitget" =
+  let empty_list() : 'hf Bloomfilter.Ds.t = ref None in
+  let l = empty_list() in
+  let hf = Bloomfilter.Ds.insert_hashfunc l Bloomfilter.Ds.jenkins in
+  let bit = Bloomfilter.Ds.get_indices (Bloomfilter.Ds.create_filter 9) "Hello" hf.value in
+  Printf.printf "%s\n" (string_of_bool bit);
+  [%expect {| true |}]
+
+{% endhighlight %} 
+
+# Bit set and get
+
+The code will be further refactored and committed to my repository.
+
+{% highlight ocaml %} 
+let set_indices filt  element hf =
+  let length = Batteries.BitSet.capacity filt.bits in
+  let hash = hf (string_to_int_list element) in
+  let () = Batteries.BitSet.set filt.bits ((Int32.to_int hash) mod length) in
+  filt.bits
+
+
+let get_indices filt  element hf =
+  let length = Batteries.BitSet.capacity filt.bits in
+  let hash = hf (string_to_int_list element) in
+  let () = Batteries.BitSet.set filt.bits ((Int32.to_int hash) mod length) in
+  let bit = Batteries.BitSet.mem filt.bits ((Int32.to_int hash ) mod length) in
+  bit
 {% endhighlight %} 
