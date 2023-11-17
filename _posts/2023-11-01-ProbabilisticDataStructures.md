@@ -2,6 +2,7 @@
 layout: post
 title: Probabilistic and other Data Structures
 published: true
+toc: true
 ---
 
 # tl;dr
