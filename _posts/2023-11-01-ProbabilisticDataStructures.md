@@ -10,6 +10,12 @@ toc: true
 2. Performance considerations are not paramount here.
 3. The language is OCaml and it is imperative even though I will attempt to use functional Data structures.
 
+# Development Environment
+
+![image-title-here](../images/dev_ide.png){:class="img-responsive"}
+
+![image-title-here](../images/dune_auto_promote.png){:class="img-responsive"}
+
 
 # Probabilistic and other Data Structures
 
