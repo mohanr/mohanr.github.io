@@ -2,7 +2,7 @@
 # This file contains configuration flags to customize your site
 #
 theme: jekyll-theme-slate
-highlighter: rouge
+highlighter: Pygments
 paginate: 5
 paginate_path: "page:num"
 future: true
