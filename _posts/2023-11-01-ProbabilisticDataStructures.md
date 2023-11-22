@@ -47,7 +47,7 @@ toc: true
 
 {% endhighlight %} 
 
-## Initial set of tests
+### Initial set of tests
 
 As I mentioned I am not considering space allocation here as the focus is on
 working code.
@@ -83,7 +83,7 @@ let%expect_test _=
     111 |}]
 {% endhighlight %} 
 
-## Initial version with a list of hash functions.
+### Initial version with a list of hash functions.
 
 {% highlight ocaml %} 
 type 'hf element =
@@ -103,7 +103,7 @@ let insert_hashfunc t value =
 
 {% endhighlight %} 
 
-## Test
+### Test
 {% highlight ocaml %} 
 let%expect_test "hash" =
   let empty_list() : 'hf Bloomfilter.Ds.t = ref None in
@@ -115,7 +115,7 @@ let%expect_test "hash" =
 
 {% endhighlight %} 
 
-# Test for Bit set and get
+### Test for Bit set and get
 
 {% highlight ocaml %} 
 let%expect_test "bitset" =
@@ -137,7 +137,7 @@ let%expect_test "bitget" =
 
 {% endhighlight %} 
 
-# Bit set and get
+### Bit set and get
 
 The code will be further refactored and committed to my repository.
 
@@ -156,3 +156,44 @@ let get_indices filt  element hf =
   let bit = Batteries.BitSet.mem filt.bits ((Int32.to_int hash ) mod length) in
   bit
 {% endhighlight %} 
+
+# Splay Tree
+
+## Initial set of tests
+
+{% highlight ocaml %} 
+
+type 'a r_tree = Leaf | Node of 'a node1
+and 'a node1 = { value : 'a; left : 'a r_tree; right : 'a r_tree; }
+
+let rec check_splay_tree t = 
+  match t with
+  |Leaf ->  false
+  | Node {left; value = v; right}->
+    match left, right with
+    | Node { left = _; value = v0;  _}, Node {left =  _; value = v1;  _} -> v == v1 + v0 + 1 
+    | Node { left ;   _}, Leaf -> check_splay_tree left
+    | Leaf, Node { left = _ ;value = _;  right} -> check_splay_tree right
+    | _ -> false
+
+
+
+let insert=
+  Node {
+    value = 2;
+    left = Node {value = 1; left = Leaf; right = Leaf};
+    right = Node {value = 3; left = Leaf; right = Leaf}
+  }
+
+
+let%expect_test _=
+  Printf.printf  "%s" (string_of_bool (check_splay_tree insert));
+  [%expect {| false |}]
+
+
+{% endhighlight %} 
+
+{% highlight ocaml %} 
+{% endhighlight %} 
+
+
