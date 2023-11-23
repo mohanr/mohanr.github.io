@@ -193,7 +193,23 @@ let%expect_test _=
 
 {% endhighlight %} 
 
+We can print a small tree like this for debugging.
+
 {% highlight ocaml %} 
+
+let rec print_sTree (sTree : int s_tree ) (d : int) : unit =
+  match sTree with
+  |Leaf -> () 
+  | Node { left  ;value ;  right} ->
+                                   print_sTree right (d + 1);
+                                   for __i=0 to  (d - 1) do
+                                       Printf.printf "  "
+                                   done;
+                                   Printf.printf "%d\n" value;
+                                   print_sTree left  (d+1) 
+
 {% endhighlight %} 
 
+_dune runtest --auto-promote_ updates the test output automatically.
 
+![image-title-here](../images/print_splay.png){:class="img-responsive"}
