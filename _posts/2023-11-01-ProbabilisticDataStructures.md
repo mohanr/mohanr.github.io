@@ -212,4 +212,4 @@ let rec print_sTree (sTree : int s_tree ) (d : int) : unit =
 
 _dune runtest --auto-promote_ updates the test output automatically.
 
-![image-title-here](../images/print_splay.png){:class="img-responsive"}
+![image-title-here](../images/print_splay.png.png){:class="img-responsive"}
