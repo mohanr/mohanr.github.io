@@ -10,8 +10,7 @@ future: true
 name: Mohan Radhakrishnan
 
 # Short bio or description (displayed in the header)
-description: Interested in Machine Learning Algorithms, TensorFlow and Functional
-Programming languages like Haskell, OCaml and Racket.
+description: Machine Learning Algorithms, TensorFlow , Haskell, OCaml and Racket.
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
 #avatar: https://raw.githubusercontent.com/barryclark/jekyll-now/master/images/jekyll-logo.png
