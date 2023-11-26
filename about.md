@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-Principal Engg. interested in Machine Learning Algorithms, TensorFlow, Distributed Computing and Functional
+Interested in Machine Learning Algorithms, TensorFlow, Distributed Computing and Functional
 Programming languages like Haskell, OCaml and Racket.
 
 ### More Information
