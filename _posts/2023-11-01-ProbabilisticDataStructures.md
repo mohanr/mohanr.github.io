@@ -213,3 +213,63 @@ let rec print_sTree (sTree : int s_tree ) (d : int) : unit =
 _dune runtest --auto-promote_ updates the test output automatically.
 
 ![image-title-here](../images/print_splay.png.png){:class="img-responsive"}
+
+
+## Core Splay algorithm
+
+At this stage the compiler is happy but no progress is made. There is a steep learning curve here as I have to learn the language
+deeply.
+
+{% highlight ocaml %} 
+
+type 'a splay_tree = Leaf | Node of 'a node1
+and 'a node1 = { key : 'a;value : 'a; mutable left : 'a splay_tree option; mutable right : 'a splay_tree option; }
+type 'a t = 'a splay_tree option ref
+
+let rec print_splaytree (t : int splay_tree option ref) (d : int) : unit =
+  match !t with
+  | Some Leaf -> () 
+  | None -> () 
+  | Some Node {left; key=_; value; right}->
+    print_splaytree  (ref right) (d + 1);
+    for __i=0 to  (d - 1) do
+      Printf.printf "  "
+    done;
+    Printf.printf "%d\n" value;
+    print_splaytree (ref left)  (d+1) 
+
+let insert_with_key_value=
+  ref( Node {
+      key = 2;
+      value = 2;
+      left = Some (Node {key=3; value=1; left=Some (Leaf); right=Some (Leaf)});
+      right = Some (Node {key=4; value=3; left=Some (Leaf); right=Some (Leaf)})
+    
+    })
+let splay i t =
+  match !t with
+  |Leaf ->  None
+  | Node { key=_; left  ;value=_ ;  right} -> 
+    match left, right with
+    | Some Node _,Some Node {left=_; key=_; value=_; right=_}->None
+    | Some Node {left; key; value=_; right},Some Leaf | Some Node {left; key; value=_; right}, _ -> 
+      if i < key then (
+        let y = left in
+        let _l = right in
+        let _right = t in
+        let left = y in 
+        left (* Return 'left' value *)
+      ) else (
+        let left = t in
+        let _right = t in 
+        let newT = left in
+        Some !newT (* Returning 'left' value wrapped in 'Some' *)
+      )
+      | Some Leaf,Some Node _-> None 
+      | Some Leaf,Some Leaf->  None
+      | _ ,Some Leaf -> None
+      | Some Leaf,None -> None
+      |(None, Some (Node _))-> None
+      |None, None ->None 
+
+{% endhighlight %} 
