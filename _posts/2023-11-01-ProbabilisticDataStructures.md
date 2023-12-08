@@ -299,3 +299,52 @@ let splay (i : int ) (t : int splay_tree option ref) =
 
 
 {% endhighlight %} 
+
+## Insert Key into a binary tree
+
+At this stage the mutable imperative style is hard to debug.Moreover _None_ and _Some Leaf_ are
+both used redundantly. This led to a bug.
+
+{% highlight ocaml %} 
+
+let rec insert_key (k : int ) (t : int splay_tree option ref) : int splay_tree option ref=
+ match !t with
+  | None |Some Leaf ->
+    let new_node = Node { key = k; value = 0; left = None; right = None } in
+    t := Some new_node;
+    t
+  | Some tree  ->
+    let  insert_node tree =
+
+      match tree with
+      |  Node old_key ->
+        begin match old_key with
+          |  ok  ->
+            if k > ok.key then(
+              match ok.right with
+              | None | Some Leaf ->
+              let r = ref (Some (Node { key = k ;value = 0 ; right = Some Leaf; left = Some Leaf} ))in
+               ok.right <- !r;
+               t
+             | Some _r ->
+             insert_key k (ref (ok.right ))
+             )
+            else 
+            if k < ok.key then(
+              match ok.left with
+              | None ->
+               let l = ref (Some (Node { key = k ;value = 0 ; right = Some Leaf; left = Some Leaf} ))in 
+              ok.left <- !l;
+              t 
+             | Some _l ->
+             insert_key k (ref (ok.left)); 
+            )
+          else
+             t
+        end;
+     |Leaf ->t
+    in
+    insert_node tree
+
+{% endhighlight %} 
+
