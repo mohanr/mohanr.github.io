@@ -269,3 +269,87 @@ let rec insert_key (k : int ) (t : int splay_tree option ref) : int splay_tree o
 
 {% endhighlight %} 
 
+## Porting SML to OCaml
+
+I spent several days coding a Splay tree using my inefficient _mutable ref_ data structure. It didn't work satisfactily.
+Eventually I picked up basic SML and ported the SML code to OCaml. This was a great learning experience as I learnt how
+to use _Functors_ and abstractions and modules.
+
+{% highlight ocaml %} 
+
+let rec splay (l, v, r) (k:Params.key) =
+    match compare k (keyOf (v)) with
+    | EQUAL -> (l, v, r)
+        | LESS ->
+        (match l with
+             | Empty -> (l, v, r) (* not found *)
+             | Node (ll, lv, lr) ->
+               match compare k (keyOf (lv)) with
+                 | EQUAL -> (ll, lv, Node(lr, v, r)) (* 1: zig *)
+                 | LESS ->
+                 (match ll with
+                      | Empty -> (Empty, lv, Node(lr, v, r))
+				(* not found *)
+                      | Node (lln, lvn, lrn) as n -> (* 2: zig-zig *)
+                        let (lll, llv, llr) = splay (lln, lvn, lrn) k  in
+                        (lll,llv,Node(llr,lv,Node(lr,v,r)))
+                      )
+                | GREATER ->
+                    (match lr with
+                        | Empty -> (ll, lv, Node(Empty, v, r))
+                        |Node (lln, lvn, lrn) as n ->  (* 3: zig-zag *)
+                          let (lrl, lrv, lrr) = splay (lln, lvn, lrn) k  in
+                           (Node(ll,lv,lrl),lrv,Node(lrr,v,r))
+                         ))
+        | GREATER ->
+	(match r with
+	    | Empty -> (l, v, r) (* not found *)
+	    | Node (rl, rv, rr) ->
+	     match compare k (keyOf (rv)) with
+		     |EQUAL -> (Node(l,v,rl),rv,rr) (* 1: zag *)
+         | GREATER ->
+		(match rr with
+		   | Empty -> (Node(l,v,rl),rv,rr) (* not found *)
+		 | Node (lln, lvn, lrn) as n -> (* 3: zag-zag *)
+		 let (rrl, rrv, rrr) = splay (lln, lvn, lrn) k  in
+			(Node(Node(l,v,rl),rv,rrl),rrv,rrr)
+			)
+		| LESS ->
+		(match rl with
+	| Empty -> (Node(l,v,rl),rv,rr) (* not found *)
+ | Node (lln, lvn, lrn) as n -> (* 2: zag-zig *)
+	 let (rll, rlv, rlr) = splay (lln, lvn, lrn) k  in
+			(Node(l,v,rll),rlv,Node(rlr,rv,rr))
+			))
+
+  let size s tr  = s
+
+  type 'b folder = ((elem*'b)->'b) -> 'b -> key -> set -> 'b
+
+  let rec add ((size,tr):set) (e:elem) = let
+    ((l,v,r), b) = add_tree !tr e  in
+    let node = splay (l,v,r)  (keyOf(e)) in
+    let size' = if b then size else size+1
+    in
+    let _ = Printf.printf "Size %d" size' in
+    ((size', ref (Node((l,v,r)))),b) and
+
+   add_tree  (t: tree) (e: elem) :node * bool =
+    match t with
+    |Empty -> ((Empty, e, Empty), false)
+    | Node (l,v,r) ->
+      (match compare (keyOf(v)) (keyOf(e)) with
+       | EQUAL -> ((l,e,r),true)
+       (* | GREATER -> let (n',b) = add_tree l e  in *)
+       (*                    ((Node(n'),v,r),b) *)
+       (* | LESS ->    let (n',b) = add_tree r e in *)
+       (*                    ((l,v,Node(n')),b) *)
+       | GREATER -> let ((x,y,z),b) = add_tree l e  in
+         ((Node(x,y,z),v,r),b)
+       | LESS ->    let ((x,y,z),b) = add_tree r e in
+         ((l,v,Node (x,y,z)),b)
+      )
+
+
+
+{% endhighlight %} 
