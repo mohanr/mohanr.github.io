@@ -353,3 +353,42 @@ let rec splay (l, v, r) (k:Params.key) =
 
 
 {% endhighlight %} 
+
+## Range-Minimum-Query
+
+I set up the basic code for this. There is no query now. Code is in Git.
+
+{% highlight ocaml %} 
+let  preprocess_a l mk =
+       let ps =
+         let k = 0 --  mk
+         and i = 0 -- (List.length l -1 ) in
+         (k,i) in
+
+         let v = Array.make ((List.length l) * ( mk   + 1)) 0 in
+
+           List.iter (fun (k, i) -> 
+
+               let () = Printf.printf "[mk %d] [k %d] [i %d]\n" mk k i in
+               let ind  = indx (List.length l )  in
+               match k with
+               | 0 ->
+                      let index = ind i k in
+                      let value = List.nth l (ind i 0) in
+                      (* let () = Printf.printf "Value set is %d [k %d] [i %d]\n" value k i in *)
+
+                      let v' = Array.set v index value in
+                      Array.iter (fun elem -> Printf.printf " %d " elem) v
+
+               | _ ->
+                 let i' = i + (Batteries.Int.pow 2 ( k - 1)) in
+                 let p1 = Array.get v ( ind i (k - 1) ) in
+                 let p2 = Array.get v ( ind i' (k - 1)) in
+                 (* let () = Printf.printf "p1 is %d p2 is %d [k %d] [i %d]\n" p1 p2 k i in *)
+
+                 let v' = Array.set v (ind i k ) ( min p1 p2) in
+                 Array.iter (fun elem -> Printf.printf " %d " elem) v
+         ) (enum_to_list ps)
+
+
+{% endhighlight %} 
