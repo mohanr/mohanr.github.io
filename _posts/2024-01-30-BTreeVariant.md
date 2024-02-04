@@ -10,6 +10,7 @@ published: true
 
 # Two-Three BTree
 
+{% highlight ocaml %} 
 type ('n, 'a) n =
   | Type1 of ('n, 'a) t * 'a * ('n, 'a) t
   | Type2 of ('n, 'a) t * 'a * ('n, 'a) t * 'a * ('n, 'a) t
