@@ -4,8 +4,10 @@ title: BTree Variants
 published: true
 ---
 
-
-
+Whenever I code Data structures like BTree,LSM etc. in OCaml I read SML,Rust or C++ code. The code I read is in a repo.
+that implements a caching layer or DBs like https://rethinkdb.com. I don't find any direct OCaml references.
+So I ported this Haskell two-three tree by [http://matthew.brecknell.net/post/btree-gadt/….](https://matthew.brecknell.net/posts/btree-gadt/)
+Moreover since I am learning it is hard to identify succinct functional code as some examples seem to be imperative.
 
 
 # Two-Three BTree
@@ -114,3 +116,6 @@ let rec print_bTree (bTree: ('n, 'a) t) d : unit =
 
 
 {% endhighlight %}
+
+The _print_bTree_ function prints all the values when I tested even though it may not be in an order that
+proves that the two-three BTree is storing values properly.
