@@ -119,3 +119,9 @@ let rec print_bTree (bTree: ('n, 'a) t) d : unit =
 
 The _print_bTree_ function prints all the values when I tested even though it may not be in an order that
 proves that the two-three BTree is storing values properly.
+
+# Development Environment
+
+Since my Spacemacs IDE broke after I upgraded to a newer version of Emacs I decided to move to a new environment - Doom Emacs.
+
+![image-title-here](../images/doomemacs.png){:class="img-responsive"}
