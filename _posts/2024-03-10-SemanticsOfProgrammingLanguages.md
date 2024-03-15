@@ -96,7 +96,7 @@ I use typed Racket and my IDE is Doom Emacs. But I may also code OCaml. The code
 
 {% endhighlight %} 
 
-## Attempt 1
+## Attempt 2
 I had to use a macro and create a proper ADT(Abstract Data Type ) to proceed. The previous
 code was too verbose.
 
