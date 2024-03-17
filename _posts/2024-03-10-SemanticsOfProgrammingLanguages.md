@@ -5,11 +5,15 @@ published: true
 ---
 I am reading about _Semantics of Programming Languages_ and here is an attempt to code Racket
 to parse and interpret toy languages. More details will be added.
+The code here is not the final version but it compiles. It shows the progress made as I learn the nuances of
+Racket and types.
 
-# Semantics of a simple languge
+# Semantics of a simple language
 
 I use typed Racket and my IDE is Doom Emacs. But I may also code OCaml. The code here is ported from SML/NJ.
+
 ## Attempt 1
+
 {% highlight racket %}
 
 #lang typed/racket
@@ -135,6 +139,7 @@ code was too verbose.
          (struct (type-name.param ...) data-constructor.name
            ([data-constructor.field-id : data-constructor.param] ...)) ...
          (define-type type-name (U data-type ...)))]))
+;;  End of Macro by Alexis King 
 
 (define-type Loc String)
 (struct Plus())
