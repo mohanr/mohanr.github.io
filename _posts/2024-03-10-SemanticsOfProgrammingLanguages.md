@@ -14,6 +14,9 @@ I use typed Racket and my IDE is Doom Emacs. But I may also code OCaml. The code
 
 ## Attempt 1
 
+1. This does not use Abstract Data Types.
+2. This makes the pattern matchers hard to implement and reason about.
+
 {% highlight racket %}
 
 #lang typed/racket
@@ -102,7 +105,10 @@ I use typed Racket and my IDE is Doom Emacs. But I may also code OCaml. The code
 
 ## Attempt 2
 I had to use a macro and create a proper ADT(Abstract Data Type ) to proceed. The previous
-code was too verbose.
+code was too verbose. The ADT makes the pattern matcher easier to implement.
+The current version is in my Git.
+
+
 
 {% highlight racket %}
 
@@ -201,3 +207,86 @@ code was too verbose.
     [(cons (cons (== l) n) ls) (Some (append ls (list (list l n))))]
     [(cons _ ls) (updates ls l)]))
 {% endhighlight %} 
+
+But this code is not complete. It has some serious faults in as far as the types and patterns are
+concerned. So I decided to pay close attention to the types and compare the SML output and the
+output of my Racket code.
+Even though I am porting from SML to Racket I don't use idiomatic Racket everywhere. Parts of
+the code may not seem coherent but I ensure that the basic unit tests pass.
+
+## Final Attempt
+
+1. Fixed may type annotation bugs
+2. Fixed all the patterns after reading the documentation.
+3. Fixed most of the logic bugs. The code still doesn't behave exactly like the SML
+   code.
+4. This code is only one part of the attempt to learn and implement types and toy languages.
+   
+{% highlight racket %}
+(: reduce ((Pairof (Opt Expr)  (Listof (Pairof Loc LocValue))) ->
+                      (Pairof (Opt Expr ) (Listof  (Pairof Loc LocValue)))))
+(define (reduce expr)
+  (match expr
+    [  (cons (Some  (Op  (? integer? n1) Plus (? integer? n2)))
+             store)
+       (cons (Some  (IntValue (+ n1  n2))) store)]
+    [  (cons (Some ( Op  (? integer? n1) GTEQ (? integer? n2 ))) store)
+       (cons (Some  (BoolValue (>=  n1  'n2))) store)]
+    [  (cons (Some (Op  (? integer? n1) Skip (? boolean? n2))) store)
+             (match  (reduce (cons (Some n2) store))
+               [ (cons (Some  (IntValue nn2)) store)  (cons (Some ((Op n1 Skip nn2))) store)]
+               [ (None)  (None) ]
+               )
+             (match  (reduce  n1 store)
+               [ (cons (Some   (IntValue nn1)) store)  (cons (Some (Op nn1 Skip n2)) store)]
+               [ (None)  (None) ]
+               )]
+    [ (cons (Some (IntValue n )) store) (cons (None) store )]
+    [ (cons (Some (If e1 e2 e3)) store)
+             (match e1
+               [#t  (cons (Some e2) store)  ]
+               [#f  (cons (Some e3) store) ]
+               [_   (match (reduce (cons (Some e1) store ))
+                     [ (cons (Some e1) store) ( cons (Some (If e1 e2 e3)) store) ]
+                     [ (None)  (None) ]
+               )]
+     )]
+    [ (cons (Some (Deref l)) store)
+             (match (lookup  store l)
+               [ (cons (Some n ) store )  (cons (Some  (IntValue n)) store)]
+               [ (cons (None) store)  (cons (None) store )]
+     )]
+    [ (cons (Some (Assign l e )) store)
+             (match e
+               [(IntValue n)
+                (match (updates store (cons (Loc l) (LocValue n)))
+                [ (Some store ) (cons  (Some (Skip))  store)]
+                [ (None)  (cons (None) store ) ]
+                [ _  (match (reduce (cons (Some e) store))
+                        [(cons (Some  e) store)  (cons (Some (Assign l e)) store)]
+                        [ (None)  (None) ]
+                     )
+                ]
+               )]
+               )]
+
+   [  (cons (Some (Seq e1 e2))  store)
+            (match e1
+              [Skip  (cons (Some  e2) store) ]
+              [ _  ( match (reduce (cons (Some e1) store ))
+                    [  (cons (Some  e1) store)
+                       (cons (Some  (Seq  e1 e2))  store ) ]
+                    [ (None)  (None) ]
+
+               )]
+               )]
+   [ (cons (Some (Skip))  store) ( cons (None) store )]
+
+   [ (cons (Some (While e1 e2)) store)
+     (cons (Some  ( If e1 (Seq e2 (While e1 e2)) (Skip))) store)  ]
+
+))
+
+
+{% endhighlight %} 
+
