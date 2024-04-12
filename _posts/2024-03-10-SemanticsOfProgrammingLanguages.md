@@ -12,6 +12,17 @@ Racket and types.
 
 I use typed Racket and my IDE is Doom Emacs. But I may also code OCaml. The code here is ported from SML/NJ.
 
+# Pre-requisites
+
+I have mentioned what was useful for me when I attempted to learn the subject.
+
+1. Knowledge of SML because some key books use OCaml or SML.
+2. Ability to understand basic proof techniques. This book helped me even though I haven't finished it.
+3. Professor David Solow's lectures are available and he clearly explains the steps involved in writing and
+   reading condensed proofs. Highly recommended.
+
+![image-title-here](../images/DavidSolor.png){:class="img-responsive"}
+
 ## Attempt 1
 
 1. This does not use Abstract Data Types.
