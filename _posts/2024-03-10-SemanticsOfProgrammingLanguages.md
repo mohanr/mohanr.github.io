@@ -21,7 +21,7 @@ I have mentioned what was useful for me when I attempted to learn the subject.
 3. Professor David Solow's lectures are available and he clearly explains the steps involved in writing and
    reading condensed proofs. Highly recommended.
 
-![image-title-here](../images/DavidSolor.png){:class="img-responsive"}
+![image-title-here](../images/DavidSolow.png){:class="img-responsive"}
 
 ## Attempt 1
 
