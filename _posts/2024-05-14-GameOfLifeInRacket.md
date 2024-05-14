@@ -18,10 +18,22 @@ I will continue to post code here directly as and when I manage to compile it.
   (U Integer Integer )
 )
 
-(: compare ((Pairof Integer Integer) (Pairof Integer Integer)   -> Integer))
+(: compare ((Pairof Integer Integer) (Pairof Integer Integer)   -> Boolean))
 (define ( compare pair1 pair2)
-    (match (= (cdr pair1) (car pair2))
-     [0  (= (cdr pair1) (car pair2))]
+    (let ([r (= (cdr pair1) (car pair2))])
+    (match r
+     [#t  (= (cdr pair1) (car pair2))]
+     [#f r]
+     )
+))
+
+(: equal ((Pairof Integer Integer) (Pairof Integer Integer)   -> Boolean))
+(define ( equal pair1 pair2)
+    (let ([r (= (cdr pair1) (cdr pair2))])
+    (match r
+     [#t  (= (car pair1) (car pair2))]
+     [#f r]
+     )
 ))
 
 {% endhighlight %}
