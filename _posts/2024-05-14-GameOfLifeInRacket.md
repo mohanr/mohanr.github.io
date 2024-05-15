@@ -37,3 +37,15 @@ I will continue to post code here directly as and when I manage to compile it.
 ))
 
 {% endhighlight %}
+
+{% highlight racket %}
+
+#lang typed/racket
+(provide mapper )
+(require racket/set)
+
+
+(: mapper ((Integer -> Integer) (Setof Integer) -> (Setof Integer)))
+(define (mapper f s)
+(list->set (map f (set->list s))))
+{% endhighlight %}
