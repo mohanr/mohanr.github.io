@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Game Of Life in Racket
-published: false
+published: true
 ---
 I know of a few methods to learn Functional Programming languages. One could read a book or read source
 code. My attempt involves source code that I port to my favorite language. And I learn two different languages
