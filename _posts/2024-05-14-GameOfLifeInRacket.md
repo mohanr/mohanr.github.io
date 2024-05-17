@@ -41,11 +41,20 @@ I will continue to post code here directly as and when I manage to compile it.
 {% highlight racket %}
 
 #lang typed/racket
-(provide mapper )
+(provide mapper oflist)
 (require racket/set)
+(require "game.rkt")
 
 
-(: mapper ((Integer -> Integer) (Setof Integer) -> (Setof Integer)))
+(: mapper ((Integer -> Integer) (Setof Integer) ->
+                                (Setof Integer)))
 (define (mapper f s)
 (list->set (map f (set->list s))))
+  ;; (set-map s f))
+  ;;
+
+(: oflist ( (Listof Integer) -> (Setof Integer)))
+(define (oflist lst )
+   (foldl (lambda ([x :  Integer] [s : (Setof Integer)]) ( set-add  s x ))
+          (list->set '()) lst))
 {% endhighlight %}
