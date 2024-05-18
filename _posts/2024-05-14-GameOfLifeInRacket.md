@@ -9,6 +9,8 @@ at the same time. The source and the target. It has been very productive for me.
 
 I will continue to post code here directly as and when I manage to compile it.
 
+# coord.rkt
+
 {% highlight racket %}
 #lang typed/racket
 (provide compare)
@@ -38,6 +40,8 @@ I will continue to post code here directly as and when I manage to compile it.
 
 {% endhighlight %}
 
+# gameset.rkt
+
 {% highlight racket %}
 
 #lang typed/racket
@@ -57,4 +61,55 @@ I will continue to post code here directly as and when I manage to compile it.
 (define (oflist lst )
    (foldl (lambda ([x :  Integer] [s : (Setof Integer)]) ( set-add  s x ))
           (list->set '()) lst))
+{% endhighlight %}
+
+# gamemap.rkt
+
+{% highlight racket %}
+
+#lang typed/racket/base
+(provide preimg)
+(require racket/set)
+(require racket/hash)
+
+
+(: preimg ( ( Integer -> Boolean  )(HashTable Integer Integer) -> (Setof Integer)))
+(define (preimg p  m )
+    ;; (let ([ s :(Setof Integer)  (list->set '())])
+
+    (let ([ s :(Setof Integer)  (set)])
+    (hash-for-each m
+                   (lambda ([k :  Integer]
+                            [v :  Integer]
+                            )
+                     (when (p v)
+                       (set! s (set-add s k))
+                       (print s)
+                       ) )  )
+    s
+    )
+  )
+{% endhighlight %}
+
+# game-test.rkt
+
+{% highlight racket %}
+
+#lang typed/racket
+(require "gameset.rkt" "gamemap.rkt")
+
+(require racket/match)
+(require racket/hash)
+(require typed/rackunit)
+
+;; Unused
+(: fn ( Integer -> Integer))
+(define (fn obj)
+  (+ obj 1)
+ )
+
+( check-equal? (mapper fn (set 1 2)) (set 2 3) "Test unsuccessfull")
+( check-equal? (oflist '(2 3)) (set 2 3) "Test unsuccessfull")
+( check-equal? (preimg (lambda (x) (= x 0))
+                       (make-hash '([3 . 1] [1 . 2] [10 . 0]))) (set 10) "Test unsuccessfull")
 {% endhighlight %}
