@@ -7,7 +7,8 @@ I know of a few methods to learn Functional Programming languages. One could rea
 code. My attempt involves source code that I port to my favorite language. And I learn two different languages
 at the same time. The source and the target. It has been very productive for me.
 
-I will continue to post code here directly as and when I manage to compile it.
+I will continue to post code here directly as and when I manage to compile it. This code is directly
+ported from OCaml and I will add the link to the source once it is finished.
 
 # coord.rkt
 
@@ -90,6 +91,37 @@ I will continue to post code here directly as and when I manage to compile it.
     )
   )
 {% endhighlight %}
+
+# game.rkt
+
+{% highlight racket %}
+
+
+#lang typed/racket
+
+(module Shape racket)
+
+ (provide erem )
+
+(: erem (  Integer Integer ->
+                          Integer))
+ (define (erem x y)
+   (modulo (+ (modulo x y) y)  y)
+   )
+
+(: square ( (Pairof Integer Integer) (Pairof Integer Integer) ->
+                         (Pairof Real Real)))
+ (define (square wh ab)
+  (match  ab
+
+    [(cons  x  y)
+          (cond
+            [(or (< (car ab)  0) (>= (car ab)  (car wh)) (< (cdr ab)  0) (>= (cdr ab) (cdr wh)))
+            (cons -1 -1)]
+            [else  ab])]
+    ))
+{% endhighlight %}
+
 
 # game-test.rkt
 
