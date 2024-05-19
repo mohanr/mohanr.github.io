@@ -95,31 +95,48 @@ ported from OCaml and I will add the link to the source once it is finished.
 # game.rkt
 
 {% highlight racket %}
-
-
 #lang typed/racket
 
-(module Shape racket)
+(module Shape typed/racket
 
  (provide erem )
 
-(: erem (  Integer Integer ->
+ (: erem (  Integer Integer ->
                           Integer))
  (define (erem x y)
    (modulo (+ (modulo x y) y)  y)
    )
 
-(: square ( (Pairof Integer Integer) (Pairof Integer Integer) ->
+ (: square ( (Pairof Integer Integer) (Pairof Integer Integer) ->
                          (Pairof Real Real)))
  (define (square wh ab)
   (match  ab
-
     [(cons  x  y)
           (cond
             [(or (< (car ab)  0) (>= (car ab)  (car wh)) (< (cdr ab)  0) (>= (cdr ab) (cdr wh)))
             (cons -1 -1)]
             [else  ab])]
     ))
+
+ (: torus ( (Pairof Integer Integer) (Pairof Integer Integer) ->
+                         (Pairof Real Real)))
+ (define (torus wh ab)
+    (cons (erem (car ab) (car wh)) (erem (cdr ab) (cdr wh)))
+ )
+
+ (: mobius ( (Pairof Integer Integer) (Pairof Integer Integer) ->
+                         (Pairof Real Real)))
+ (define (mobius wh ab)
+ (match  ab
+    [(cons  x  y)
+          (cond
+            [(or (< (car ab)  0) (>= (car ab) (car wh)))
+            (cons (erem (car ab) (car wh)) (- (- (cdr wh) (cdr ab )) 1 ))]
+            [else  ab])]
+    ))
+
+
+)
 {% endhighlight %}
 
 
