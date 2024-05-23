@@ -135,6 +135,27 @@ ported from OCaml and I will add the link to the source once it is finished.
             [else  ab])]
     ))
 
+( : neigh : ((Pairof Integer Integer) (Pairof Integer Integer)
+                -> (Pairof Integer Integer))
+             (Pairof Integer Integer) -> (Listof (Pairof Integer Integer)))
+(define (neigh topo ab)
+  (let* ([a (car ab)]
+         [b (cdr ab)]
+         [a-1 (sub1 a)]
+         [a+1 (add1 a)]
+         [b-1 (sub1 b)]
+         [b+1 (add1 b)])
+    (map (lambda ([tuple : (Pairof Integer Integer)])
+           ( topo tuple ab))
+          `((,a-1 . ,b)
+                (,a+1 . ,b)
+                (,a-1 . ,b-1)
+                (,a-1 . ,b+1)
+                (,a . ,b-1)
+                (,a . ,b+1)
+                (,a+1 . ,b-1)
+                (,a+1 . ,b+1))  )))
+)
 
 )
 {% endhighlight %}
