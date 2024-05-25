@@ -183,3 +183,94 @@ ported from OCaml and I will add the link to the source once it is finished.
 ( check-equal? (preimg (lambda (x) (= x 0))
                        (make-hash '([3 . 1] [1 . 2] [10 . 0]))) (set 10) "Test unsuccessfull")
 {% endhighlight %}
+
+# Racket GUI
+Almost all the code shown above is directly ported from OCaml. See the references.
+Almost all the code shown below is from a template. It is just Racket's way of creating a GUI.
+
+{% highlight racket %}
+
+(define dc #f)
+(define white-brush (new brush% [color "black"]))
+(define white-pen
+  (new pen%
+       [color  "white"]
+       [width  1]
+       [style  'solid]
+       [cap    'round]
+       [join   'round]
+       [stipple #f]))
+
+(define (draw)
+  (define old-transformation #f)
+  (when dc
+    (send dc set-background "darkgray")
+    (send dc clear)
+    ; (send dc set-smoothing 'smoothed)   ; looks ok
+    (send dc set-smoothing 'unsmoothed)   ; outline pulses
+    ; (send dc set-smoothing 'aligned)    ; outline is slightly off
+
+    (send dc set-pen white-pen)
+    (send dc set-text-foreground "white")
+
+    (set! old-transformation (send dc get-transformation))
+    (send dc translate 440.5 180.5)
+    (send dc rotate angle)
+
+    (send dc set-brush white-brush)
+    (send dc draw-ellipse -50 -50 100 100)
+    (send dc set-transformation old-transformation)
+    ))
+
+(define (handle-on-paint dc)
+  (when dc
+    (draw)))
+
+(define game-window%
+  (class frame%
+    (init)
+    (super-new)
+    (define/override (on-subwindow-char receiver event)
+      (super on-subwindow-char receiver event))))
+
+;; The GUI frame showing our game
+(define the-frame (new game-window% [label "Game of Life"] [width 800] [height 450]))
+
+(define game-canvas
+  (class canvas%
+    (super-new)
+    (define paint-mode 'fast) ;
+    ( define/override (on-paint)
+      (define dc (send this get-dc))
+      (case paint-mode
+        [(slow)
+         (send this suspend-flush)
+         (send this resume-flush)]
+        [(fast)
+         (send this suspend-flush)
+         (send this resume-flush)]))
+      (handle-on-paint dc)
+)
+)
+
+(define game-console
+  (new game-canvas
+       [parent the-frame]
+       ))
+(send the-frame reflow-container)
+
+(send the-frame show #t)
+(send the-frame focus)
+(define (handle-on-timer)
+    (send game-console on-paint) 
+)
+
+(define timer (new timer%
+                     [notify-callback handle-on-timer]
+                      )); milliseconds
+{% endhighlight %}
+
+_References
+1. https://github.com/pqwy/notty ( This isn't utilized because my Racket code is just a canvas, Not
+   a terminal )
+2. https://github.com/mfelleisen/7GUI is the GUI referenced code.
