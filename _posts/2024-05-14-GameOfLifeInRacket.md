@@ -190,11 +190,11 @@ Almost all the code shown below is from a template. It is just Racket's way of c
 
 {% highlight racket %}
 
+(define black-brush (new brush% [color "black"]))
 (define dc #f)
-(define white-brush (new brush% [color "black"]))
-(define white-pen
+(define black-pen
   (new pen%
-       [color  "white"]
+       [color  "black"]
        [width  1]
        [style  'solid]
        [cap    'round]
@@ -206,18 +206,16 @@ Almost all the code shown below is from a template. It is just Racket's way of c
   (when dc
     (send dc set-background "darkgray")
     (send dc clear)
-    ; (send dc set-smoothing 'smoothed)   ; looks ok
-    (send dc set-smoothing 'unsmoothed)   ; outline pulses
-    ; (send dc set-smoothing 'aligned)    ; outline is slightly off
+    (send dc set-smoothing 'unsmoothed)
 
-    (send dc set-pen white-pen)
-    (send dc set-text-foreground "white")
+    (send dc set-pen black-pen)
+    (send dc set-text-foreground "red")
 
     (set! old-transformation (send dc get-transformation))
     (send dc translate 440.5 180.5)
     (send dc rotate angle)
 
-    (send dc set-brush white-brush)
+    (send dc set-brush black-brush)
     (send dc draw-ellipse -50 -50 100 100)
     (send dc set-transformation old-transformation)
     ))
@@ -235,7 +233,6 @@ Almost all the code shown below is from a template. It is just Racket's way of c
 
 ;; The GUI frame showing our game
 (define the-frame (new game-window% [label "Game of Life"] [width 800] [height 450]))
-
 (define game-canvas
   (class canvas%
     (super-new)
@@ -259,15 +256,17 @@ Almost all the code shown below is from a template. It is just Racket's way of c
        ))
 (send the-frame reflow-container)
 
-(send the-frame show #t)
 (send the-frame focus)
 (define (handle-on-timer)
-    (send game-console on-paint) 
+    (send game-console on-paint)
 )
-
-(define timer (new timer%
+(define (start)
+  (define timer (new timer%
                      [notify-callback handle-on-timer]
-                      )); milliseconds
+                     [interval (inexact->exact (floor (/ 1000 30)))])) ; milliseconds
+  (send timer start 10)
+  (send the-frame show #t))
+(start)
 {% endhighlight %}
 
 _References
