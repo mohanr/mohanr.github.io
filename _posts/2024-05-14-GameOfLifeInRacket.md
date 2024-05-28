@@ -192,81 +192,61 @@ Almost all the code shown below is from a template. It is just Racket's way of c
 
 (define black-brush (new brush% [color "black"]))
 (define dc #f)
+
 (define black-pen
   (new pen%
-       [color  "black"]
-       [width  1]
+       [color  "red"]
+       [width  10]
        [style  'solid]
        [cap    'round]
        [join   'round]
        [stipple #f]))
 
-(define (draw)
-  (define old-transformation #f)
-  (when dc
-    (send dc set-background "darkgray")
-    (send dc clear)
-    (send dc set-smoothing 'unsmoothed)
 
-    (send dc set-pen black-pen)
-    (send dc set-text-foreground "red")
-
-    (set! old-transformation (send dc get-transformation))
-    (send dc translate 440.5 180.5)
-    (send dc rotate angle)
-
-    (send dc set-brush black-brush)
-    (send dc draw-ellipse -50 -50 100 100)
-    (send dc set-transformation old-transformation)
-    ))
-
-(define (handle-on-paint dc)
-  (when dc
-    (draw)))
 
 (define game-window%
   (class frame%
-    (init)
     (super-new)
-    (define/override (on-subwindow-char receiver event)
-      (super on-subwindow-char receiver event))))
+       ))
 
 ;; The GUI frame showing our game
 (define the-frame (new game-window% [label "Game of Life"] [width 800] [height 450]))
 (define game-canvas
   (class canvas%
     (super-new)
-    (define paint-mode 'fast) ;
     ( define/override (on-paint)
       (define dc (send this get-dc))
-      (case paint-mode
-        [(slow)
+       (let ((dc (send this get-dc)))
+         (send dc set-font (make-font #:size 24 #:face "Fira Code"))
+         (send dc set-pen "black" 0 'solid)
+         (send dc set-smoothing 'unsmoothed)
+         (send dc set-brush "black" 'transparent))
+         (send dc set-pen black-pen)
+         (send dc draw-rectangle 50 50 100 100)
          (send this suspend-flush)
-         (send this resume-flush)]
-        [(fast)
-         (send this suspend-flush)
-         (send this resume-flush)]))
-      (handle-on-paint dc)
+         (send this resume-flush)
+      )
+      (send the-frame show #t)
+      (send the-frame focus)
 )
 )
 
 (define game-console
   (new game-canvas
        [parent the-frame]
-       ))
-(send the-frame reflow-container)
+      ))
 
-(send the-frame focus)
 (define (handle-on-timer)
     (send game-console on-paint)
 )
 (define (start)
   (define timer (new timer%
                      [notify-callback handle-on-timer]
-                     [interval (inexact->exact (floor (/ 1000 30)))])) ; milliseconds
-  (send timer start 10)
-  (send the-frame show #t))
+                     [interval  1000])) ; milliseconds
+  (send timer start 1)
+  )
 (start)
+
 {% endhighlight %}
 
 _References
