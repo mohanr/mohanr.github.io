@@ -97,6 +97,10 @@ ported from OCaml and I will add the link to the source once it is finished.
 {% highlight racket %}
 #lang typed/racket
 
+(require typed/racket/gui
+         )
+
+
 (module Shape typed/racket
 
  (provide erem )
@@ -135,6 +139,7 @@ ported from OCaml and I will add the link to the source once it is finished.
             [else  ab])]
     ))
 
+
 ( : neigh : ((Pairof Integer Integer) (Pairof Integer Integer)
                 -> (Pairof Integer Integer))
              (Pairof Integer Integer) -> (Listof (Pairof Integer Integer)))
@@ -157,7 +162,95 @@ ported from OCaml and I will add the link to the source once it is finished.
                 (,a+1 . ,b+1))  )))
 )
 
+
+(: background : (Integer (Pairof Integer Integer) ->
+                         (Listof (Pairof Integer Integer)) ))
+(define (background step nm)
+  (let*  ([k  (* 24.  (sin (/ (+ (+ step (cdr nm))  (car nm))  10.))) ]
+         [q  (quotient ( exact-round k) 10)])
+  (cond [(> q  0) '(( 50 . 50) ( 100 . 100))]
+        [else '(( 50 . 50) ( 100 . 100))]
+        ))
 )
+
+(define black-brush (new brush% [color "black"]))
+(define dc #f)
+
+(define black-pen
+  (new pen%
+       [color  "red"]
+       [width  10]
+       [style  'solid]
+       [cap    'round]
+       [join   'round]
+       [stipple #f]))
+
+
+
+(define game-window%
+  (class frame%
+    (super-new)
+    ;; (define/augment (on-close) ;; stop timer
+    ;; )
+  )
+)
+
+(: draw-coord : ( -> (Listof Integer)))
+(define (draw-coord )
+  (let* ([bc  (background 1 ( cons 1  2))]
+         [f (first bc )]
+         [l (last bc)]
+         [x (car f )]
+         [y (cdr f )]
+         [x1 (car l)]
+         [y1 (cdr l)])
+  (list x x1 y y1 )
+)
+)
+
+;; The GUI frame showing our game
+(define the-frame (new game-window% [label "Game of Life"] [width 800] [height 450]))
+(define game-canvas
+  (class canvas%
+    (super-new)
+    ( define/override (on-paint)
+      (define dc (send this get-dc))
+       (let ((dc (send this get-dc)))
+         (send dc set-font (make-font #:size 24 #:face "Fira Code"))
+         (send dc set-pen "black" 0 'solid)
+         (send dc set-smoothing 'unsmoothed)
+         (send dc set-brush "black" 'transparent))
+         (send dc set-pen black-pen)
+         (let* ([dco  (draw-coord)] )
+         (send dc draw-rectangle (max 0.0 (exact->inexact (car dco)))
+                                 (max 0.0 (exact->inexact (cadr dco)))
+                                 (max 0.0 (exact->inexact (caddr dco)))
+                                 (max 0.0 (exact->inexact (cadddr dco))))
+             (send dc draw-rectangle  5 5 5 5 )
+         )
+         (send this suspend-flush)
+         (send this resume-flush)
+      )
+      (send the-frame show #t)
+      (send the-frame focus)
+)
+)
+
+(define game-console
+  (new game-canvas
+       [parent the-frame]
+      ))
+
+(define (handle-on-timer)
+    (send game-console on-paint)
+)
+(define (start)
+  (define timer (new timer%
+                     [notify-callback handle-on-timer]
+                     [interval  1000])) ; milliseconds
+  (send timer start 1)
+  )
+(start)
 {% endhighlight %}
 
 
