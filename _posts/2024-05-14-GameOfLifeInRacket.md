@@ -342,6 +342,33 @@ Almost all the code shown below is from a template. It is just Racket's way of c
 
 {% endhighlight %}
 
+# Experiment with Syntax-rule
+
+the syntax-rule I needed is minimal. I also learnt that the infix between two dots (. (@) .) becomes a prefix.
+
+{% highlight racket %}
+
+(define-syntax-rule (@) append)
+
+;; (define-syntax-rule  (linspcm z (@) x n f)
+(: linspcm : ((Listof Integer) Integer Integer
+              (Integer ->  Integer) -> (Listof Integer)))
+(define  (linspcm z  x n f)
+
+  (match n
+    [0 z]
+    [1 (list (f x))]
+    [_ (let* ([m (quotient n 2)])
+         (displayln n)
+         ((linspcm z    x m f) . (@) .
+         (linspcm z  (+ x m) (- n m) f))
+      )
+    ]
+  )
+)
+{% endhighlight %}
+
+
 _References
 1. https://github.com/pqwy/notty ( This isn't utilized because my Racket code is just a canvas, Not
    a terminal )
