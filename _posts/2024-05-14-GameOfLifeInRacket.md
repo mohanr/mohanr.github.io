@@ -278,7 +278,7 @@ ported from OCaml and I will add the link to the source once it is finished.
 {% endhighlight %}
 
 # Racket GUI
-Almost all the code shown above is directly ported from OCaml. See the references.
+Almost all the code shown above except the UI code is directly ported from OCaml. See the references.
 Almost all the code shown below is from a template. It is just Racket's way of creating a GUI.
 
 {% highlight racket %}
@@ -365,6 +365,59 @@ the syntax-rule I needed is minimal. I also learnt that the infix between two do
       )
     ]
   )
+)
+{% endhighlight %}
+
+# Ported code from _notty.ml_ which is a OCaml library
+
+At this stage just to render a UI I have to port some deep part of an OCaml library
+to Racket. This wasn't envisaged.
+
+{% highlight racket %}
+
+(module I typed/racket
+(require "datatypemacro.rkt")
+
+(struct dim ([width : Integer] [height : Integer]))
+
+(define-datatype t
+    ( Hcompose (Pairof t  t ) dim)
+    ( Vcompose (Pairof t  t ) dim)
+)
+
+
+(: width : ( t  ->  Integer ))
+(define  (  width datatype )
+   (match datatype
+    [ (Hcompose (cons t t) (cons w _))  w]
+    [ (Vcompose (cons t t) (cons w _))  w]
+   )
+)
+
+
+(: height : ( t  ->  Integer ))
+(define  ( height datatype )
+   (match datatype
+    [ (Hcompose (cons t t) (cons _ h))  h]
+    [ (Vcompose (cons t t) (cons _ h))  h]
+   )
+)
+
+
+(provide <#> )
+
+(: <#> : ( t t -> t ))
+(define ( <#> t1 t2)
+  (match (list t1 t2)
+    [ (cons _ empty) t1]
+    [ (cons empty _) t2]
+    [ _ (let* ([w  (+ (width t1)  (width t2))]
+               [ h  (max (height t1) (height t2))])
+                (Hcompose (cons t1  t2) (dim w h))
+                )
+        ]
+    )
+)
 )
 {% endhighlight %}
 
