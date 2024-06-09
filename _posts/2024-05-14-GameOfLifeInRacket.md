@@ -46,9 +46,9 @@ ported from OCaml and I will add the link to the source once it is finished.
 {% highlight racket %}
 
 #lang typed/racket
-(provide mapper oflist)
+(provide mapper oflist mem)
 (require racket/set)
-(require "game.rkt")
+(require "coord.rkt")
 
 
 (: mapper ((Integer -> Integer) (Setof Integer) ->
@@ -60,13 +60,34 @@ ported from OCaml and I will add the link to the source once it is finished.
 
 (: oflist ( (Listof Integer) -> (Setof Integer)))
 (define (oflist lst )
-   (foldl (lambda ([x :  Integer] [s : (Setof Integer)]) ( set-add  s x ))
+(foldl (lambda ([x :  Integer] [s : (Setof Integer)]) ( set-add  s x ))
           (list->set '()) lst))
+
+(: coord-comparator ( (Pairof Integer Integer ) (Pairof Integer Integer )-> Integer))
+(define (coord-comparator a b)
+    (cond
+      [(equal a b) 0]
+      [(false? (compare a b)) -1]
+      [else 1]))
+
+(define empty (make-hasheq))
+
+
+(: add (  (HashTable (Pairof Integer Integer  ) Boolean)
+          (Pairof Integer Integer )  ->
+          (Immutable-HashTable (Pairof Integer Integer ) Boolean)))
+(define (add s c) (hash-set s c #t))
+
+(: mem (  (HashTable (Pairof Integer Integer  ) Boolean)
+          (Pairof Integer Integer )  ->
+           Boolean))
+(define (mem s c) (hash-has-key? s c))
 {% endhighlight %}
 
 # gamemap.rkt
 
 {% highlight racket %}
+
 
 #lang typed/racket/base
 (provide preimg)
@@ -97,13 +118,71 @@ ported from OCaml and I will add the link to the source once it is finished.
 {% highlight racket %}
 #lang typed/racket
 
-(require typed/racket/gui
-         )
+
+(require typed/rackunit)
+(module I typed/racket
+(require "datatypemacro.rkt" "coord.rkt" "gameset.rkt")
+(provide t Hcompose width height Empty dim)
+
+(struct dim ([width : Integer] [height : Integer]))
+(define-datatype t
+    ( Hcompose t t dim)
+    ( Vcompose t t dim)
+     Empty
+)
+
+
+(: width : ( t  ->  Integer ))
+(define  (  width datatype )
+   (match datatype
+     [(Hcompose left right  d) (dim-width d)]
+     [(Vcompose left right  d) (dim-width d )]
+     [(Empty) 0]))
+
+
+(: height : ( t  ->  Integer ))
+(define  ( height datatype )
+   (match datatype
+     [(Hcompose left right  d) (dim-height d)]
+     [(Vcompose left right  d) (dim-height d )]
+     [(Empty) 0]))
+
+(provide <#> <-> )
+
+(: <#> : ( t t -> t ))
+(define ( <#> t1 t2)
+  (match (list t1 t2)
+    [ (cons _ Empty) t1]
+    [ (cons Empty _) t2]
+    [ _ (let* ([w  (+ (width t1)  (width t2))]
+               [ h  (max (height t1) (height t2))])
+                (Hcompose t1  t2 (dim w h))
+                )
+        ]
+    )
+)
+
+(: <-> : ( t t -> t ))
+(define ( <-> t1 t2)
+  (match (list t1 t2)
+    [ (cons _ Empty) t1]
+    [ (cons Empty _) t2]
+    [ _ (let* ([w  (max (width t1) (width t2))]
+               [h  (+ (height t1)  (height t2))])
+               (Vcompose t1 t2 (dim w h))
+                )
+        ]
+    )
+)
+)
 
 
 (module Shape typed/racket
 
- (provide erem )
+ (require (submod ".." I))
+ (require  "gameset.rkt" "coord.rkt")
+
+ (provide erem linspcm background )
 
  (: erem (  Integer Integer ->
                           Integer))
@@ -160,18 +239,67 @@ ported from OCaml and I will add the link to the source once it is finished.
                 (,a . ,b+1)
                 (,a+1 . ,b-1)
                 (,a+1 . ,b+1))  )))
-)
 
 
 (: background : (Integer (Pairof Integer Integer) ->
-                         (Listof (Pairof Integer Integer)) ))
+                         t  ))
 (define (background step nm)
   (let*  ([k  (* 24.  (sin (/ (+ (+ step (cdr nm))  (car nm))  10.))) ]
          [q  (quotient ( exact-round k) 10)])
-  (cond [(> q  0) '(( 50 . 50) ( 100 . 100))]
-        [else '(( 50 . 50) ( 100 . 100))]
+  (cond [(> q  0) (Hcompose (Empty) (Empty) (dim 50  50))]
+        [else (Hcompose (Empty) (Empty) (dim 5 5))]
         ))
 )
+
+
+(define-syntax-rule (@) append)
+
+(: linspcm : (t Integer Integer (Integer -> t) (t t -> t) -> t))
+(define (linspcm z x n f op)
+  (match n
+    [0 z]
+    [1 (f x)]
+    [_ (let* ([m (quotient n 2)])
+         (op (linspcm z x m f op)
+             (linspcm z (+ x m) (- n m) f op)))]))
+
+(: tabulate : ( Integer Integer
+              (Integer Integer ->  t) -> t))
+(define (tabulate m n f)
+  (let* ([m (max m 0)]
+         [n (max n 0)])
+  (linspcm (Empty)  0 n (lambda (y)
+                                  (linspcm (Empty)  0 m (lambda (x)
+                                                               (f x y))
+                            <#>))
+         <->)
+    )
+)
+
+
+
+(: render : ( Integer Integer Integer (HashTable Coord Boolean) ->
+                         t ))
+(define (render w h step life )
+  (tabulate w (- h  1) (lambda (x y)
+     (let* ([pt  (cons x  y)])
+      (if (mem life pt )
+      (background step pt)
+      (background step pt)
+      )
+     )
+   )
+  )
+)
+)
+
+
+(module Gui typed/racket
+
+(require typed/racket/gui)
+(require (submod ".." Shape))
+ (require (submod ".." I))
+(provide start)
 
 (define black-brush (new brush% [color "black"]))
 (define dc #f)
@@ -197,15 +325,8 @@ ported from OCaml and I will add the link to the source once it is finished.
 
 (: draw-coord : ( -> (Listof Integer)))
 (define (draw-coord )
-  (let* ([bc  (background 1 ( cons 1  2))]
-         [f (first bc )]
-         [l (last bc)]
-         [x (car f )]
-         [y (cdr f )]
-         [x1 (car l)]
-         [y1 (cdr l)])
-  (list x x1 y y1 )
-)
+  (let* ([bc : t (background 1 ( cons 1  2))])
+           (list (width bc) (height bc) (width bc) (height bc)))
 )
 
 ;; The GUI frame showing our game
@@ -215,25 +336,23 @@ ported from OCaml and I will add the link to the source once it is finished.
     (super-new)
     ( define/override (on-paint)
       (define dc (send this get-dc))
-       (let ((dc (send this get-dc)))
-         (send dc set-font (make-font #:size 24 #:face "Fira Code"))
-         (send dc set-pen "black" 0 'solid)
-         (send dc set-smoothing 'unsmoothed)
-         (send dc set-brush "black" 'transparent))
-         (send dc set-pen black-pen)
-         (let* ([dco  (draw-coord)] )
+      (send dc set-font (make-font #:size 24 #:face "Fira Code"))
+      (send dc set-pen "black" 0 'solid)
+      (send dc set-smoothing 'unsmoothed)
+      (send dc set-brush "black" 'transparent)
+      (send dc set-pen black-pen)
+      (let* ([dco  (draw-coord)] )
          (send dc draw-rectangle (max 0.0 (exact->inexact (car dco)))
                                  (max 0.0 (exact->inexact (cadr dco)))
                                  (max 0.0 (exact->inexact (caddr dco)))
                                  (max 0.0 (exact->inexact (cadddr dco))))
-             (send dc draw-rectangle  5 5 5 5 )
-         )
-         (send this suspend-flush)
-         (send this resume-flush)
+      )
+      (send this suspend-flush)
+      (send this resume-flush)
       )
       (send the-frame show #t)
       (send the-frame focus)
-)
+  )
 )
 
 (define game-console
@@ -243,6 +362,7 @@ ported from OCaml and I will add the link to the source once it is finished.
 
 (define (handle-on-timer)
     (send game-console on-paint)
+    (send game-console refresh)
 )
 (define (start)
   (define timer (new timer%
@@ -250,7 +370,18 @@ ported from OCaml and I will add the link to the source once it is finished.
                      [interval  1000])) ; milliseconds
   (send timer start 1)
   )
-(start)
+)
+
+
+( require 'Gui)
+(require 'Shape)
+;; (start)
+
+(: fn1 ( Integer -> Integer))
+(define (fn1 x )
+  (displayln x)
+  (+ x 1)
+ )
 {% endhighlight %}
 
 
