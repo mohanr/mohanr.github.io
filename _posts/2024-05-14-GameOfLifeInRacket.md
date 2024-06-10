@@ -120,61 +120,6 @@ ported from OCaml and I will add the link to the source once it is finished.
 
 
 (require typed/rackunit)
-(module I typed/racket
-(require "datatypemacro.rkt" "coord.rkt" "gameset.rkt")
-(provide t Hcompose width height Empty dim)
-
-(struct dim ([width : Integer] [height : Integer]))
-(define-datatype t
-    ( Hcompose t t dim)
-    ( Vcompose t t dim)
-     Empty
-)
-
-
-(: width : ( t  ->  Integer ))
-(define  (  width datatype )
-   (match datatype
-     [(Hcompose left right  d) (dim-width d)]
-     [(Vcompose left right  d) (dim-width d )]
-     [(Empty) 0]))
-
-
-(: height : ( t  ->  Integer ))
-(define  ( height datatype )
-   (match datatype
-     [(Hcompose left right  d) (dim-height d)]
-     [(Vcompose left right  d) (dim-height d )]
-     [(Empty) 0]))
-
-(provide <#> <-> )
-
-(: <#> : ( t t -> t ))
-(define ( <#> t1 t2)
-  (match (list t1 t2)
-    [ (cons _ Empty) t1]
-    [ (cons Empty _) t2]
-    [ _ (let* ([w  (+ (width t1)  (width t2))]
-               [ h  (max (height t1) (height t2))])
-                (Hcompose t1  t2 (dim w h))
-                )
-        ]
-    )
-)
-
-(: <-> : ( t t -> t ))
-(define ( <-> t1 t2)
-  (match (list t1 t2)
-    [ (cons _ Empty) t1]
-    [ (cons Empty _) t2]
-    [ _ (let* ([w  (max (width t1) (width t2))]
-               [h  (+ (height t1)  (height t2))])
-               (Vcompose t1 t2 (dim w h))
-                )
-        ]
-    )
-)
-)
 
 
 (module Shape typed/racket
@@ -507,49 +452,61 @@ to Racket. This wasn't envisaged.
 {% highlight racket %}
 
 (module I typed/racket
-(require "datatypemacro.rkt")
+(require "datatypemacro.rkt" "coord.rkt" "gameset.rkt")
+(provide t Hcompose width height Empty dim)
 
 (struct dim ([width : Integer] [height : Integer]))
-
 (define-datatype t
-    ( Hcompose (Pairof t  t ) dim)
-    ( Vcompose (Pairof t  t ) dim)
+    ( Hcompose t t dim)
+    ( Vcompose t t dim)
+     Empty
 )
 
 
 (: width : ( t  ->  Integer ))
 (define  (  width datatype )
    (match datatype
-    [ (Hcompose (cons t t) (cons w _))  w]
-    [ (Vcompose (cons t t) (cons w _))  w]
-   )
-)
+     [(Hcompose left right  d) (dim-width d)]
+     [(Vcompose left right  d) (dim-width d )]
+     [(Empty) 0]))
 
 
 (: height : ( t  ->  Integer ))
 (define  ( height datatype )
    (match datatype
-    [ (Hcompose (cons t t) (cons _ h))  h]
-    [ (Vcompose (cons t t) (cons _ h))  h]
-   )
-)
+     [(Hcompose left right  d) (dim-height d)]
+     [(Vcompose left right  d) (dim-height d )]
+     [(Empty) 0]))
 
-
-(provide <#> )
+(provide <#> <-> )
 
 (: <#> : ( t t -> t ))
 (define ( <#> t1 t2)
   (match (list t1 t2)
-    [ (cons _ empty) t1]
-    [ (cons empty _) t2]
+    [ (cons _ Empty) t1]
+    [ (cons Empty _) t2]
     [ _ (let* ([w  (+ (width t1)  (width t2))]
                [ h  (max (height t1) (height t2))])
-                (Hcompose (cons t1  t2) (dim w h))
+                (Hcompose t1  t2 (dim w h))
+                )
+        ]
+    )
+)
+
+(: <-> : ( t t -> t ))
+(define ( <-> t1 t2)
+  (match (list t1 t2)
+    [ (cons _ Empty) t1]
+    [ (cons Empty _) t2]
+    [ _ (let* ([w  (max (width t1) (width t2))]
+               [h  (+ (height t1)  (height t2))])
+               (Vcompose t1 t2 (dim w h))
                 )
         ]
     )
 )
 )
+
 {% endhighlight %}
 
 
