@@ -112,7 +112,7 @@ ported from OCaml and I will add the link to the source once it is finished.
 {% endhighlight %}
 
 # game.rkt
-
+{% highlight racket %}
 #lang typed/racket
 
 
