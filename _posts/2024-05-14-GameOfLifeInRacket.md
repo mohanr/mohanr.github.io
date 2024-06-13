@@ -13,32 +13,30 @@ ported from OCaml and I will add the link to the source once it is finished.
 # coord.rkt
 
 {% highlight racket %}
-#lang typed/racket
-(provide compare)
-(require "datatypemacro.rkt")
 
-(define-datatype t
-  (U Integer Integer )
-)
+#lang typed/racket/base
+(provide preimg)
+(require racket/set)
+(require racket/hash)
 
-(: compare ((Pairof Integer Integer) (Pairof Integer Integer)   -> Boolean))
-(define ( compare pair1 pair2)
-    (let ([r (= (cdr pair1) (car pair2))])
-    (match r
-     [#t  (= (cdr pair1) (car pair2))]
-     [#f r]
-     )
-))
+ (require "coord.rkt")
 
-(: equal ((Pairof Integer Integer) (Pairof Integer Integer)   -> Boolean))
-(define ( equal pair1 pair2)
-    (let ([r (= (cdr pair1) (cdr pair2))])
-    (match r
-     [#t  (= (car pair1) (car pair2))]
-     [#f r]
-     )
-))
+(: preimg ( ( Integer -> Boolean  )(HashTable Coord Integer) -> (Setof Coord)))
+(define (preimg p  m )
+    ;; (let ([ s :(Setof Integer)  (list->set '())])
 
+    (let ([ s :(Setof Coord)  (set)])
+    (hash-for-each m
+                   (lambda ([k :  Coord]
+                            [v :  Integer]
+                            )
+                     (when (p v)
+                       (set! s (set-add s k))
+                       (print s)
+                       ) )  )
+    s
+    )
+  )
 {% endhighlight %}
 
 # gameset.rkt
@@ -73,12 +71,12 @@ ported from OCaml and I will add the link to the source once it is finished.
 (define empty (make-hasheq))
 
 
-(: add (  (HashTable (Pairof Integer Integer  ) Boolean)
+(: add (  (HashTable (Pairof Integer Integer  ) Integer)
           (Pairof Integer Integer )  ->
-          (Immutable-HashTable (Pairof Integer Integer ) Boolean)))
-(define (add s c) (hash-set s c #t))
+          (Immutable-HashTable (Pairof Integer Integer ) Integer)))
+(define (add s c) (hash-set s c 1))
 
-(: mem (  (HashTable (Pairof Integer Integer  ) Boolean)
+(: mem (  (HashTable (Pairof Integer Integer  ) Integer)
           (Pairof Integer Integer )  ->
            Boolean))
 (define (mem s c) (hash-has-key? s c))
@@ -88,20 +86,20 @@ ported from OCaml and I will add the link to the source once it is finished.
 
 {% highlight racket %}
 
-
 #lang typed/racket/base
 (provide preimg)
 (require racket/set)
 (require racket/hash)
 
+ (require "coord.rkt")
 
-(: preimg ( ( Integer -> Boolean  )(HashTable Integer Integer) -> (Setof Integer)))
+(: preimg ( ( Integer -> Boolean  )(HashTable Coord Integer) -> (Setof Coord)))
 (define (preimg p  m )
     ;; (let ([ s :(Setof Integer)  (list->set '())])
 
-    (let ([ s :(Setof Integer)  (set)])
+    (let ([ s :(Setof Coord)  (set)])
     (hash-for-each m
-                   (lambda ([k :  Integer]
+                   (lambda ([k :  Coord]
                             [v :  Integer]
                             )
                      (when (p v)
@@ -115,19 +113,75 @@ ported from OCaml and I will add the link to the source once it is finished.
 
 # game.rkt
 
-{% highlight racket %}
 #lang typed/racket
 
 
 (require typed/rackunit)
+(module I typed/racket
+(require "datatypemacro.rkt" "coord.rkt" "gameset.rkt")
+(provide t Hcompose width height Empty dim)
+
+(struct dim ([width : Integer] [height : Integer]))
+(define-datatype t
+    ( Hcompose t t dim)
+    ( Vcompose t t dim)
+     Empty
+)
+
+
+(: width : ( t  ->  Integer ))
+(define  (  width datatype )
+   (match datatype
+     [(Hcompose left right  d) (dim-width d)]
+     [(Vcompose left right  d) (dim-width d )]
+     [(Empty) 0]))
+
+
+(: height : ( t  ->  Integer ))
+(define  ( height datatype )
+   (match datatype
+     [(Hcompose left right  d) (dim-height d)]
+     [(Vcompose left right  d) (dim-height d )]
+     [(Empty) 0]))
+
+(provide <#> <-> )
+
+(: <#> : ( t t -> t ))
+(define ( <#> t1 t2)
+  (match (list t1 t2)
+    [ (cons _ Empty) t1]
+    [ (cons Empty _) t2]
+    [ _ (let* ([w  (+ (width t1)  (width t2))]
+               [ h  (max (height t1) (height t2))])
+                (Hcompose t1  t2 (dim w h))
+                )
+        ]
+    )
+)
+
+(: <-> : ( t t -> t ))
+(define ( <-> t1 t2)
+  (match (list t1 t2)
+    [ (cons _ Empty) t1]
+    [ (cons Empty _) t2]
+    [ _ (let* ([w  (max (width t1) (width t2))]
+               [h  (+ (height t1)  (height t2))])
+               (Vcompose t1 t2 (dim w h))
+                )
+        ]
+    )
+)
+)
 
 
 (module Shape typed/racket
 
  (require (submod ".." I))
- (require  "gameset.rkt" "coord.rkt")
+ (require threading)
+ (require racket/set)
+ (require  "gameset.rkt" "coord.rkt" "gamemap.rkt")
 
- (provide erem linspcm background )
+ (provide step torus erem linspcm background )
 
  (: erem (  Integer Integer ->
                           Integer))
@@ -146,8 +200,8 @@ ported from OCaml and I will add the link to the source once it is finished.
             [else  ab])]
     ))
 
- (: torus ( (Pairof Integer Integer) (Pairof Integer Integer) ->
-                         (Pairof Real Real)))
+ (: torus ( Coord Coord ->
+                         Coord))
  (define (torus wh ab)
     (cons (erem (car ab) (car wh)) (erem (cdr ab) (cdr wh)))
  )
@@ -164,18 +218,15 @@ ported from OCaml and I will add the link to the source once it is finished.
     ))
 
 
-( : neigh : ((Pairof Integer Integer) (Pairof Integer Integer)
-                -> (Pairof Integer Integer))
-             (Pairof Integer Integer) -> (Listof (Pairof Integer Integer)))
+( : neigh : (Coord
+             (Pairof Integer Integer) -> (Listof (Pairof Integer Integer))))
 (define (neigh topo ab)
-  (let* ([a (car ab)]
-         [b (cdr ab)]
-         [a-1 (sub1 a)]
-         [a+1 (add1 a)]
-         [b-1 (sub1 b)]
-         [b+1 (add1 b)])
-    (map (lambda ([tuple : (Pairof Integer Integer)])
-           ( topo tuple ab))
+  (let* ([a (car topo)]
+         [b (cdr topo)]
+         [a-1 (sub1 (car topo))]
+         [a+1 (add1 (car topo))]
+         [b-1 (sub1 (cdr topo))]
+         [b+1 (add1 (cdr topo))])
           `((,a-1 . ,b)
                 (,a+1 . ,b)
                 (,a-1 . ,b-1)
@@ -183,7 +234,7 @@ ported from OCaml and I will add the link to the source once it is finished.
                 (,a . ,b-1)
                 (,a . ,b+1)
                 (,a+1 . ,b-1)
-                (,a+1 . ,b+1))  )))
+                (,a+1 . ,b+1))  ))
 
 
 (: background : (Integer (Pairof Integer Integer) ->
@@ -221,9 +272,51 @@ ported from OCaml and I will add the link to the source once it is finished.
     )
 )
 
+(: step : (  Coord (Listof (Pairof Integer Integer)) ->
+           (Setof Coord)))
+(define (step topo life)
+(: nlive : ((Pairof Integer Integer) ->
+           Integer))
+  (define  (nlive pt)
+    ( let* ([neighbours (neigh topo pt )])
+          (length
+           ( filter (lambda (neighbour) (set-member? life neighbour )) neighbours )
+          )
+    )
+  )
+
+(: f1 : ( Coord (HashTable Coord Integer)->  (HashTable Coord Integer)))
+  (define  (f1 pt acc )
+    ( let* ([neighbour (cons pt  (neigh topo pt))])
+      (foldl
+         (lambda ([pt : Coord ][acc : (HashTable Coord Integer)])
+           (match pt
+           [ (cons -1  -1)  acc]
+           [ pt (if (mem acc pt) acc acc) ]
+           [ pt
+               (let* ([n ( nlive pt )])
+                      (hash-set acc pt
+                        (if (and (or (= n 3) (= n 2)) ( set-member? life pt))
+                        0
+                        1)
+                        ))]))
+         acc neighbour )
+    )
+  )
+
+(: eliminate : -> ( HashTable Coord Integer))
+(define (eliminate)
+  (for/fold ([acc : (HashTable Coord Integer) (make-hasheq)])  ; Initialize an empty mutable hash table
+          ([pair : Coord life])  ; Iterate over each pair in pairs
+    (f1 pair acc))
+ )
+
+ (preimg (lambda ([ x : Number] )( = x 0))  (eliminate))
+
+)
 
 
-(: render : ( Integer Integer Integer (HashTable Coord Boolean) ->
+(: render : ( Integer Integer Integer (HashTable Coord Integer) ->
                          t ))
 (define (render w h step life )
   (tabulate w (- h  1) (lambda (x y)
@@ -244,6 +337,7 @@ ported from OCaml and I will add the link to the source once it is finished.
 (require typed/racket/gui)
 (require (submod ".." Shape))
  (require (submod ".." I))
+ (require "coord.rkt")
 (provide start)
 
 (define black-brush (new brush% [color "black"]))
@@ -266,6 +360,14 @@ ported from OCaml and I will add the link to the source once it is finished.
     ;; (define/augment (on-close) ;; stop timer
     ;; )
   )
+)
+
+(define lifeseed
+             '((2 . 1) (3 . 2) (1 . 3) (2 . 3) (3 . 3 )))
+
+(: generate : (Setof Coord))
+(define generate
+  (step (torus (cons 100 100) (cons 0 0)) lifeseed )
 )
 
 (: draw-coord : ( -> (Listof Integer)))
