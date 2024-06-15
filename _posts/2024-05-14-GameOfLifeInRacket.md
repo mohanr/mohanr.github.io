@@ -200,11 +200,14 @@ ported from OCaml and I will add the link to the source once it is finished.
             [else  ab])]
     ))
 
- (: torus ( Coord Coord ->
-                         Coord))
- (define (torus wh ab)
-    (cons (erem (car ab) (car wh)) (erem (cdr ab) (cdr wh)))
+ (: torus : ( Coord -> (-> Coord
+                         Coord)))
+ (define (torus wh )
+    (lambda ([ab : Coord])
+      (cons (erem (car ab) (car wh)) (erem (cdr ab) (cdr wh)))
+    )
  )
+
 
  (: mobius ( (Pairof Integer Integer) (Pairof Integer Integer) ->
                          (Pairof Real Real)))
@@ -218,15 +221,30 @@ ported from OCaml and I will add the link to the source once it is finished.
     ))
 
 
-( : neigh : (Coord
-             (Pairof Integer Integer) -> (Listof (Pairof Integer Integer))))
+( : neigh : (Coord -> Coord )
+             (Pairof Integer Integer) -> (Listof (Pairof Integer Integer)))
 (define (neigh topo ab)
-  (let* ([a (car topo)]
-         [b (cdr topo)]
-         [a-1 (sub1 (car topo))]
-         [a+1 (add1 (car topo))]
-         [b-1 (sub1 (cdr topo))]
-         [b+1 (add1 (cdr topo))])
+  ;; (let* ([a (car topo)]
+  ;;        [b (cdr topo)]
+  ;;        [a-1 (sub1 (car topo))]
+  ;;        [a+1 (add1 (car topo))]
+  ;;        [b-1 (sub1 (cdr topo))]
+  ;;        [b+1 (add1 (cdr topo))])
+  ;;         `((,a-1 . ,b)
+  ;;               (,a+1 . ,b)
+  ;;               (,a-1 . ,b-1)
+  ;;               (,a-1 . ,b+1)
+  ;;               (,a . ,b-1)
+  ;;               (,a . ,b+1)
+  ;;               (,a+1 . ,b-1)
+  ;;               (,a+1 . ,b+1))  ))
+  (let* ([a (car ab)]
+         [b (cdr ab)]
+         [a-1 (sub1 (car ab))]
+         [a+1 (add1 (car ab))]
+         [b-1 (sub1 (cdr ab))]
+         [b+1 (add1 (cdr ab))]
+         [neighbours
           `((,a-1 . ,b)
                 (,a+1 . ,b)
                 (,a-1 . ,b-1)
@@ -234,7 +252,10 @@ ported from OCaml and I will add the link to the source once it is finished.
                 (,a . ,b-1)
                 (,a . ,b+1)
                 (,a+1 . ,b-1)
-                (,a+1 . ,b+1))  ))
+                (,a+1 . ,b+1))])
+  (map topo  neighbours ))
+  )
+
 
 
 (: background : (Integer (Pairof Integer Integer) ->
@@ -272,7 +293,7 @@ ported from OCaml and I will add the link to the source once it is finished.
     )
 )
 
-(: step : (  Coord (Listof (Pairof Integer Integer)) ->
+(: step : ( (-> Coord Coord )(Listof (Pairof Integer Integer)) ->
            (Setof Coord)))
 (define (step topo life)
 (: nlive : ((Pairof Integer Integer) ->
@@ -367,11 +388,11 @@ ported from OCaml and I will add the link to the source once it is finished.
 
 (: generate : (Setof Coord))
 (define generate
-  (step (torus (cons 100 100) (cons 0 0)) lifeseed )
+  (step (torus (cons 100 100) ) lifeseed )
 )
 
-(: draw-coord : ( -> (Listof Integer)))
-(define (draw-coord )
+(: draw-coord : ( (Instance DC<%>) -> (Listof Integer)))
+(define (draw-coord dc)
   (let* ([bc : t (background 1 ( cons 1  2))])
            (list (width bc) (height bc) (width bc) (height bc)))
 )
@@ -388,7 +409,7 @@ ported from OCaml and I will add the link to the source once it is finished.
       (send dc set-smoothing 'unsmoothed)
       (send dc set-brush "black" 'transparent)
       (send dc set-pen black-pen)
-      (let* ([dco  (draw-coord)] )
+      (let* ([dco  (draw-coord dc)] )
          (send dc draw-rectangle (max 0.0 (exact->inexact (car dco)))
                                  (max 0.0 (exact->inexact (cadr dco)))
                                  (max 0.0 (exact->inexact (caddr dco)))
