@@ -299,6 +299,7 @@ ported from OCaml and I will add the link to the source once it is finished.
 (: nlive : ((Pairof Integer Integer) ->
            Integer))
   (define  (nlive pt)
+    (printf " nlive ~a  " pt )
     ( let* ([neighbours (neigh topo pt )])
           (length
            ( filter (lambda (neighbour) (set-member? life neighbour )) neighbours )
@@ -308,23 +309,30 @@ ported from OCaml and I will add the link to the source once it is finished.
 
 (: f1 : ( Coord (HashTable Coord Integer)->  (HashTable Coord Integer)))
   (define  (f1 pt acc )
-    (printf "pair ~a " pt )
-    (for/hash ([(k v) (in-hash acc)]) (values k (printf "Value ~a" v)))
+    (printf "pair ~a~n " pt )
+    (for/hash ([(k v) (in-hash acc)]) (values (printf "Key ~a" k) (printf "Value ~a" v)))
     ( let* ([neighbour (cons pt  (neigh topo pt))])
-      (printf "Neighbour ~a " neighbour )
+      (printf "Neighbour ~a~n " neighbour )
       (foldl
-         (lambda ([pt : Coord ][accu : (HashTable Coord Integer)])
-           (match pt
+         (lambda ([pt1 : Coord ][acc : (HashTable Coord Integer)])
+         (begin
+         (printf "pair's neighbour ~a~n " pt1 )
+           (match pt1
            [ (cons -1  -1) acc]
-           [ pt (if (mem acc pt) acc accu) ]
-           [ pt
-               (let* ([n ( nlive pt )])
+           [ (cons x1 x2)
+                    (begin
+                    (printf "acc ~a " acc)
+                    (if (mem acc pt1)
+                      acc
+                    acc ))]
+           [ (cons x1 x2)
+               (let* ([n ( nlive pt1 )])
                       (printf " nlive ~a  " pt )
-                      (hash-set accu pt
-                        (if (and (or (= n 3) (= n 2)) ( set-member? life pt))
+                      (hash-set acc pt1
+                        (if (and (or (= n 3) (= n 2)) ( set-member? life pt1))
                         0
                         1)
-                        ))]))
+                        ))])))
          acc neighbour )
     )
   )
@@ -345,7 +353,7 @@ ported from OCaml and I will add the link to the source once it is finished.
 (: render : (  (Instance DC<%>) Integer Integer Integer (HashTable Coord Integer) ->
                          t))
 (define (render dc w h step life )
-  (define lightred (make-object color% 255 0 0))
+  (define lightred (make-object color% 255 10 10))
   (define gray (make-object color% 128 128 128))
 
   (tabulate w (- h  1) (lambda (x y)
@@ -357,7 +365,7 @@ ported from OCaml and I will add the link to the source once it is finished.
         (send dc set-text-foreground gray)
         (background dc step pt))
       (begin
-        (send dc draw-text "." 100 100)
+        (send dc draw-text "●"  100 100)
         (background dc step pt))
       )
      )
@@ -409,16 +417,23 @@ ported from OCaml and I will add the link to the source once it is finished.
 (define (renderer dc)
 (let* ([life  (step (torus (cons 100 100)) lifeseed)]
          [hash : (Mutable-HashTable Coord Integer) (make-hasheq)])
-    (: hasher :  (HashTable Coord Integer ))
-    (define hasher
+      (begin
+          (printf "Set ~a\n" (set-count life))
       (for/fold ([hash : (Mutable-HashTable Coord Integer) hash]) ; Initial accumulator is hash
                 ([pair (in-set life)])
         (begin
           (hash-set hash pair 0)
+          (printf "Hashes ~a\n" hash)
+
+    (for/hash ([(k v) (in-hash hash)])
+    (begin
+      (printf "Key: ~a, Value: ~a\n" k v)
+      (values k  v)))
           hash
         ))
       )
-    (render dc 100 100 1 hasher )
+
+    (render dc 100 100 1 hash )
     (void)
    )
 )
