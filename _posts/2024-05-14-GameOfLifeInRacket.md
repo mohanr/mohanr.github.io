@@ -178,10 +178,10 @@ ported from OCaml and I will add the link to the source once it is finished.
 
  (require (submod ".." I))
  (require threading)
- (require racket/set)
  (require  "gameset.rkt" "coord.rkt" "gamemap.rkt")
+ (require typed/racket/gui)
 
- (provide step torus erem linspcm background )
+ (provide render step torus erem linspcm background )
 
  (: erem (  Integer Integer ->
                           Integer))
@@ -258,9 +258,9 @@ ported from OCaml and I will add the link to the source once it is finished.
 
 
 
-(: background : (Integer (Pairof Integer Integer) ->
+(: background : ( (Instance DC<%>) Integer (Pairof Integer Integer) ->
                          t  ))
-(define (background step nm)
+(define (background dc step nm)
   (let*  ([k  (* 24.  (sin (/ (+ (+ step (cdr nm))  (car nm))  10.))) ]
          [q  (quotient ( exact-round k) 10)])
   (cond [(> q  0) (Hcompose (Empty) (Empty) (dim 50  50))]
@@ -337,14 +337,22 @@ ported from OCaml and I will add the link to the source once it is finished.
 )
 
 
-(: render : ( Integer Integer Integer (HashTable Coord Integer) ->
-                         t ))
-(define (render w h step life )
+(: render : (  (Instance DC<%>) Integer Integer Integer (HashTable Coord Integer) ->
+                         t))
+(define (render dc w h step life )
+  (define lightred (make-object color% 255 0 0))
+  (define gray (make-object color% 128 128 128))
+
   (tabulate w (- h  1) (lambda (x y)
      (let* ([pt  (cons x  y)])
       (if (mem life pt )
-      (background step pt)
-      (background step pt)
+      (begin
+        (send dc set-text-foreground lightred)
+        (send dc set-text-foreground gray)
+        (background dc step pt))
+      (begin
+        (send dc draw-text "." 100 100)
+        (background dc step pt))
       )
      )
    )
@@ -358,7 +366,7 @@ ported from OCaml and I will add the link to the source once it is finished.
 (require typed/racket/gui)
 (require (submod ".." Shape))
  (require (submod ".." I))
- (require "coord.rkt")
+ (require "coord.rkt" "gameset.rkt")
 (provide start)
 
 (define black-brush (new brush% [color "black"]))
@@ -391,10 +399,22 @@ ported from OCaml and I will add the link to the source once it is finished.
   (step (torus (cons 100 100) ) lifeseed )
 )
 
-(: draw-coord : ( (Instance DC<%>) -> (Listof Integer)))
-(define (draw-coord dc)
-  (let* ([bc : t (background 1 ( cons 1  2))])
-           (list (width bc) (height bc) (width bc) (height bc)))
+(: renderer : ( (Instance DC<%>) -> Void))
+(define (renderer dc)
+(let* ([life  (step (torus (cons 100 100)) lifeseed)]
+         [hash : (Mutable-HashTable Coord Integer) (make-hasheq)])
+    (: hasher :  (HashTable Coord Integer ))
+    (define hasher
+      (for/fold ([hash : (Mutable-HashTable Coord Integer) hash]) ; Initial accumulator is hash
+                ([pair (in-set life)])
+        (begin
+          (hash-set hash pair 0)
+          hash
+        ))
+      )
+    (render dc 100 100 1 hasher )
+    (void)
+   )
 )
 
 ;; The GUI frame showing our game
@@ -409,14 +429,9 @@ ported from OCaml and I will add the link to the source once it is finished.
       (send dc set-smoothing 'unsmoothed)
       (send dc set-brush "black" 'transparent)
       (send dc set-pen black-pen)
-      (let* ([dco  (draw-coord dc)] )
-         (send dc draw-rectangle (max 0.0 (exact->inexact (car dco)))
-                                 (max 0.0 (exact->inexact (cadr dco)))
-                                 (max 0.0 (exact->inexact (caddr dco)))
-                                 (max 0.0 (exact->inexact (cadddr dco))))
-      )
       (send this suspend-flush)
       (send this resume-flush)
+      (renderer dc)
       )
       (send the-frame show #t)
       (send the-frame focus)
