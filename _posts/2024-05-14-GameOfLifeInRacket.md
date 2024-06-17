@@ -308,15 +308,19 @@ ported from OCaml and I will add the link to the source once it is finished.
 
 (: f1 : ( Coord (HashTable Coord Integer)->  (HashTable Coord Integer)))
   (define  (f1 pt acc )
+    (printf "pair ~a " pt )
+    (for/hash ([(k v) (in-hash acc)]) (values k (printf "Value ~a" v)))
     ( let* ([neighbour (cons pt  (neigh topo pt))])
+      (printf "Neighbour ~a " neighbour )
       (foldl
-         (lambda ([pt : Coord ][acc : (HashTable Coord Integer)])
+         (lambda ([pt : Coord ][accu : (HashTable Coord Integer)])
            (match pt
-           [ (cons -1  -1)  acc]
-           [ pt (if (mem acc pt) acc acc) ]
+           [ (cons -1  -1) acc]
+           [ pt (if (mem acc pt) acc accu) ]
            [ pt
                (let* ([n ( nlive pt )])
-                      (hash-set acc pt
+                      (printf " nlive ~a  " pt )
+                      (hash-set accu pt
                         (if (and (or (= n 3) (= n 2)) ( set-member? life pt))
                         0
                         1)
@@ -324,13 +328,14 @@ ported from OCaml and I will add the link to the source once it is finished.
          acc neighbour )
     )
   )
-
-(: eliminate : -> ( HashTable Coord Integer))
 (define (eliminate)
-  (for/fold ([acc : (HashTable Coord Integer) (make-hasheq)])  ; Initialize an empty mutable hash table
-          ([pair : Coord life])  ; Iterate over each pair in pairs
-    (f1 pair acc))
- )
+  (define acc  : (Mutable-HashTable Coord Integer) (make-hasheq)) ; Initialize an empty mutable hash table
+  (for/fold ([acc : (Mutable-HashTable Coord Integer) acc]) ; Use for/fold to accumulate results
+            ([pair life])
+    (begin
+      (f1 pair acc)
+      (printf "hash-count ~a " (hash-count acc))
+      acc))) ; Return acc after folding
 
  (preimg (lambda ([ x : Number] )( = x 0))  (eliminate))
 
@@ -347,6 +352,7 @@ ported from OCaml and I will add the link to the source once it is finished.
      (let* ([pt  (cons x  y)])
       (if (mem life pt )
       (begin
+        (displayln "Rendering...")
         (send dc set-text-foreground lightred)
         (send dc set-text-foreground gray)
         (background dc step pt))
