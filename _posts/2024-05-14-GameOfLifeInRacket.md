@@ -224,20 +224,6 @@ ported from OCaml and I will add the link to the source once it is finished.
 ( : neigh : (Coord -> Coord )
              (Pairof Integer Integer) -> (Listof (Pairof Integer Integer)))
 (define (neigh topo ab)
-  ;; (let* ([a (car topo)]
-  ;;        [b (cdr topo)]
-  ;;        [a-1 (sub1 (car topo))]
-  ;;        [a+1 (add1 (car topo))]
-  ;;        [b-1 (sub1 (cdr topo))]
-  ;;        [b+1 (add1 (cdr topo))])
-  ;;         `((,a-1 . ,b)
-  ;;               (,a+1 . ,b)
-  ;;               (,a-1 . ,b-1)
-  ;;               (,a-1 . ,b+1)
-  ;;               (,a . ,b-1)
-  ;;               (,a . ,b+1)
-  ;;               (,a+1 . ,b-1)
-  ;;               (,a+1 . ,b+1))  ))
   (let* ([a (car ab)]
          [b (cdr ab)]
          [a-1 (sub1 (car ab))]
@@ -261,11 +247,26 @@ ported from OCaml and I will add the link to the source once it is finished.
 (: background : ( (Instance DC<%>) Integer (Pairof Integer Integer) ->
                          t  ))
 (define (background dc step nm)
-  (let*  ([k  (* 24.  (sin (/ (+ (+ step (cdr nm))  (car nm))  10.))) ]
-         [q  (quotient ( exact-round k) 10)])
-  (cond [(> q  0) (Hcompose (Empty) (Empty) (dim 50  50))]
-        [else (Hcompose (Empty) (Empty) (dim 5 5))]
-        ))
+(let* ([float-sum (/ (exact->inexact (+ step (cdr nm) (car nm))) 10.0)]
+       [sin-value (* 24.0 (sin float-sum))]
+       [k (truncate sin-value)])
+  (cond [(> k  0)
+        (begin
+          (printf "Drawing at ~a , ~a~n" (car nm ) (cdr nm))
+          (define gray-value (make-object color% 1 2 3))
+          (send dc set-pen gray-value 1 'solid)
+          (send dc set-text-foreground gray-value)
+          (send dc draw-text "●"  (cdr nm) (car nm))
+        )
+          (Hcompose (Empty) (Empty) (dim 50  50))
+        ]
+        [else
+        (begin
+          (send dc set-pen "red" 1 'solid)
+          (send dc draw-rectangle (car nm) (cdr nm) 4 4)
+        )
+          (Hcompose (Empty) (Empty) (dim 5 5))
+        ]))
 )
 
 
@@ -307,27 +308,23 @@ ported from OCaml and I will add the link to the source once it is finished.
     )
   )
 
-(: f1 : ( Coord (HashTable Coord Integer)->  (HashTable Coord Integer)))
+(: f1 : ( Coord (Immutable-HashTable Coord Integer)->  (Immutable-HashTable Coord Integer)))
   (define  (f1 pt acc )
-    (printf "pair ~a~n " pt )
-    (for/hash ([(k v) (in-hash acc)]) (values (printf "Key ~a" k) (printf "Value ~a" v)))
+    ;; (printf "pair ~a~n " pt )
+    ;; (for/hash ([(k v) (in-hash acc)]) (values (printf " Key ~a" k) (printf "Value ~a~n" v)))
     ( let* ([neighbour (cons pt  (neigh topo pt))])
-      (printf "Neighbour ~a~n " neighbour )
+      ;; (printf "Neighbour ~a~n " neighbour )
+
       (foldl
-         (lambda ([pt1 : Coord ][acc : (HashTable Coord Integer)])
+         (lambda ([pt1 : Coord ][acc : (Immutable-HashTable Coord Integer)])
          (begin
-         (printf "pair's neighbour ~a~n " pt1 )
            (match pt1
            [ (cons -1  -1) acc]
            [ (cons x1 x2)
-                    (begin
-                    (printf "acc ~a " acc)
-                    (if (mem acc pt1)
-                      acc
-                    acc ))]
+                    #:when (mem acc pt1)
+                    acc ]
            [ (cons x1 x2)
                (let* ([n ( nlive pt1 )])
-                      (printf " nlive ~a  " pt )
                       (hash-set acc pt1
                         (if (and (or (= n 3) (= n 2)) ( set-member? life pt1))
                         0
@@ -337,13 +334,13 @@ ported from OCaml and I will add the link to the source once it is finished.
     )
   )
 (define (eliminate)
-  (define acc  : (Mutable-HashTable Coord Integer) (make-hasheq)) ; Initialize an empty mutable hash table
-  (for/fold ([acc : (Mutable-HashTable Coord Integer) acc]) ; Use for/fold to accumulate results
+  (define acc  : (Immutable-HashTable Coord Integer) (make-immutable-hasheq)) ; Initialize an empty mutable hash table
+  (for/fold ([acc : (Immutable-HashTable Coord Integer) acc]) ; Use for/fold to accumulate results
             ([pair life])
     (begin
-      (f1 pair acc)
-      (printf "hash-count ~a " (hash-count acc))
-      acc))) ; Return acc after folding
+      (let ([accu (f1 pair acc)])
+      accu)))
+); Return acc after folding
 
  (preimg (lambda ([ x : Number] )( = x 0))  (eliminate))
 
@@ -360,12 +357,9 @@ ported from OCaml and I will add the link to the source once it is finished.
      (let* ([pt  (cons x  y)])
       (if (mem life pt )
       (begin
-        (displayln "Rendering...")
-        (send dc set-text-foreground lightred)
-        (send dc set-text-foreground gray)
-        (background dc step pt))
+        (send dc draw-text "●" x y )
+        (Hcompose (Empty) (Empty) (dim 50  50)))
       (begin
-        (send dc draw-text "●"  100 100)
         (background dc step pt))
       )
      )
@@ -408,32 +402,28 @@ ported from OCaml and I will add the link to the source once it is finished.
 (define lifeseed
              '((2 . 1) (3 . 2) (1 . 3) (2 . 3) (3 . 3 )))
 
-(: generate : (Setof Coord))
-(define generate
-  (step (torus (cons 100 100) ) lifeseed )
-)
 
 (: renderer : ( (Instance DC<%>) -> Void))
 (define (renderer dc)
-(let* ([life  (step (torus (cons 100 100)) lifeseed)]
-         [hash : (Mutable-HashTable Coord Integer) (make-hasheq)])
+(let* ([life  (step (torus (cons 300 300)) lifeseed)]
+       [hash : (Immutable-HashTable Coord Integer) (make-immutable-hasheq)])
       (begin
-          (printf "Set ~a\n" (set-count life))
-      (for/fold ([hash : (Mutable-HashTable Coord Integer) hash]) ; Initial accumulator is hash
+      (printf "Set count ~a\n" (set-count life))
+      (for/fold ([hash : (Immutable-HashTable Coord Integer) hash]) ; Initial accumulator is hash
                 ([pair (in-set life)])
         (begin
           (hash-set hash pair 0)
-          (printf "Hashes ~a\n" hash)
 
-    (for/hash ([(k v) (in-hash hash)])
-    (begin
-      (printf "Key: ~a, Value: ~a\n" k v)
-      (values k  v)))
+          (for/hash ([(k v) (in-hash hash)])
+            (begin
+              (printf " Key: ~a, Value: ~a~n" k v)
+              (values k  v)))
           hash
-        ))
+        )
+      )
       )
 
-    (render dc 100 100 1 hash )
+    (render dc 300 300 1 hash )
     (void)
    )
 )
@@ -479,37 +469,16 @@ ported from OCaml and I will add the link to the source once it is finished.
 
 ( require 'Gui)
 (require 'Shape)
-;; (start)
-
-(: fn1 ( Integer -> Integer))
-(define (fn1 x )
-  (displayln x)
-  (+ x 1)
- )
+(start)
 {% endhighlight %}
 
 
 # game-test.rkt
+A simple incomplete test shown here as an example.
 
 {% highlight racket %}
-
-#lang typed/racket
-(require "gameset.rkt" "gamemap.rkt")
-
-(require racket/match)
-(require racket/hash)
-(require typed/rackunit)
-
-;; Unused
-(: fn ( Integer -> Integer))
-(define (fn obj)
-  (+ obj 1)
- )
-
-( check-equal? (mapper fn (set 1 2)) (set 2 3) "Test unsuccessfull")
-( check-equal? (oflist '(2 3)) (set 2 3) "Test unsuccessfull")
 ( check-equal? (preimg (lambda (x) (= x 0))
-                       (make-hash '([3 . 1] [1 . 2] [10 . 0]))) (set 10) "Test unsuccessfull")
+                       (make-immutable-hash '([3 . 1] [1 . 2] [10 . 0]))) (set 10) "Test unsuccessfull")
 {% endhighlight %}
 
 # Racket GUI
