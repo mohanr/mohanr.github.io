@@ -252,18 +252,17 @@ ported from OCaml and I will add the link to the source once it is finished.
        [k (truncate sin-value)])
   (cond [(> k  0)
         (begin
-          (printf "Drawing at ~a , ~a~n" (car nm ) (cdr nm))
-          (define gray-value (make-object color% 1 2 3))
-          (send dc set-pen gray-value 1 'solid)
-          (send dc set-text-foreground gray-value)
+          (define gray (make-object color% 128 128 128))
+          (send dc set-pen gray 1 'solid)
+          (send dc set-text-foreground gray)
           (send dc draw-text "●"  (cdr nm) (car nm))
         )
           (Hcompose (Empty) (Empty) (dim 50  50))
         ]
         [else
         (begin
-          (send dc set-pen "red" 1 'solid)
-          (send dc draw-rectangle (car nm) (cdr nm) 4 4)
+          (send dc set-pen "white" 1 'solid)
+          (send dc draw-rectangle (car nm) (cdr nm) 14 24)
         )
           (Hcompose (Empty) (Empty) (dim 5 5))
         ]))
@@ -334,15 +333,19 @@ ported from OCaml and I will add the link to the source once it is finished.
     )
   )
 (define (eliminate)
-  (define acc  : (Immutable-HashTable Coord Integer) (make-immutable-hasheq)) ; Initialize an empty mutable hash table
-  (for/fold ([acc : (Immutable-HashTable Coord Integer) acc]) ; Use for/fold to accumulate results
+  (define acc  : (Immutable-HashTable Coord Integer) (make-immutable-hasheq))
+  (for/fold ([acc : (Immutable-HashTable Coord Integer) acc])
             ([pair life])
     (begin
+      (for/hash ([(k v) (in-hash acc)]) (values (printf " Key ~a" k) (printf "Value ~a~n" v)))
       (let ([accu (f1 pair acc)])
       accu)))
 ); Return acc after folding
 
- (preimg (lambda ([ x : Number] )( = x 0))  (eliminate))
+ (let* ([s (preimg (lambda ([ x : Number] )( = x 0))  (eliminate))])
+   s
+  )
+
 
 )
 
@@ -352,12 +355,15 @@ ported from OCaml and I will add the link to the source once it is finished.
 (define (render dc w h step life )
   (define lightred (make-object color% 255 10 10))
   (define gray (make-object color% 128 128 128))
-
+  (printf "Life count ~a ~n" (hash-count life))
+  (for/hash ([(k v) (in-hash life)]) (values (printf " Key ~a" k) (printf "Value ~a~n" v)))
   (tabulate w (- h  1) (lambda (x y)
      (let* ([pt  (cons x  y)])
       (if (mem life pt )
       (begin
-        (send dc draw-text "●" x y )
+        (printf "Drawing at ~a , ~a~n" x y)
+        (send dc set-text-foreground lightred)
+        (send dc draw-text "●"  x y )
         (Hcompose (Empty) (Empty) (dim 50  50)))
       (begin
         (background dc step pt))
@@ -405,25 +411,18 @@ ported from OCaml and I will add the link to the source once it is finished.
 
 (: renderer : ( (Instance DC<%>) -> Void))
 (define (renderer dc)
-(let* ([life  (step (torus (cons 300 300)) lifeseed)]
-       [hash : (Immutable-HashTable Coord Integer) (make-immutable-hasheq)])
+(let* ([life  (step (torus (cons 300 300)) lifeseed)])
       (begin
       (printf "Set count ~a\n" (set-count life))
-      (for/fold ([hash : (Immutable-HashTable Coord Integer) hash]) ; Initial accumulator is hash
+
+    (: updated-hash : (Immutable-HashTable Coord Integer) )
+    (define updated-hash
+      (for/fold ([acc  : (Immutable-HashTable Coord Integer) (make-immutable-hasheq)])
                 ([pair (in-set life)])
-        (begin
-          (hash-set hash pair 0)
-
-          (for/hash ([(k v) (in-hash hash)])
-            (begin
-              (printf " Key: ~a, Value: ~a~n" k v)
-              (values k  v)))
-          hash
-        )
-      )
+        (hash-set acc pair 0)))
       )
 
-    (render dc 300 300 1 hash )
+    (render dc 300 300 1 updated-hash )
     (void)
    )
 )
