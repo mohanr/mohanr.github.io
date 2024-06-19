@@ -253,16 +253,16 @@ ported from OCaml and I will add the link to the source once it is finished.
   (cond [(> k  0)
         (begin
           (define gray (make-object color% 128 128 128))
-          (send dc set-pen gray 1 'solid)
-          (send dc set-text-foreground gray)
-          (send dc draw-text "●"  (cdr nm) (car nm))
+          ;; (send dc set-pen gray 1 'solid)
+          ;; (send dc set-text-foreground gray)
+          ;; (send dc draw-text "●"  (cdr nm) (car nm))
         )
           (Hcompose (Empty) (Empty) (dim 50  50))
         ]
         [else
         (begin
-          (send dc set-pen "white" 1 'solid)
-          (send dc draw-rectangle (car nm) (cdr nm) 14 24)
+          ;; (send dc set-pen "red" 1 'solid)
+          ;; (send dc draw-rectangle (car nm) (cdr nm) 14 24)
         )
           (Hcompose (Empty) (Empty) (dim 5 5))
         ]))
@@ -287,7 +287,10 @@ ported from OCaml and I will add the link to the source once it is finished.
          [n (max n 0)])
   (linspcm (Empty)  0 n (lambda (y)
                                   (linspcm (Empty)  0 m (lambda (x)
-                                                               (f x y))
+                                                               (begin
+                                                               ;; (printf "Tabulate with ~a ~a  ~n" x  y)
+                                                               (f x y)
+                                                               ))
                             <#>))
          <->)
     )
@@ -348,29 +351,40 @@ ported from OCaml and I will add the link to the source once it is finished.
 
 
 )
-
+(: live-pair : (  (HashTable Coord Integer) (Pairof Integer Integer) -> Void))
+(define (live-pair life pt)
+  (for ([(k v) (in-hash life)])
+    (when (equal? k pt)
+      (printf "Key ~a~n" k)
+      (printf "Value ~a~n" v))))
 
 (: render : (  (Instance DC<%>) Integer Integer Integer (HashTable Coord Integer) ->
                          t))
 (define (render dc w h step life )
   (define lightred (make-object color% 255 10 10))
-  (define gray (make-object color% 128 128 128))
   (printf "Life count ~a ~n" (hash-count life))
-  (for/hash ([(k v) (in-hash life)]) (values (printf " Key ~a" k) (printf "Value ~a~n" v)))
   (tabulate w (- h  1) (lambda (x y)
+     ;; (live-pair life (cons x y))
+
      (let* ([pt  (cons x  y)])
-      (if (mem life pt )
-      (begin
-        (printf "Drawing at ~a , ~a~n" x y)
-        (send dc set-text-foreground lightred)
-        (send dc draw-text "●"  x y )
-        (Hcompose (Empty) (Empty) (dim 50  50)))
-      (begin
-        (background dc step pt))
+       (for ([(k v) (in-hash life)])
+         (if (equal? k pt)
+               (begin
+                 ;; (printf "Drawing at ~a , ~a~n" x y)
+
+                 (send dc set-pen "blue" 2 'solid)
+                 (send dc draw-rectangle x y 1 2)
+                 ;; (send dc set-text-foreground lightred)
+                 ;; (send dc draw-text "●"  x y )
+                 (Hcompose (Empty) (Empty) (dim 50  50)))
+               (begin
+                 (background dc step pt))
+        )
+       )
+                 (Hcompose (Empty) (Empty) (dim 50  50))
       )
-     )
-   )
   )
+)
 )
 )
 
@@ -636,6 +650,13 @@ to Racket. This wasn't envisaged.
 
 {% endhighlight %}
 
+# Conclusion
+
+There is a logical end to this. The code is almost complete. It renders the UI but a part
+of the code does not properly draw the live cells in the UI. But at this time I have concluded
+that I have exercised my Racket Functional Programming skills sufficiently. 
+And I learnt many aspects of Racket and this knowledge will be useful when I tackle other
+interesting problems.
 
 _References
 1. https://github.com/pqwy/notty ( This isn't utilized because my Racket code is just a canvas, Not
