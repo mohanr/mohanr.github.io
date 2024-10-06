@@ -9,6 +9,12 @@ string manipulation algorithms, CRDTs and even LLM inference. So even though a f
 editor is not in scope here, many algorithms like these can be explored and a functional
 editor can be created.
 
+# OCaml 5 Effect Handlers
+
+I will add some sections like this to explain the reason for experimenting with new paradigms. In many cases the code is too dense and will seem complicated when new techniques are introduced needlessly but Effect handlers are interesting to learn. Application though should be selective. There will be many usecases for these in the future.
+
+So the following is an experiment.
+
 {% highlight OCaml %}
 
 open Stdlib
@@ -79,4 +85,4 @@ let () =
   try effective
   with
   | exn -> Printf.printf "Unhandled exception: %s\n%!" (Printexc.to_string exn)
-{% highlight OCaml %}
+{% endhighlight OCaml %}
