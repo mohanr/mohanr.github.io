@@ -22,7 +22,7 @@ So the following is an experiment.
 
 # Breaking paragraphs into lines
 
-The title describes the essence of once such algorithm( Plass and Knuth ) to break paragraphs.
+The title describes the essence of one such algorithm( Plass and Knuth ) to break paragraphs.
 
 {% highlight OCaml %}
 open Stdlib
