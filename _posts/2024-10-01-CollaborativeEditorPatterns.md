@@ -18,7 +18,8 @@ There are too many books and papers that deal with a multitude of algorithms.
 
 I will add some sections like this to explain the reason for experimenting with new paradigms. In many cases the code is too dense and will seem complicated when new techniques are introduced needlessly but Effect handlers are interesting to learn. Application though should be selective. There will be many usecases for these in the future.
 
-So the following is an experiment.
+So the following is an experiment in the sense that the code quality will be fixed only later. So, for example, global references are used to complete the code even though they
+are unnecessary.
 
 # Breaking paragraphs into lines
 
@@ -36,50 +37,53 @@ type entry = {
   mutable score  : int}
 
 
-let l = ref []
+let gl = ref []
 
 let is_space= function ' ' -> true | _ -> false
 
-let final_state (start, idx) =
+let final_state l (start, idx) =
 
   let e = {first = start; last = idx; next = -1; score = -1} in
    l := !l @ [e];
-  Printf.printf " Final state %d %d%!" start idx
+  Printf.printf " Final state %d %d\n" start idx;
+  Printf.printf " Size of list is %d\n" (List.length !l);
+  l
 
 type _ Effect.t += Skipping_spaces :  (int * int ) -> unit Effect.t
 
-let parabreak  text ideal_width max_width  =
+let parabreak l text ideal_width max_width  =
+  Printf.printf " parabreak\n";
   let start = ref 0 in
   let idx,_ =
   String.fold_left (fun (idx,word_or_space) c ->
                        match (is_space c, word_or_space)  with
                        | (true,true)
                            ->
-                           (* Printf.printf "Space at index %d, skipping\n%!" idx; *)
+                           Printf.printf "Space at index %d, skipping\n" idx;
 
                            if !start < idx then
-                                perform (Skipping_spaces (!start,idx));
+                                perform (Skipping_spaces (!start,idx)  );
 
                            start := idx + 1;
                            (idx + 1,false);
                        | (true,false)
-                           -> Printf.printf "No Space at index %d, skipping\n%!" idx;
+                           -> Printf.printf "No Space at index %d, skipping\n" idx;
                            (idx + 1,false) 
                        | (false,_)
                            ->(idx + 1,true)) (0,false) text
  in
 
                            if !start < idx then
+                                Printf.printf "Final - Skipping spaces %d %d\n" !start idx;
                                 perform (Skipping_spaces (!start,idx));
-                           final_state (!start,idx)
-let effective text =
-  Printf.printf "Handling effects%!";
-  match_with (fun () -> parabreak text 10 29)
+                           final_state l (!start,idx)
+let effective text l =
+  match_with (fun () -> parabreak l text 10 29)
     ()
-  { effc = (fun (type c) (eff: c Effect.t) ->
-      match eff with
+  { effc = (fun (type c) (eff1: c Effect.t) ->
+      match eff1 with
       | Skipping_spaces (s,s1) -> Some (fun (k: (c,_) continuation) ->
-              (* Printf.printf "Skipping spaces \"%d %d\"\n%!" s s1; *)
+              Printf.printf "Skipping spaces \"%d %d\"\n" s s1;
 
               let e = {first = s; last = s1; next = -1; score = -1} in
               l := !l @ [e];
@@ -91,23 +95,30 @@ let effective text =
         | e -> raise e
   );
   (* retc = fun _ -> failwith "Fatal error" *)
+  (* retc = (fun res -> Printf.printf "Computation returned %d: \n" (List.length !l)) *)
 
-  retc = (fun res -> Printf.printf "Computation returned: \n")
+  retc = (fun _ ->  l)
+
  }
 
 
 type _ Effect.t += Plass_break :  int -> unit Effect.t
 
 let rec plassbreak indent  idx idealwidth maxwidth =
-    let
-    lastrecord = List.nth !l idx in
+    (* Printf.printf "Size of list  in plassbreak is %d\n " (List.length !gl); *)
+
+   if idx < (List.length !gl) then(
+    let jdx = idx + 1 in
+    let lastrecord = List.nth !gl idx in
+    Printf.printf "let record = List.nth !gl idx in - %d\n" idx;
     let llen    = ref (lastrecord.last - lastrecord.first) in
     let bscore  = idealwidth - !llen in
-    let bscore  = ref (bscore * 2) in
-    let btail   = ref (idx + 1) in
+    let bscore  = ref (bscore * bscore) in
+    let btail   = ref jdx in
     let _ =
     List.fold_left (fun acc entry ->
 
+   if acc < (List.length !gl) then(
         match entry with
          | {first; last; next; score}  ->
             let wwidth  = last - first in
@@ -121,10 +132,10 @@ let rec plassbreak indent  idx idealwidth maxwidth =
               llen        := !llen + wwidth + 1;
 
               if score == -1 then
-                plassbreak  (indent + 1) (acc + 1) idealwidth maxwidth;
+                plassbreak  (indent + 1) acc idealwidth maxwidth;
 
               let
-                record = List.nth !l acc  in
+                record = List.nth !gl acc  in
                 if ((!lscore + score) < !bscore) then(
                   bscore  := !lscore + record.score;
                   btail   := acc;
@@ -132,25 +143,26 @@ let rec plassbreak indent  idx idealwidth maxwidth =
 
            acc + 1;
            )
-      ) idx !l in
+     )else acc
+      ) jdx !gl in
 
-  let record = List.nth !l idx in
+  let record = List.nth !gl idx in
+  Printf.printf "let record = List.nth !gl idx in - %d\n" idx;
   record.next <- !btail;
   record.score <- !bscore;
-
-  if (record.next + 1) = List.length !l then (
+  if (record.next + 1) = List.length !gl then(
        record.score <- 0;
   )
+  )
 
-let pbreak =
+let pbreak  () =
 
-  Printf.printf "Handling effects%!";
-  match_with (fun () -> plassbreak 0 10 29)
-    ()
+  match_with (fun () -> plassbreak 0 0 10 29)
+()
   { effc = (fun (type c) (eff: c Effect.t) ->
       match eff with
-      | Plass_break s -> Some (fun (k: (c,_) continuation) ->
-              Printf.printf "Plass Break\"%d\"\n%!" s ;
+      | Plass_break s -> Some (fun (k1: (c,_) continuation) ->
+              Printf.printf "Plass Break %d\n" s ;
               (* continue k () *)
           )
       | _ -> None
@@ -158,13 +170,14 @@ let pbreak =
   exnc = (function
         | e -> raise e
   );
-  (* retc = fun _ -> failwith "Fatal error" *)
+  retc = fun _ -> failwith "Fatal error"
+  (* retc = (fun res -> Printf.printf "Computation returned: \n") *)
 
-  retc = (fun res -> Printf.printf "Computation returned: \n")
  }
 
 let rec loop_while line text lines idx next acc =
-    if acc > next || (acc + 1) >= List.length !l then
+    Printf.printf "%s\n" line;
+    if acc > next || (acc + 1) >= List.length !gl then
         line
     else
         let {first; last; _} = List.nth lines acc in
@@ -172,41 +185,58 @@ let rec loop_while line text lines idx next acc =
             line
         else
             let new_line =
-                line ^ (if acc = idx then "" else " ") ^
+                line ^ (if acc == idx then "" else " ") ^
                 String.sub text first (last - first)
             in
             loop_while  new_line text lines idx next (acc + 1)
 
 
 let  layout text idealwidth maxwidth =
+
  let rec loop idx lines line =
-    if idx < List.length !l then
-        let {first; last; next; _} = List.nth lines idx in
-        let line = loop_while line text lines idx next idx in
+     Printf.printf "loop %s\n" line;
+    if idx < List.length !gl then
+
+        let entry = List.nth lines idx in
+        let line = loop_while line text lines idx entry.next idx in
         if (String.length line < maxwidth)
         then
+        (
             let line = String.make (maxwidth - String.length line) ' ' in
+            Printf.printf "%s\n" line;
+        )
+        else(
             let subline = String.sub line 0 idealwidth in
             let subline1 = String.sub line idealwidth (String.length line - idealwidth) in
             let line = subline ^ "+" ^ subline1 ^ "|" in
-            Printf.printf "%s\n" line;
-        else Printf.printf "%s" line;
-        loop (idx + 1) !l line
+            Printf.printf "else %s" line;
+            loop entry.next !gl line
+        )
     in
-    loop 0 !l ""
+    loop 0 !gl ""
 
 (* read the entire file *)
 let read_file() =
   let contents = In_channel.with_open_text "/Users/anu/Documents/go/wiki.txt" In_channel.input_all in
   contents
 
-let () =
+let pbreak_main =
   try
+      let l = ref [] in
       let file_contents = read_file() in
-      let _ = effective file_contents in
-      let _ = pbreak in
-      let _ = layout file_contents 10 30 in
+
+      let l1 = effective  file_contents l in
+      gl := !l1;
+
+      pbreak();
+      Printf.printf "Global list %d\n" (List.length !gl) ;
+
+      let _ = layout file_contents 10 20 in
+
       ()
+
+      (* List.iter( fun s -> Printf.printf "%d %d %d %d\n" s.first s.next s.last s.score ) !l *)
+
   with
-  | exn -> Printf.printf "Unhandled exception: %s\n%!" (Printexc.to_string exn)
+  | exn -> Printf.printf "Unhandled exception: %s\n" (Printexc.to_string exn)
 {% endhighlight OCaml %}
