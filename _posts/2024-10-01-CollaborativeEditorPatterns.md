@@ -229,7 +229,7 @@ reference to the algorithm. This OCaml code is ported from C++.
 There is a single bug that increases the _score_ and as a consequence breaks the paragraph
 at the wrong position. But even otherwise the breaks don't seem to be perfect.
 
-This has to surely improved when used by an editor. That is a task for the future.
+This has to be surely improved when used by an editor. That is a task for the future.
 
  The first +         | 
  first know+         | 
