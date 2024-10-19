@@ -41,9 +41,18 @@ let gl = ref []
 
 let is_space= function ' ' -> true | _ -> false
 
+let rec printlist l =
+  match l with
+  | hd  ::tl ->
+  Printf.printf " %d %d %d %d\n" hd.first hd.last hd.next hd.score;
+  printlist tl
+  | []  -> ()
+
 let final_state l (start, idx) =
 
-  let e = {first = start; last = idx; next = -1; score = -1} in
+  (* let e = {first = start; last = idx; next = -1; score = -1} in *)
+  (*  l := !l @ [e]; *)
+  let e = {first = -1; last = -1; next = -1; score = 0} in
    l := !l @ [e];
   Printf.printf " Final state %d %d\n" start idx;
   Printf.printf " Size of list is %d\n" (List.length !l);
@@ -70,7 +79,8 @@ let parabreak l text ideal_width max_width  =
                            -> Printf.printf "No Space at index %d, skipping\n" idx;
                            (idx + 1,false) 
                        | (false,_)
-                           ->(idx + 1,true)) (0,false) text
+                           ->
+                           (idx + 1,true)) (0,false) text
  in
 
                            if !start < idx then
@@ -102,122 +112,93 @@ let effective text l =
  }
 
 
-type _ Effect.t += Plass_break :  int -> unit Effect.t
-
 let rec plassbreak indent  idx idealwidth maxwidth =
-    (* Printf.printf "Size of list  in plassbreak is %d\n " (List.length !gl); *)
 
-   if idx < (List.length !gl) then(
-    let jdx = idx + 1 in
+    let jdx = ref( idx + 1 ) in
     let lastrecord = List.nth !gl idx in
-    Printf.printf "let record = List.nth !gl idx in - %d\n" idx;
     let llen    = ref (lastrecord.last - lastrecord.first) in
     let bscore  = idealwidth - !llen in
     let bscore  = ref (bscore * bscore) in
-    let btail   = ref jdx in
-    let _ =
-    List.fold_left (fun acc entry ->
-
-   if acc < (List.length !gl) then(
-        match entry with
-         | {first; last; next; score}  ->
+    let btail   = ref !jdx in
+    let rec loop_while j_dx =
+      if j_dx < (List.length !gl) then(
+         Printf.printf "llen: %d, bscore: %d, btail: %d\n" !llen !bscore !btail;
+         let {first; last; next; score} = List.nth !gl j_dx in
             let wwidth  = last - first in
-            if ((!llen + wwidth) >= maxwidth) then(
-                perform (Plass_break acc);
-                acc
-            )else(
+            if ((!llen + wwidth) < maxwidth) then(
 
               let lscore  = ref (idealwidth - (!llen + wwidth)) in
-              lscore      := !lscore * 2;
+              lscore      := !lscore * !lscore;
               llen        := !llen + wwidth + 1;
 
-              if score == -1 then
-                plassbreak  (indent + 1) acc idealwidth maxwidth;
+              if score = -1 then
+                begin
+                plassbreak  (indent + 1) j_dx idealwidth maxwidth;
+                end;
 
-              let
-                record = List.nth !gl acc  in
-                if ((!lscore + score) < !bscore) then(
-                  bscore  := !lscore + record.score;
-                  btail   := acc;
+                let score1 = List.nth !gl !jdx in
+                if ((!lscore + score1.score) < !bscore) then(
+                  bscore  := !lscore + score1.score;
+                  btail   := !jdx;
                 );
-
-           acc + 1;
-           )
-     )else acc
-      ) jdx !gl in
-
+                loop_while (j_dx + 1)
+            )else ()
+     )else ()
+    in
+    loop_while !jdx;
   let record = List.nth !gl idx in
-  Printf.printf "let record = List.nth !gl idx in - %d\n" idx;
-  record.next <- !btail;
   record.score <- !bscore;
+  record.next <- !btail;
   if (record.next + 1) = List.length !gl then(
        record.score <- 0;
   )
-  )
-
-let pbreak  () =
-
-  match_with (fun () -> plassbreak 0 0 10 29)
-()
-  { effc = (fun (type c) (eff: c Effect.t) ->
-      match eff with
-      | Plass_break s -> Some (fun (k1: (c,_) continuation) ->
-              Printf.printf "Plass Break %d\n" s ;
-              (* continue k () *)
-          )
-      | _ -> None
-  );
-  exnc = (function
-        | e -> raise e
-  );
-  retc = fun _ -> failwith "Fatal error"
-  (* retc = (fun res -> Printf.printf "Computation returned: \n") *)
-
- }
-
+  
 let rec loop_while line text lines idx next acc =
-    Printf.printf "%s\n" line;
     if acc > next || (acc + 1) >= List.length !gl then
+    (
         line
+    )
     else
         let {first; last; _} = List.nth lines acc in
         if (last - first) <= 0 then
-            line
-        else
+        (
+            line;
+        )
+        else(
             let new_line =
                 line ^ (if acc == idx then "" else " ") ^
                 String.sub text first (last - first)
             in
             loop_while  new_line text lines idx next (acc + 1)
+        )
 
 
 let  layout text idealwidth maxwidth =
 
  let rec loop idx lines line =
-     Printf.printf "loop %s\n" line;
-    if idx < List.length !gl then
+    if (idx < (List.length !gl - 1))  then
 
         let entry = List.nth lines idx in
         let line = loop_while line text lines idx entry.next idx in
+        let line =
         if (String.length line < maxwidth)
         then
         (
-            let line = String.make (maxwidth - String.length line) ' ' in
-            Printf.printf "%s\n" line;
-        )
-        else(
-            let subline = String.sub line 0 idealwidth in
-            let subline1 = String.sub line idealwidth (String.length line - idealwidth) in
-            let line = subline ^ "+" ^ subline1 ^ "|" in
-            Printf.printf "else %s" line;
-            loop entry.next !gl line
-        )
+            let line = line ^ String.make (maxwidth - String.length line) ' ' in
+            line
+        )else line
+        in
+        let line = Bytes.of_string line in
+        let _ = Bytes.set line idealwidth '+' in
+        let line = Bytes.to_string line ^ "|" in
+        Printf.printf " %s \n" line;
+        loop entry.next !gl ""
     in
     loop 0 !gl ""
 
 (* read the entire file *)
 let read_file() =
-  let contents = In_channel.with_open_text "/Users/anu/Documents/go/wiki.txt" In_channel.input_all in
+  let contents = In_channel.with_open_text "/Users/anu/Documents/go/testwiki.txt" In_channel.input_all in
   contents
 
 let pbreak_main =
@@ -228,15 +209,32 @@ let pbreak_main =
       let l1 = effective  file_contents l in
       gl := !l1;
 
-      pbreak();
+      let _ =  plassbreak 0 0 10 29 in
       Printf.printf "Global list %d\n" (List.length !gl) ;
+      printlist !gl;
 
       let _ = layout file_contents 10 20 in
 
       ()
 
-      (* List.iter( fun s -> Printf.printf "%d %d %d %d\n" s.first s.next s.last s.score ) !l *)
 
   with
   | exn -> Printf.printf "Unhandled exception: %s\n" (Printexc.to_string exn)
 {% endhighlight OCaml %}
+
+# Validation of the algorithm
+
+The test is the only validation now. The algorithm is not verified based on the original
+reference to the algorithm. This OCaml code is ported from C++.
+There is a single bug that increases the _score_ and as a consequence breaks the paragraph
+at the wrong position. But even otherwise the breaks don't seem to be perfect.
+
+This has to surely improved when used by an editor. That is a task for the future.
+
+ The first +         | 
+ first know+         | 
+ known use +         | 
+ use of    +         | 
+ of the    +         | 
+ the terms.+         | 
+ terms.    +         | 
