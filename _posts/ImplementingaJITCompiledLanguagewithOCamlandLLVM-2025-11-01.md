@@ -68,3 +68,29 @@ end
 let main text =
  Angstrom.parse_string ~consume:All LibAngstrom.lexer text
 {% endhighlght %}
+
+# The ADT
+
+{% highlght ocaml %}
+
+module Syntax = struct
+
+type name = string
+
+type 'a expr =
+    Const of float
+  | BinOp of 'a op * 'a expr * 'a expr
+  | Var of string
+  | Call of name * 'a expr list
+  | Function of name * 'a expr list  * 'a expr
+  | Extern of name * 'a expr list
+and 'a op
+  = Plus
+  | Minus
+  | Times
+  | Divide
+
+end
+
+{% endhighlght %}
+
