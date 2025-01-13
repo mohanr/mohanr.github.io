@@ -1,9 +1,21 @@
 ---
 layout: post
-title: Implementing a JIT compiler using OCaml and LLVM
-published: false
+title: Implementing a JIT compiled language using OCaml and LLVM
+published: true
 ---
 
+Notwithstanding the loftiness of the title, this is just a tutorial inspired by [Implementing a JIT Compiled Language with Haskell and LLVM](https://smunix.github.io/www.stephendiehl.com/llvm/index.html). I chose OCaml and decided to  select by own libraries to accomplish this.
+So, for example, the parser using Angstrom, which I know nothing about.
+
+While I code I also strive to learn.
+
+1. The code will be developed and refactored incrementally.
+2. The version posted here is compiled and tested but it is incomplete. The final version will be in Git if everything goes
+   according to plan.
+
+# Parser combinators
+
+Ported from Haskell to OCaml and uses _Angstrom_. Lightly tested.
 
 {% highlight ocaml %}
 module LibAngstrom = struct
@@ -49,7 +61,10 @@ let lexer =
       ws
       *> choice
       [
-        parens integer *> lexer;
+        parens integer ;
       ])
 end
+
+let main text =
+ Angstrom.parse_string ~consume:All LibAngstrom.lexer text
 {% endhighlght %}
