@@ -71,7 +71,7 @@ let main text =
 
 # The ADT
 
-{% highlght ocaml %}
+{% highlight ocaml %}
 
 module Syntax = struct
 
@@ -92,5 +92,5 @@ and 'a op
 
 end
 
-{% endhighlght %}
+{% endhighlight %}
 
