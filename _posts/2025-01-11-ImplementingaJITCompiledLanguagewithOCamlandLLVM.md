@@ -67,7 +67,7 @@ end
 
 let main text =
  Angstrom.parse_string ~consume:All LibAngstrom.lexer text
-{% endhighlght %}
+{% endhighlight %}
 
 # The ADT
 
