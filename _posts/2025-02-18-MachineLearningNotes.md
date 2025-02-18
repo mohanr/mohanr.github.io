@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Machine Learning notes
-published: true
+published: false
 ---
 
 
