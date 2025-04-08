@@ -157,6 +157,26 @@ let get_indices filt  element hf =
   bit
 {% endhighlight %} 
 
+# An implementation from the sourse of RocksDB
+
+This is the code based on research papers intended for serious production systems. I've tried to port one
+of their implementations to OCaml. I am building gradually.
+
+This is a simple test to prove that _Int32_ has to be shifted right to avoid overflow that result in a negative
+number. 
+
+{% highlight ocaml %} 
+
+        let  high : int32 = 2100000000l in
+        let  low : int32 = 2000000000l in
+        Printf.printf "mid using >>> 1 = %ld mid using / 2   = %ld"
+          (Int32.shift_right_logical (Int32.add low  high) 1) (Int32.div (Int32.add low high)  (Int32.of_int 2)) ;
+
+{% endhighlight %} 
+
+> mid using >>> 1 = 2050000000 mid using / 2   = -97483648
+
+
 # Splay Tree
 
 ## Initial set of tests
