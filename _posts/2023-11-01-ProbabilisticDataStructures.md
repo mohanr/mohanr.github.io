@@ -157,7 +157,7 @@ let get_indices filt  element hf =
   bit
 {% endhighlight %} 
 
-# An implementation from the sourse of RocksDB
+# An implementation from the source of RocksDB
 
 This is the code based on research papers intended for serious production systems. I've tried to port one
 of their implementations to OCaml. I am building gradually.
