@@ -170,6 +170,7 @@ Nevertheless I have attempted to port it to OCaml.
 This is a simple test to convince myself that OCaml _Int32_ has to be shifted right to avoid overflow that result in a negative
 number. _Int64_ doesn't need this.
 
+
 {% highlight ocaml %} 
 
         let  high : int32 = 2100000000l in
@@ -180,6 +181,8 @@ number. _Int64_ doesn't need this.
 {% endhighlight %} 
 
 > mid using >>> 1 = 2050000000 mid using / 2   = -97483648
+
+> This should be tested thoroughly
 
 {% highlight ocaml %} 
 
@@ -295,7 +298,82 @@ end
         hash_maymatch_prepared filt h num_probes  base_offset log2_cacheline_bytes
 {% endhighlight %} 
 
+# An attempt to port _Murmurhash_ to OCaml to test the Bloom filter.
 
+
+> This should be tested thoroughly
+
+
+
+{% highlight ocaml %} 
+let bitmanipulation value =
+    Int32.logor
+      (Int32.logor
+         (Int32.logor
+            (Int32.logand value (Int32.shift_right (Int32.of_string "0xFF000000") 24))
+             (Int32.logand value (Int32.shift_right ( Int32.of_string "0x00FF0000") 8)))
+              (Int32.logand value (Int32.shift_left (Int32.of_string "0x0000FF00")  8)))
+               (Int32.logand value (Int32.shift_left (Int32.of_string "0x000000FF") 24))
+
+let murmurhash chunks len seed =
+  let c1 =  (Int32.of_string "0xcc9e2d51") in
+  let c2 =  (Int32.of_string "0x1b873593") in
+  let r1:int32 = (Int32.of_int 15) in
+  let r2:int32 = (Int32.of_int 13) in
+  let m = 5 in
+  let n =  (Int32.of_string "0xe6546b64") in
+  let h = ref Int32.zero in
+  let k = ref Int32.zero in
+
+  h := seed;
+
+    let rec byte_chunk i =
+     (* next 4 byte chunk of `key' *)
+
+    k := Bytes.get_int32_le chunks i;
+
+     (* encode next 4 byte chunk of `key' *)
+
+    k := Int32.mul !k c1;
+    k := Int32.logor (Int32.shift_left !k  (Int32.to_int r1))  (Int32.shift_right !k  (Int32.to_int (Int32.sub (Int32.of_int 32)  r1)));
+    k := Int32.mul !k c2;
+
+     (* append to hash *)
+
+    h := Int32.logxor !h !k;
+    h := Int32.logor (Int32.shift_left !h  (Int32.to_int r2))  (Int32.shift_right !h  (Int32.to_int (Int32.sub (Int32.of_int 32)  r1)));
+    h := Int32.add (Int32.mul !h  (Int32.of_int m))  n;
+
+    if i != 0 then
+        byte_chunk (i + 1)
+    else
+        ()
+  in  byte_chunk 0;
+  let k = ref (Int32.of_int 0) in
+  let l = len land 3 in
+  if l >= 3 then k :=  Int32.logxor  !k (Int32.shift_left (Bytes.get_int32_le chunks 2) 16);
+  if l >= 2 then k := Int32.logxor !k (Int32.shift_left (Bytes.get_int32_le chunks 1) 8);
+  if l >= 1 then begin
+      k := Int32.logxor !k (Bytes.get_int32_le chunks 0);
+      k := Int32.mul !k c1;
+      k := Int32.logxor (Int32.shift_left  !k (Int32.to_int r1)) (Int32.shift_right !k  (Int32.to_int (Int32.sub (Int32.of_int 32)  r1)));
+      k := Int32.mul !k c2;
+      h := Int32.logxor !h !k;
+  end;
+
+  h := Int32.logxor !h (Int32.of_int len);
+
+  h := Int32.logxor !h (Int32.shift_right !h 16);
+  h := Int32.mul !h  (Int32.of_string "0x85ebca6b");
+  h := Int32.logxor !h (Int32.shift_right !h 13);
+  h := Int32.mul !h  (Int32.of_string "0xc2b2ae35");
+  h := Int32.logxor !h (Int32.shift_right !h 16);
+
+  !h
+
+{% endhighlight %} 
+
+{% highlight ocaml %} 
 
 # Splay Tree
 
