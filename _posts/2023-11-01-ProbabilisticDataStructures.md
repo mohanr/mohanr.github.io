@@ -373,8 +373,6 @@ let murmurhash chunks len seed =
 
 {% endhighlight %} 
 
-{% highlight ocaml %} 
-
 # Splay Tree
 
 ## Initial set of tests
