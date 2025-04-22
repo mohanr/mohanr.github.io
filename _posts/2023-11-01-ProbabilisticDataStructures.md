@@ -167,8 +167,8 @@ of their implementations to OCaml. I am building gradually.
 This particular implementation found in _RocksDB_ source is considered legacy as they have a better implementation.
 Nevertheless I have attempted to port it to OCaml.
 
-This is a simple test to convince myself that OCaml _Int32_ has to be shifted right to avoid overflow that result in a negative
-number. _Int64_ doesn't need this.
+This is a simple test to convince myself that OCaml _Int32_ has to be shift_right_logical to avoid overflow that result in a negative
+number. _Int64_ doesn't need this as it is bigger.
 
 
 {% highlight ocaml %} 
@@ -182,8 +182,7 @@ number. _Int64_ doesn't need this.
 
 > mid using >>> 1 = 2050000000 mid using / 2   = -97483648
 
-> This should be tested thoroughly as _unsigned_ integers are absent in OCaml.
-
+> This should be tested thoroughly as _unsigned_ integers are absent in OCaml. 
 {% highlight ocaml %} 
 
 
@@ -302,6 +301,8 @@ end
 
 
 > This should be tested thoroughly as _unsigned_ integers are absent in OCaml. It prints wrong hashes now.
+> I get correct hashes only upto a
+> sequence of 3 bytes. Beyond that it is wrong.
 
 
 
@@ -318,28 +319,38 @@ let murmurhash chunks len seed =
   let l = Int32.div len (Int32.of_int 4) in
   h := seed;
 
-  for i = (Int32.to_int l) - 1 downto 0 do
-  k := Bytes.get_int32_le chunks (i * 4);
+ (* Printf.eprintf " %ld"  l; *)
 
-  k := Int32.mul !k c1;
+ for i = 0 to (Int32.to_int l) - 1 do
+  k :=
+  Int32.logor
+       (Int32.logor
+         (Int32.of_int (Bytes.get_uint8 chunks i))
+         (Int32.shift_left (Int32.of_int (Bytes.get_uint8 chunks ((i * 4)+ 1))) 8))
+       (Int32.logor
+         (Int32.shift_left (Int32.of_int (Bytes.get_uint8 chunks ((i * 4)+ 2))) 16)
+         (Int32.shift_left (Int32.of_int (Bytes.get_uint8 chunks ((i * 4)+ 3))) 24));
+
+  k := Int32.mul !k c1 ;
   k := Int32.logor (Int32.shift_left !k  (Int32.to_int r1))  (Int32.shift_right_logical !k  (Int32.to_int (Int32.sub (Int32.of_int 32)  r1)));
   k := Int32.mul !k c2;
 
   h := Int32.logxor !h !k;
   h := Int32.logor (Int32.shift_left !h  (Int32.to_int r2))  (Int32.shift_right_logical !h  (Int32.to_int (Int32.sub (Int32.of_int 32)  r1)));
-  h := Int32.add (Int32.mul !h m) n;
+  h := Int32.add ( Int32.mul !h m)  n;
+
   done;
 
   let k = ref (Int32.of_int 0) in
   let l = Int32.rem len (Int32.of_int 4) in
-  if l >= 3l then k :=  Int32.logxor  !k (Int32.shift_left  (Int32.of_int (Bytes.get_int16_le chunks 2)) 16);
+  if l >= 3l then k :=  Int32.logxor  !k (Int32.shift_left  (Int32.of_int (Bytes.get_uint8 chunks 2)) 16);
   if l >= 2l then k := Int32.logxor !k (Int32.shift_left (Int32.of_int (Bytes.get_uint8 chunks 1)) 8);
   if l >= 1l then begin
       k := Int32.logxor !k (Int32.of_int ((Char.code (Bytes.get chunks 0))));
-      k := Int32.mul !k c1;
+      k :=  Int32.mul !k c1;
       k := Int32.logxor (Int32.shift_left  !k (Int32.to_int r1))
           (Int32.shift_right_logical !k  (Int32.to_int (Int32.sub (Int32.of_int 32)  r1)));
-      k := Int32.mul !k c2;
+      k :=  Int32.mul !k c2;
       h := Int32.logxor !h !k;
   end;
 
