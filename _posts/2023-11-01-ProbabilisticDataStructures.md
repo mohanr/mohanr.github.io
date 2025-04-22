@@ -159,7 +159,7 @@ let get_indices filt  element hf =
 
 # An implementation from the source of RocksDB
 
-RocksDB(rocksdb.org) is an embeddable persistenc key-value store 
+RocksDB(rocksdb.org) is an embeddable persistence key-value store 
 
 This is the code based on research papers intended for serious production systems. I've tried to port one
 of their implementations to OCaml. I am building gradually.
@@ -182,7 +182,7 @@ number. _Int64_ doesn't need this.
 
 > mid using >>> 1 = 2050000000 mid using / 2   = -97483648
 
-> This should be tested thoroughly
+> This should be tested thoroughly as _unsigned_ integers are absent in OCaml.
 
 {% highlight ocaml %} 
 
@@ -301,73 +301,55 @@ end
 # An attempt to port _Murmurhash_ to OCaml to test the Bloom filter.
 
 
-> This should be tested thoroughly
+> This should be tested thoroughly as _unsigned_ integers are absent in OCaml. It prints wrong hashes now.
 
 
 
 {% highlight ocaml %} 
-let bitmanipulation value =
-    Int32.logor
-      (Int32.logor
-         (Int32.logor
-            (Int32.logand value (Int32.shift_right (Int32.of_string "0xFF000000") 24))
-             (Int32.logand value (Int32.shift_right ( Int32.of_string "0x00FF0000") 8)))
-              (Int32.logand value (Int32.shift_left (Int32.of_string "0x0000FF00")  8)))
-               (Int32.logand value (Int32.shift_left (Int32.of_string "0x000000FF") 24))
-
 let murmurhash chunks len seed =
-  let c1 =  (Int32.of_string "0xcc9e2d51") in
-  let c2 =  (Int32.of_string "0x1b873593") in
+  let c1 =  0xcc9e2d51l in
+  let c2 =  0x1b873593l in
   let r1:int32 = (Int32.of_int 15) in
   let r2:int32 = (Int32.of_int 13) in
-  let m = 5 in
+  let m = (Int32.of_int 5) in
   let n =  (Int32.of_string "0xe6546b64") in
   let h = ref Int32.zero in
   let k = ref Int32.zero in
-
+  let l = Int32.div len (Int32.of_int 4) in
   h := seed;
 
-    let rec byte_chunk i =
-     (* next 4 byte chunk of `key' *)
+  for i = (Int32.to_int l) - 1 downto 0 do
+  k := Bytes.get_int32_le chunks (i * 4);
 
-    k := Bytes.get_int32_le chunks i;
+  k := Int32.mul !k c1;
+  k := Int32.logor (Int32.shift_left !k  (Int32.to_int r1))  (Int32.shift_right_logical !k  (Int32.to_int (Int32.sub (Int32.of_int 32)  r1)));
+  k := Int32.mul !k c2;
 
-     (* encode next 4 byte chunk of `key' *)
+  h := Int32.logxor !h !k;
+  h := Int32.logor (Int32.shift_left !h  (Int32.to_int r2))  (Int32.shift_right_logical !h  (Int32.to_int (Int32.sub (Int32.of_int 32)  r1)));
+  h := Int32.add (Int32.mul !h m) n;
+  done;
 
-    k := Int32.mul !k c1;
-    k := Int32.logor (Int32.shift_left !k  (Int32.to_int r1))  (Int32.shift_right !k  (Int32.to_int (Int32.sub (Int32.of_int 32)  r1)));
-    k := Int32.mul !k c2;
-
-     (* append to hash *)
-
-    h := Int32.logxor !h !k;
-    h := Int32.logor (Int32.shift_left !h  (Int32.to_int r2))  (Int32.shift_right !h  (Int32.to_int (Int32.sub (Int32.of_int 32)  r1)));
-    h := Int32.add (Int32.mul !h  (Int32.of_int m))  n;
-
-    if i != 0 then
-        byte_chunk (i + 1)
-    else
-        ()
-  in  byte_chunk 0;
   let k = ref (Int32.of_int 0) in
-  let l = len land 3 in
-  if l >= 3 then k :=  Int32.logxor  !k (Int32.shift_left (Bytes.get_int32_le chunks 2) 16);
-  if l >= 2 then k := Int32.logxor !k (Int32.shift_left (Bytes.get_int32_le chunks 1) 8);
-  if l >= 1 then begin
-      k := Int32.logxor !k (Bytes.get_int32_le chunks 0);
+  let l = Int32.rem len (Int32.of_int 4) in
+  if l >= 3l then k :=  Int32.logxor  !k (Int32.shift_left  (Int32.of_int (Bytes.get_int16_le chunks 2)) 16);
+  if l >= 2l then k := Int32.logxor !k (Int32.shift_left (Int32.of_int (Bytes.get_uint8 chunks 1)) 8);
+  if l >= 1l then begin
+      k := Int32.logxor !k (Int32.of_int ((Char.code (Bytes.get chunks 0))));
       k := Int32.mul !k c1;
-      k := Int32.logxor (Int32.shift_left  !k (Int32.to_int r1)) (Int32.shift_right !k  (Int32.to_int (Int32.sub (Int32.of_int 32)  r1)));
+      k := Int32.logxor (Int32.shift_left  !k (Int32.to_int r1))
+          (Int32.shift_right_logical !k  (Int32.to_int (Int32.sub (Int32.of_int 32)  r1)));
       k := Int32.mul !k c2;
       h := Int32.logxor !h !k;
   end;
 
-  h := Int32.logxor !h (Int32.of_int len);
+  h := Int32.logxor !h  len;
 
-  h := Int32.logxor !h (Int32.shift_right !h 16);
+  h := Int32.logxor !h (Int32.shift_right_logical !h 16);
   h := Int32.mul !h  (Int32.of_string "0x85ebca6b");
-  h := Int32.logxor !h (Int32.shift_right !h 13);
+  h := Int32.logxor !h (Int32.shift_right_logical !h 13);
   h := Int32.mul !h  (Int32.of_string "0xc2b2ae35");
-  h := Int32.logxor !h (Int32.shift_right !h 16);
+  h := Int32.logxor !h (Int32.shift_right_logical !h 16);
 
   !h
 
