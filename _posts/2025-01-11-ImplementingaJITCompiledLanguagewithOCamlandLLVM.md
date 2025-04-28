@@ -4,7 +4,7 @@ title: Implementing a JIT compiled language using OCaml and LLVM
 published: true
 ---
 
-Notwithstanding the loftiness of the title, this is just a tutorial inspired by [Implementing a JIT Compiled Language with Haskell and LLVM](https://smunix.github.io/www.stephendiehl.com/llvm/index.html). I chose OCaml and decided to  select by own libraries to accomplish this.
+Notwithstanding the loftiness of the title, this is just a tutorial inspired by [Implementing a JIT Compiled Language with Haskell and LLVM](https://smunix.github.io/www.stephendiehl.com/llvm/index.html). I chose OCaml and decided to  select my own libraries to accomplish this.
 So, for example, the parser using Angstrom, which I know nothing about.
 
 While I code I also strive to learn.
@@ -94,3 +94,4 @@ end
 
 {% endhighlight %}
 
+> TODO
