@@ -94,4 +94,21 @@ end
 
 {% endhighlight %}
 
+The following is a simple test to drive the code shown above.  This code will be improved further.
+
+{% highlight ocaml %}
+
+open Scanner
+type parsed_text = (int, string ) result
+[@@deriving show]
+
+  let%expect_test _=
+
+  let parsed_text = main "(1)" in
+  Printf.printf "%s" (show_parsed_text parsed_text);
+  [%expect {| (Ok 1) |}];
+
+{% endhighlight %}
+
+
 > TODO
