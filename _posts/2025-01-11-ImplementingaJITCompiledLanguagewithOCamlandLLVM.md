@@ -110,5 +110,26 @@ type parsed_text = (int, string ) result
 
 {% endhighlight %}
 
+# The REPL
+The driver is intended to invoke the expressions in a loop to create  the small REPL. The loop is now commented temporarily.
+
+{% highlight ocaml %}
+
+type parsed_text = (int, string ) result
+[@@deriving show]
+
+let cli ~stdin ~stdout =
+  let buf = Eio.Buf_read.of_flow stdin ~initial_size:100 ~max_size:1_000_000 in
+  (* while true do *)
+
+    let line = Eio.Buf_read.line buf in
+    traceln "> %s" line;
+    match line with
+     |line -> let parsed_text = main line in
+               Eio.Flow.copy_string (Fmt.str " %S\n" (show_parsed_text parsed_text)) stdout
+   ;
+  (* done *)
+
+{% endhighlight %}
 
 > TODO
