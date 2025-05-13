@@ -6,10 +6,16 @@ published: false
 
 # Simple Lambda Calculus interpreter
 
+> This is inspired currently by Artem Pianykh's F# code( Video ).
+But I do come across many more videos posted years back. I cling to the hope
+to incorporate more aspects as I learn.
 
 ## Porting FSharp code to OCaml
 
+The code is directly ported to OCaml. So the pattern matching aspects are exactly like
+the F# code with slight modifications.
 
+My only learning goal that lead to an improvement for me was the modularity in OCaml.
 
 {% highlight ocaml%}
 
