@@ -17,13 +17,51 @@ the F# code with slight modifications.
 
 My only learning goal that lead to an improvement for me was the modularity in OCaml.
 
+The aspects I learnt to use are
+
+1. Module Types
+2. Functors
+3. Instantiation of modules like this
+
 {% highlight ocaml%}
 
+  module Language =
+  Lang(struct
+    type t = arithmetic_fn
+    [@@deriving show]
+    type a = int
+    type b = int
+    let apply fn a b : int =
+       match fn with
+         | Add -> a + b
+         | Sub -> a - b
+         | Mul -> a * b
+         | Div -> a / b
+     end)
+  (struct
+    type t = comparison_fn
+    [@@deriving show]
+    type a = int
+    type b = int
+    let apply fn a b : int =
+       match fn with
+         | Less -> if a < b then 1 else 0
+         | Greater ->  if a > b then 1 else 0
+         | Equal ->  if a = b then 1 else 0
+     end)
+
+{% endhighlight %}
+
+This is the entire code. _[@@deriving show]_ is used in many locations to pass the test shown below.
+
+{% highlight ocaml%}
 type arithmetic_fn = | Add | Sub | Mul | Div
+[@@deriving show]
 
 module type ARITHMETIC_FN=
 sig
   type t = arithmetic_fn
+  [@@deriving show]
   type a = int
   type b = int
   val apply : t -> a -> b -> a
@@ -33,10 +71,12 @@ type comparison_fn =
     | Less
     | Equal
     | Greater
+[@@deriving show]
 
 module type COMPARISON_FN=
 sig
   type t = comparison_fn
+  [@@deriving show]
   type a = int
   type b = int
   val apply : t -> a -> b -> a
@@ -49,7 +89,9 @@ module  Lang(ArithmeticType : ARITHMETIC_FN)
   module ArithmeticType = ArithmeticType
   module ComparisonType = ComparisonType
   type var_name = string
+  [@@deriving show]
   type btype =  int
+  [@@deriving show]
 
 
 exception Type_error
@@ -58,6 +100,7 @@ exception Type_error
 type builtin_fn =
     |Arithmetic of  ArithmeticType.t *  expr *  expr
     |Comparison of  ComparisonType.t *  expr *  expr
+[@@deriving show]
 and
 expr =
     | Var of var_name
@@ -66,7 +109,7 @@ expr =
     | Lit of btype
     | Builtin of builtin_fn
     | Cond of expr *  expr *  expr
-
+[@@deriving show]
 
 type eval_error = WrongType of expr *  string
 
@@ -77,6 +120,7 @@ end
 module Language =
   Lang(struct
     type t = arithmetic_fn
+    [@@deriving show]
     type a = int
     type b = int
     let apply fn a b : int =
@@ -88,6 +132,7 @@ module Language =
      end)
   (struct
     type t = comparison_fn
+    [@@deriving show]
     type a = int
     type b = int
     let apply fn a b : int =
@@ -148,35 +193,44 @@ include Language
         | Var _ -> failwith  "Wrong evaluation "
 
 end
-    include Language
-    let lit n  = Lit n
-    let incrFn = Abs ("x", Builtin( Arithmetic( Add, Var "x", lit 1 )))
-    let incrApp n = App(  incrFn,  lit n )
-
-    let lazyFixpoint =
-        let innerAbs =
-            Abs(
-                 "x",
-                  App( Var "f",  App( Var "x", Var "x" ) )) in
-        Abs(  "f",  App ( innerAbs,  innerAbs ))
-
-    let fibStep =
-        let xMinus n =  Builtin (Arithmetic( Sub, Var "x", lit n  )) in
-        let fb = Builtin( Arithmetic( Add, App( Var "f", xMinus 1 ), App( Var "f", xMinus 2 ) ) ) in
-        Abs(  "f",
-              Abs(
-                   "x",
-                   Cond(
-                          Builtin( Comparison( Less, Var "x", lit 2 ) ),
-                          lit 1,
-                          fb
-                        )
-                   )
-         )
-
-    let fib( n : int ) =
-       let fn = App( lazyFixpoint, fibStep ) in
-       App( fn, lit n )
-
 
 {% endhighlight%}
+
+## Test
+
+{% highlight ocaml %}
+
+
+let lazyFixpoint =
+  let innerAbs =
+    Abs(
+      "x",
+      App( Var "f",  App( Var "x", Var "x" ) )) in
+  Abs(  "f",  App ( innerAbs,  innerAbs ))
+
+let fibStep =
+  let xMinus n =  Builtin (Arithmetic( Sub, Var "x", Lit n  )) in
+  let fb = Builtin( Arithmetic( Add, App( Var "f", xMinus 1 ), App( Var "f", xMinus 2 ) ) ) in
+  Abs(  "f",
+        Abs(
+          "x",
+          Cond(
+            Builtin( Comparison( Less, Var "x", Lit 2 ) ),
+            Lit 1,
+            fb
+          )
+        )
+     )
+
+let fib( n : int ) =
+  let fn = App( lazyFixpoint, fibStep ) in
+  App( fn, Lit n ) |> eval
+
+
+let%expect_test _=
+
+  Printf.printf "%s" (show_expr (fib 5));
+  [%expect {| (Lang.Lang.Lit 8) |}]
+
+{% endhighlight%}
+
