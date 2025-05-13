@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Explore Lambda Calculus - Part I
-published: false
+published: true
 ---
 
 # Simple Lambda Calculus interpreter
