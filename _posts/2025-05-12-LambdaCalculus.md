@@ -245,10 +245,10 @@ let%expect_test _=
 ## Closures
 
 The next part of the code is this. Currently it throws 'Not_Found' but my learning goal
-here was set by my lack of knowledge of how _[@@deriving_show]_ works.
+here was set by my lack of knowledge of how _[@@deriving_show]_ works. More on that later.
 
 
-{% highlight% ocaml}
+{% highlight% ocaml%}
 
 open Containers
 open Stdlib
