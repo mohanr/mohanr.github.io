@@ -9,7 +9,8 @@ published: true
 > This is inspired currently by Artem Pianykh's F# code( Video ).
 But I do come across many more videos posted years back. I cling to the hope
 to incorporate more aspects as I learn.
-> There is also [similary AST manipulation code here](https://github.com/nunchaku-inria/nunchaku/tree/a69d3ebce2fb83c40824420c4d93cc615c8a5fa1)
+> There is also [similar AST manipulation code here](https://github.com/nunchaku-inria/nunchaku/tree/a69d3ebce2fb83c40824420c4d93cc615c8a5fa1)
+
 ## Porting FSharp code to OCaml
 
 The code is directly ported to OCaml. So the pattern matching aspects are exactly like
@@ -244,10 +245,10 @@ let%expect_test _=
 
 ## Closures
 
-The next part of the code is this. Currently it throws 'Not_Found' but my learning goal
+The next part of the code is this. <s>Currently it throws 'Not_Found' but</s> my learning goal
 here was set by my lack of knowledge of how _[@@deriving_show]_ works. More on that later.
 
-Moreover the _Y-combinator_ had to be changed to so lazy evaluation is used. I will add more details.
+Moreover the _Y-combinator_ had to be changed  so lazy evaluation is used. I will add more details.
 
 {% highlight ocaml%}
 
