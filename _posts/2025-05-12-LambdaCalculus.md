@@ -247,9 +247,22 @@ let%expect_test _=
 The next part of the code is this. Currently it throws 'Not_Found' but my learning goal
 here was set by my lack of knowledge of how _[@@deriving_show]_ works. More on that later.
 
+Moreover the _Y-combinator_ had to be changed to so lazy evaluation is used. I will add more details.
 
-{% highlight% ocaml%}
+{% highlight ocaml%}
 
+let lazyFixpoint =
+  let innerAbs =
+    Abs ("x",
+      App (Var "f", Abs ("z", App (App (Var "x", Var "x"), Var "z")))
+    )
+  in
+  Abs ("f", App (innerAbs, innerAbs))
+{% endhighlight%}
+
+
+
+{% highlight ocaml%}
 open Containers
 open Stdlib
 type arithmetic_fn = | Add | Sub | Mul | Div
@@ -389,16 +402,18 @@ include Language
         | App( expr, arg ) ->
             let { env = closureEnv ; var = closureVar; body = closureBody} = eval env  expr |> asClosure in
             let argValue = eval env arg in
-            let _var_name = PPMap.add closureVar argValue in
-            Printf.printf "%s" (Format.asprintf "%a" pp_value argValue);
-            eval  env closureBody
+            let EnvMap env_map = closureEnv in
+            let map_env = EnvMap (PPMap.add closureVar argValue env_map) in
+            (* Printf.printf "%s" (Format.asprintf "%a" pp_value argValue); *)
+
+            eval  map_env closureBody
 
         | Var name ->
            let EnvMap map = env in
+           Printf.printf "%s" name;
            PPMap.find name map
 
 end
-
 {% endhighlight%}
 
 
