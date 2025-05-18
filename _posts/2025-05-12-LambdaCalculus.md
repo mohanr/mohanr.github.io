@@ -18,7 +18,7 @@ the F# code with slight modifications.
 
 My only learning goal that lead to an improvement for me was the modularity in OCaml.
 
-The aspects I learnt to use are
+The OCaml aspects I learnt to use are
 
 1. Module Types
 2. Functors
@@ -29,6 +29,7 @@ But truly the aspects I should have learnt are
 1. Term Reduction by substitution
 2. Closures
 3. let-bindings
+4. Y-combinator and lazy evaluation as exemplified in the code dealing with closures shown below.
 
 and other deeper concepts. That is now aspirational.
 
@@ -62,6 +63,9 @@ and other deeper concepts. That is now aspirational.
 {% endhighlight %}
 
 This is the entire code. _[@@deriving show]_ is used in many locations to pass the test shown below.
+Even though this works I realized that atleast one neat trick involved when _Containers_ and _CCMap_
+are used. That is shown in the second part dealing with closures.
+
 
 {% highlight ocaml%}
 type arithmetic_fn = | Add | Sub | Mul | Div
@@ -417,5 +421,8 @@ include Language
 end
 {% endhighlight%}
 
+The _Y-combinator_ causes infinite recursion and had to be replaced with an alternative to lazily evaluate.
+This didn't cause the failure when F# was executed. So OCaml needed this change.
 
+This aspect probably needs a separate section.
 
