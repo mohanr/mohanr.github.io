@@ -421,6 +421,31 @@ include Language
 end
 {% endhighlight%}
 
+## Pretty-printing a _CCMap_
+
+The OCaml discussion forum solved this problem for me. _ppx_deriving_show_ and _@printer_
+print the contents of the map. The result after evaluation will be like 
+
+> (Lang.Lang.VInt 8) 
+
+{% highlight ocaml %}
+
+  type value =
+    | VInt of int
+    | Closure of closure
+    | BlackHole
+  and closure = {mutable env : env ; var : var_name ; body : expr}
+  and
+  env =
+  | EnvMap of value PPMap.t
+      [@printer
+        fun fmt map -> fprintf fmt "%a" (PPMap.pp CCString.pp pp_value) map]
+[@@deriving show] (* only one call to `deriving show` is enough *)
+{% endhighlight%}
+
+
+## Y-combinator
+
 The _Y-combinator_ causes infinite recursion and had to be replaced with an alternative to lazily evaluate.
 This didn't cause the failure when F# was executed. So OCaml needed this change.
 
