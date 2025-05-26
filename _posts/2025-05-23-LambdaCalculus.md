@@ -4,7 +4,7 @@ title: Explore Lambda Calculus - Part II
 published: true
 ---
 
-This is the second part what shows the OCaml port of F# code that implements a stack-based Virtual Machine.
+This is the second part that shows the OCaml port of F# code that implements a stack-based Virtual Machine.
 The _functors_ turned out to be very different from the structure of F# code.
 
 I believe a VM like this can be enhanced further. I am on the look out for good resources to build a better Virtual
