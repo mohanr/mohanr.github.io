@@ -1,10 +1,17 @@
 ---
 layout: post
 title: Explore Lambda Calculus - Part II
-published: false
+published: true
 ---
 
+This is the second part what shows the OCaml port of F# code that implements a stack-based Virtual Machine.
+The _functors_ turned out to be very different from the structure of F# code.
+
+I believe a VM like this can be enhanced further. I am on the look out for good resources to build a better Virtual
+Machine.
+
 {% highlight ocaml %}
+
 open Scanner__Lang1.Language
 
 type int_binary_op =
@@ -19,6 +26,7 @@ type instr = Halt | IntConst of int | IntBinaryOp of int_binary_op
 
 [@@deriving show]
 
+
 (* TODO Unused *)
 module type IntBinaryOp = sig
   type t
@@ -28,10 +36,9 @@ end
 
 module type ByteCodeGen =
 sig
-  type bytecode
-  val generate : expr -> string list
+  val generate : expr -> instr list -> instr list
 
-  val emit_instr: instr -> string list
+  val emit_instr: instr -> instr list -> instr list
 end
 
 
@@ -61,6 +68,7 @@ module Value = struct
     | VInt of int
     | BlackHole
 
+[@@deriving show]
  type eval_error = WrongType of value *  string
  exception EvalException of eval_error
  let asInt = function
@@ -70,61 +78,74 @@ end
 
 module type Operation =
 sig
-  val execute : unit
+  val execute : instr list -> unit
   val current_value : Value.value option
 end
 module VM   = struct
-  let bc_stack  = Stack.create()
+  let bc_stack : Value.value Stack.t = Stack.create()
   let instructions = []
 
   module VMOperation
                      ( Byte : ByteCodeGen )
                      ( Oper : Operation)= struct
+
+    let eval expr =
+      let instr_list = Byte.generate expr instructions in
+      (* List.iter( fun instr -> Printf.printf "%s\n"  (Format.asprintf "%a" pp_instr instr )) instr_list; *)
+
+      Oper.execute instr_list;
+      Printf.printf "%s" (Format.asprintf "%a\n" Value.pp_value
+                            (Stack.top bc_stack));
+
   end
 
 
 module VMOp =
 VMOperation(struct
-  type bytecode = instr array
 
-  let  emit_instr instr =
-     instructions @ [(Format.asprintf "%a" pp_instr (instr))]
+  let  emit_instr instr instructions : instr list=
+     (* instructions @ [(Format.asprintf "%a" pp_instr (instr))] *)
+
+     instructions @ [instr]
 
 
-  let rec generate expr =
+  let rec generate expr instructions =
     (*Unsure how the missing cases are handled*)
     match expr with
-       | Lit (BInt i) -> emit_instr ( IntConst i )
+       | Lit (BInt i) -> emit_instr ( IntConst i ) instructions
        | Builtin ( Arithmetic( fn, opA, opB ) ) ->
-           ignore (generate opA);
-           ignore (generate opB);
+           let instructions = (generate opA instructions) in
+           let instructions = (generate opB instructions) in
            let op_type = Op.fromArithmeticFn fn in
-           emit_instr  op_type
+           emit_instr  op_type instructions
        | Builtin ( Comparison( fn, lhs, rhs) ) ->
-           ignore (generate lhs);
-           ignore (generate rhs);
+           let instructions = (generate lhs instructions) in
+           let instructions =(generate rhs instructions) in
            let op_type = Op.fromComparisonFn fn in
-           emit_instr op_type
+           emit_instr op_type instructions
        | Builtin ( UnaryArithmetic( fn, expr) ) ->
-           ignore (generate expr);
+           let instructions = (generate expr instructions) in
            match fn with
-           | Neg -> emit_instr (IntUnaryOp Neg)
+           | Neg -> emit_instr (IntUnaryOp Neg) instructions
        |  _ -> failwith "TO Investigate"
 
 
      end)
   (struct
-
-  let execute : unit=
+  let execute instructions : unit=
     let halt = ref false in
     let rec loop cp =
-      if (cp < (List.length instructions) && (!halt == true)) then
+      if (cp < (List.length instructions) && (!halt <> true)) then
         let instr = List.nth instructions cp in
+        (* Printf.printf "Pointer is %d Length of instructions %d \n" cp (List.length instructions); *)
+        (* List.iter( fun instr -> Printf.printf "Instruction %s\n"  (Format.asprintf "%a" pp_instr instr )) instructions; *)
+
         match instr with
         | Halt -> halt := true
-        | IntConst i -> Stack.push (Value.VInt i) bc_stack
+        | IntConst i -> Stack.push (Value.VInt i) bc_stack;
+                        loop (cp + 1);
         | IntBinaryOp op ->
-          let arg2 = Stack.pop bc_stack |> Value.asInt in
+          let arg2  = Stack.pop bc_stack |> Value.asInt in
           let arg1 = Stack.pop bc_stack |> Value.asInt in
           let result =
           (match op with
@@ -136,14 +157,17 @@ VMOperation(struct
           | Greater -> if arg1 > arg2 then 1 else 0
           | Equal -> if arg1 == arg2 then 1 else 0)
           in
-          Stack.push  (Value.VInt result) bc_stack
+          Stack.push  (Value.VInt result) bc_stack;
+          loop (cp + 1);
         | IntUnaryOp op ->
           let arg = Stack.pop bc_stack |> Value.asInt in
+          Printf.printf "Popping %d\n" arg;
           let result =
           (match op with
             | Neg -> -arg ) in
           Stack.push  (Value.VInt result) bc_stack;
-      loop (cp + 1);
+          loop (cp + 1);
+
     in
     loop 0
 
@@ -154,4 +178,24 @@ VMOperation(struct
    end)
 
 end
+{% endhighlight  %}
+
+## Test
+
+The second test show the _Add_ operator in action.
+
+{% highlight ocaml %}
+
+let%expect_test _=
+
+  eval (Lit (BInt 5));
+  [%expect {| (ByteCode.Value.VInt 5) |}]
+
+let%expect_test _=
+
+  eval (Builtin (Arithmetic (Add, (Lit( BInt( 1 ))),  Lit( BInt 55))));
+
+  [%expect {| (ByteCode.Value.VInt 56) |}]
+
+
 {% endhighlight %}
