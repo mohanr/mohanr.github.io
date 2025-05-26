@@ -182,7 +182,7 @@ end
 
 ## Test
 
-The second test show the _Add_ operator in action.
+The second test shows the _Add_ operator in action.
 
 {% highlight ocaml %}
 
