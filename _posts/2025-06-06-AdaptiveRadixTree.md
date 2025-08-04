@@ -4,7 +4,6 @@ title: Adaptive Radix Tree
 published: true
 ---
 
-# Adaptive Radix Tree
 
 # tl;dr
 1. The code will be gradually improved and  be committed to git finally. The version on this page is compiled but unfinished until
@@ -20,6 +19,7 @@ published: true
 4. My OCaml code is still improving. Loops I code seem to distract from the underlying logic. It should be more functional with
    proper comments.
 
+# Adaptive Radix Tree
 
 {% highlight ocaml %}
 open Batteries
