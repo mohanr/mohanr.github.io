@@ -4,6 +4,13 @@ title: Generate Snowflake ID
 published: false
 ---
 
+> Snowflake is a network service for generating unique ID numbers at high scale with some simple guarantees.
+> I am trying to code this in OCaml.
+
+
+
+# Experimenting with *Timedesc*
+
 {% highlight ocaml %}
 open Timedesc
 
