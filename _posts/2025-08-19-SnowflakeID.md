@@ -7,12 +7,13 @@ published: true
 > Snowflake is a network service for generating unique ID numbers at high scale with some simple guarantees.
 > I am trying to code this in OCaml.
 
-
+> This is not finished yet.
 
 # Experimenting with *Timedesc* and *Mtime*
 
-The documention for the time and date utilities is rather sketchy. So error could be lurking in the code.
-Moreover I use 2 libraries instead of one as I pick the easier and obvious parts of the API. 
+The documention for the time and date utilities is rather sketchy. So errors could be lurking in the code.
+Moreover I use two libraries instead of one as I pick the easier and obvious parts of each API.
+The following code is a test to understand the API better 
 
 {% highlight ocaml %}
 
@@ -39,6 +40,8 @@ Fmt.pr "%f"  (Timedesc.to_timestamp_float_s_single (Timedesc.now()));
 {% endhighlight %}
 
 # Key functions
+
+I am using *Bigarray* but it is a random choice.
 
 {% highlight ocaml %}
 open Timedesc
