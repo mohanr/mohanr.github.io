@@ -15,6 +15,32 @@ The documention for the time and date utilities is rather sketchy. So error coul
 Moreover I use 2 libraries instead of one as I pick the easier and obvious parts of the API. 
 
 {% highlight ocaml %}
+
+open Bitcask__Snowflake
+let%expect_test _=
+(* https://github.com/daypack-dev/timere/blob/main/examples/date_time.ml *)
+
+let em = epoch_millis in
+Fmt.pr "%a@." (Timedesc.Timestamp.pp  ()) em;
+let timedesc = Timedesc.make_exn ~tz:(Timedesc.Time_zone.make_exn "UTC") ~year:2010 ~month:11 ~day:4 ~hour:1 ~minute:42 ~second:54 () in
+let time_as_float = (Timedesc.Span.sub  (Timedesc.Timestamp.now()) (Timedesc.to_timestamp_single timedesc) ) in
+Fmt.pr "%f\n"  (Timedesc.Timestamp.to_float_s time_as_float);
+Fmt.pr "%f\n"  (Timedesc.to_timestamp_float_s_single timedesc);
+Fmt.pr "%f"  (Timedesc.to_timestamp_float_s_single (Timedesc.now()));
+
+[%expect {|
+  2010 Nov 04 01:42:54 +00:00:00
+  466753491.672000
+  1288834974.000000
+  1755588465.672007
+  |}]
+
+
+{% endhighlight %}
+
+# Key functions
+
+{% highlight ocaml %}
 open Timedesc
 open Bigarray
 open Eio.Std
@@ -95,26 +121,3 @@ let create_snowflake_node node=
 
 {% endhighlight %}
 
-{% highlight ocaml %}
-
-open Bitcask__Snowflake
-let%expect_test _=
-(* https://github.com/daypack-dev/timere/blob/main/examples/date_time.ml *)
-
-let em = epoch_millis in
-Fmt.pr "%a@." (Timedesc.Timestamp.pp  ()) em;
-let timedesc = Timedesc.make_exn ~tz:(Timedesc.Time_zone.make_exn "UTC") ~year:2010 ~month:11 ~day:4 ~hour:1 ~minute:42 ~second:54 () in
-let time_as_float = (Timedesc.Span.sub  (Timedesc.Timestamp.now()) (Timedesc.to_timestamp_single timedesc) ) in
-Fmt.pr "%f\n"  (Timedesc.Timestamp.to_float_s time_as_float);
-Fmt.pr "%f\n"  (Timedesc.to_timestamp_float_s_single timedesc);
-Fmt.pr "%f"  (Timedesc.to_timestamp_float_s_single (Timedesc.now()));
-
-[%expect {|
-  2010 Nov 04 01:42:54 +00:00:00
-  466753491.672000
-  1288834974.000000
-  1755588465.672007
-  |}]
-
-
-{% endhighlight %}
