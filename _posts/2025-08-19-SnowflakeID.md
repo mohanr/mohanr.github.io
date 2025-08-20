@@ -11,7 +11,7 @@ published: true
 
 # Experimenting with *Timedesc* and *Mtime*
 
-The documention for the time and date utilities is rather sketchy. So errors could be lurking in the code.
+The documentation for the time and date utilities is rather sketchy. So errors could be lurking in the code.
 Moreover I use two libraries instead of one as I pick the easier and obvious parts of each API.
 The following code is a test to understand the API better 
 
