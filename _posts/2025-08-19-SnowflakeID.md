@@ -7,7 +7,7 @@ published: true
 > Snowflake is a network service for generating unique ID numbers at high scale with some simple guarantees.
 > I am trying to code this in OCaml.
 
-> This is not finished yet because the tests are not sufficient. I am not looking the individual bits that
+> This is not finished yet because the tests are not sufficient. I am not looking at the individual bits that
 > compose the Snowflake ID. And the datetime utilities lack clear documentation. So writing tests
 > for proper usage is hard.
 > But the tests shown below generate monotonically increasing Snowflake ID.
