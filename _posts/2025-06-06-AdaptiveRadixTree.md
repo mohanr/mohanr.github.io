@@ -72,7 +72,7 @@ end
       (*   fun fmt arr -> fprintf fmt "%a" (CCArray.pp pp_node) arr] *)
     [@@deriving show] (* only one call to `deriving show` is not enough *)
 end
-{% end highlight %}
+{% endhighlight %}
 
 ## The algorithm
 
