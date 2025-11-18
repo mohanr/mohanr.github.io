@@ -157,7 +157,6 @@ let generate n  =
 
        let rec loop_while_node idx node =
          let  milli  =  time_since () in
-         let curr_time_millis  = ref   milli in
          if idx < 10 then(
          if  Int64.equal milli node.time then(
              node.step <- Int64.logand (Int64.add node.step  (Int64.of_int 1))  node.stepmask;
