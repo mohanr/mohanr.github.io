@@ -7,6 +7,11 @@ published: true
 
 ![Gorilla: A Fast, Scalable, In-Memory Time Series Database](../images/Gorilla Paper.png){:class="img-responsive"}
 
+My current implementation is based on this paper and some other implementations that inspired me. Code is not fully tested
+and will be updated as and when I write more tests.
+
+At this time I am learning about Time Series Databases and this is just one part of it.
+
 # The ADTs
 
 {% highlight OCaml %}
