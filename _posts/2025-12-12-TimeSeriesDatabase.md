@@ -1,10 +1,11 @@
 ---
 layout: post
 title: Time Series Database fundamentals
-published: false
+published: true
 ---
 
 
+![Gorilla: A Fast, Scalable, In-Memory Time Series Database](../images/Gorilla Paper.png){:class="img-responsive"}
 
 # The ADTs
 
