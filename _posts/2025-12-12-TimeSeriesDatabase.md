@@ -626,7 +626,7 @@ eend
 
 # A simple test
 
-The _read_bits_ returns only the first 3 bits now. That has to be fixed.
+The _read_bits_ returns the bits that were written.
 
 {% highlight ocaml %}
 open Bigarray
