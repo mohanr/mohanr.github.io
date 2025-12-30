@@ -605,13 +605,14 @@ let read_bit buf =
 
         Some bit
 
+
 let read_bits buf len=
         let value = 0L in
         let rec loop_while idx acc =
         if idx <  len - 1 then
             (match read_bit buf with
-            |Some _ ->
-            let value = Int64.logor (Int64.shift_left acc  1) 1L in
+            |Some b ->
+            let value = Int64.logor (Int64.shift_left acc  1) (Int64.of_int (Bool.to_int b)) in
             loop_while (idx+1) value
             | None ->
             loop_while (idx+1) value
@@ -619,11 +620,13 @@ let read_bits buf len=
         else acc
         in
         loop_while 0 0L
-end
+eend
 
 {% endhighlight %}
 
 # A simple test
+
+The _read_bits_ returns only the first 3 bits now. That has to be fixed.
 
 {% highlight ocaml %}
 open Bigarray
@@ -657,7 +660,7 @@ let%expect_test "Test Set and Get keys"=
         | Some b -> Printf.printf "%b " b
         | None -> Printf.printf "None " ;
         in
-        Printf.printf "Bits %s\n" (int2bin (Int64.to_int (read_bits read_buffer 4)));
+        Printf.printf "Bits %s\n" (int2bin (Int64.to_int (read_bits read_buffer 6)));
   [%expect {|
     write_bit 128 0b000000000000000000000000000000000000000000000000000000010000000
     write_bit 160 0b000000000000000000000000000000000000000000000000000000010100000
@@ -669,7 +672,9 @@ let%expect_test "Test Set and Get keys"=
     true read_bit 0b10110100
     read_bit 0b10110100
     read_bit 0b10110100
-    Bits 0b111
+    read_bit 0b10110100
+    read_bit 0b10110100
+    Bits 0b10100
     |}];
 
 {% endhighlight %}
