@@ -1106,5 +1106,7 @@ Since this is being tested in stages I will add which test is reasonably good.
    value by the code and the number of keys increase. This is a bug now.~~
 4. _size_ and number of _children_ seem to match.
 
+# Conclusion
 
-
+The final version should be in https://github.com/mohanr/Bitcask. As this involves _Prefix_ compression some bugs were fixed. It
+seems to hold up well.
