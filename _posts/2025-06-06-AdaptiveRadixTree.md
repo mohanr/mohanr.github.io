@@ -457,7 +457,7 @@ let rec add_child key parent child =
 	  | ( meta, node_type, _, children ) ->
           let Prefix(_, size, _) = meta in
 
-    if (count_non_empty_children children)== maxsize node_type then(
+    if (count_non_empty_children children)= maxsize node_type then(
             let grow_n = grow parent in
             add_child key grow_n child)
     else (
@@ -580,7 +580,7 @@ let rec add_child key parent child =
 (* 		let mask =  Int32.to_int (Int32.shift_left (Int32.of_int 1) i1) - 1 in *)
 (* 		bitfield.{0} <- Int32.logand  bitfield.{0} (Int32.of_int  mask); *)
 (*         let idx = *)
-(* 		if (Int32.lognot bitfield.{0} ) == 0l then( *)
+(* 		if (Int32.lognot bitfield.{0} ) = 0l then( *)
 (* 			 trailing_zeros bitfield.{0} *)
 (* 		) else idx in *)
 
@@ -676,7 +676,7 @@ let rec minimum node =
          | Node48 _ ->
           let i =
             let rec loop_while idx =
-            if Bytes.compare (List.nth keys idx)  (Bytes.make 1 (Char.chr 0)) == 0 then
+            if Bytes.compare (List.nth keys idx)  (Bytes.make 1 (Char.chr 0)) = 0 then
               loop_while (idx + 1 )
             else
               idx
@@ -689,7 +689,7 @@ let rec minimum node =
         | Node256 _ ->
             let i =
             let rec loop_while idx =
-            if (Bytes.compare (List.nth keys idx) (Bytes.make 1  '\x00')) == 0 then
+            if (Bytes.compare (List.nth keys idx) (Bytes.make 1  '\x00')) = 0 then
               loop_while (idx + 1 )
             else
               idx
@@ -719,7 +719,7 @@ let compare_keys key key1 =
       | [], [] -> comp
       | hd :: tl, hd1 :: tl1->
             let comp =  Bytes.compare hd hd1 in
-            if comp == 0 then
+            if comp = 0 then
               compare comp tl tl1
             else
               comp
@@ -739,7 +739,7 @@ let  prefix_match_index1 inner_node key level =
                if idx < prefix_len && (level + idx) < List.length key &&
                   (Bytes.equal (List.nth key (level + idx))  (List.nth pref idx)) then(
 
-                 if idx == (max_prefix_len-1) then(
+                 if idx = (max_prefix_len-1) then(
                      match (minimum inner_node) with
                        |(Empty|Inner_node (Prefix (_, _, _), _, _, _)) -> failwith "Not leaf!"
                        |Leaf l ->
@@ -784,7 +784,7 @@ let copy key_list_src key_list_dest level =
 let terminate key =
 
   let result = match (List.find_index (fun elt ->
-    Bytes.compare (Bytes.make 1 '\x00') elt == 0) key) with
+    Bytes.compare (Bytes.make 1 '\x00') elt = 0) key) with
     | Some _ -> key
     | None -> List.append key [(Bytes.make 1 '\x00')]
   in
@@ -806,7 +806,7 @@ let rec insert (tr : tree) node key value level  =
                     (String.concat "" (List.map Bytes.to_string kv.key))
                     (String.concat "" (List.map Bytes.to_string key));
 
-             if compare_keys  kv.key  key == 0 then(
+             if compare_keys  kv.key  key = 0 then(
              kv.value <- value;
              (true,  Leaf (KeyValue  kv))
              ) else(
@@ -985,7 +985,7 @@ let rec search node key level =
 			  let result = compare_keys key kv.key in
               Printf.printf "Search key %c compared with %c " (Char.chr (Bytes.get_uint8 (List.nth key 0) 0))
                                                               (Char.chr (Bytes.get_uint8 (List.nth kv.key 0) 0));
-			  if result == 0 then
+			  if result = 0 then
 				Some kv.value
               else None
              )
