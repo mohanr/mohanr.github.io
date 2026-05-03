@@ -4,9 +4,22 @@ title: Static Analyzer
 published: false
 ---
 
+This is a typical post in this blog in the sense that code is shown first and the narrative is built later if at all.
+This has its disadvantages as the article is incomplete without the explanation.
 
+But in many cases like this one the theory is somewhat inscrutable as it may involve Math. It has to be learnt in
+a series of steps and working code seems to be a good motivating factor. Narrative and diagrams should be required
+to complete this and other blog posts.
+
+I will start anyway by showing OCaml code that I ported from Python. This Python code is [part](https://github.com/sree314/simple-abstract-interpreter)
+of the Spring 2020 edition of CSC255/455 Software Analysis and Improvement taught at the University of Rochester.
+
+# The ADT
+
+This is the first cut and has to improve gradually.
 
 {% highlight OCaml %}
+
 
 type binaryOps =
     | Plus of char
@@ -32,14 +45,20 @@ let operator c =
      |'/' -> Div c
      | _ -> failwith "Wrong operator"
 
+(* Some types can be merged into 'expr*)
 type expr =
   | BinOp of binaryOps * var * scalar
+  | BinaryOps of binaryOps * expr * expr
+  | ComparisonOps of comparisonOps * comparisonOps
   | Seq of expr * expr
   | Assign of var * expr
   | If of expr * expr * expr
   | Input of var
   | BoolExpr of comparisonOps * var *  scalar
+  | BoolExprs of comparisonOps * expr*  expr
   | While of expr * expr
+  | Vars  of char               (* Refactor*)
+  | Const of scalar (* Refactor*)
   | Skip
 and scalar =
   | Scalar of int
