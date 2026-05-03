@@ -13,7 +13,7 @@ to complete this and other blog posts.
 
 I will start anyway by showing OCaml code that I ported from Python. This Python code is [part](https://github.com/sree314/simple-abstract-interpreter)
 of the Spring 2020 edition of CSC255/455 Software Analysis and Improvement taught at the University of Rochester.
-![image-title-here](../images/Introduction_to_Static_Analysis.png){:class="img-responsive"}
+![image-title-here](../images/Introduction_to_Static_Analysis.png){:width="50%"}{:class="img-responsive"}
 # The ADT
 
 This is the first cut and has to improve gradually.
