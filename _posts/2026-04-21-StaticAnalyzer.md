@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Static Analyzer
-published: false
+published: true
 ---
 
 This is a typical post in this blog in the sense that code is shown first and the narrative is built later if at all.
@@ -16,10 +16,17 @@ of the Spring 2020 edition of CSC255/455 Software Analysis and Improvement taugh
 ![image-title-here](../images/Introduction_to_Static_Analysis.png){:width="10%"}{:class="img-responsive"}
 # The ADT
 
-This is the first cut and has to improve gradually.
+This is the first cut and has to improve gradually. _expr_ should be refactored as there is repetition.
+This is but one point that shows the disadvantage of ignoring the theory because the focus is more on the
+quality of OCaml code and my Functional Programming skills than on the underlying topic.
+
+Almost all the code is here but for a more complete version look at this [repo](https://github.com/mohanr/Algorithms/tree/master/ds/lib/abstract-interpreter)
 
 {% highlight OCaml %}
 
+
+open Ppx_compare_lib.Builtin
+open Ppx_sexp_conv_lib.Conv
 
 type binaryOps =
     | Plus of char
@@ -27,7 +34,7 @@ type binaryOps =
     | Div of char
     | Neg of char
     | Mul of char
-  [@@deriving show]
+[@@deriving show ,compare, sexp]
 
 type comparisonOps =
     | Less of char
@@ -36,7 +43,7 @@ type comparisonOps =
     | Less_Eq of string
     | Great_Eq of string
     | Not_Eq of string
-  [@@deriving show]
+[@@deriving show ,compare, sexp]
 
 let operator c =
   match c with
@@ -44,9 +51,11 @@ let operator c =
      |'-' -> Minus c
      |'/' -> Div c
      | _ -> failwith "Wrong operator"
+[@@deriving show ,compare, sexp]
 
 (* Some types can be merged into 'expr*)
 type expr =
+  | Program of expr
   | BinOp of binaryOps * var * scalar
   | BinaryOps of binaryOps * expr * expr
   | ComparisonOps of comparisonOps * comparisonOps
@@ -63,7 +72,7 @@ type expr =
 and scalar =
   | Scalar of int
 and var = Var of char
-[@@deriving show]
+[@@deriving show ,compare, sexp]
 
 
  (* convenience function to turn a list into a sequence *)
@@ -77,6 +86,150 @@ let rec sequence l =
                               (fun i _ -> i >= 1 && i <=
                                                     (List.length l)) l ))
 
+{% end highlight %}
+
+I have to remind myself that the code shows how source code is statically analyzed.
+The theory behind it is still somewhat hard to understand at this point.
+
+# Test
+
+{% highlight OCaml %}
+
+let%expect_test _=
+    let x = Var 'x' in
+    let y = Var 'y' in
+    let t = Program(If ( BoolExpr((Less '<'), x, (Scalar 7)),
+                           Assign (x, BinOp (( Neg  '-'), x, (Scalar 7))),
+                           Assign (y, BinOp ((Minus '-'), x, (Scalar 7)))
+               ))
+              in
+ print_endline (show_expr t);
+  [%expect {|
+    (Tinyest.Program
+       (Tinyest.If (
+          (Tinyest.BoolExpr ((Tinyest.Less '<'), (Tinyest.Var 'x'),
+             (Tinyest.Scalar 7))),
+          (Tinyest.Assign ((Tinyest.Var 'x'),
+             (Tinyest.BinOp ((Tinyest.Neg '-'), (Tinyest.Var 'x'),
+                (Tinyest.Scalar 7)))
+             )),
+          (Tinyest.Assign ((Tinyest.Var 'y'),
+             (Tinyest.BinOp ((Tinyest.Minus '-'), (Tinyest.Var 'x'),
+                (Tinyest.Scalar 7)))
+             ))
+          )))
+    |}]
+{% end highlight %}
+
+Thee tests are sparse but more will be added.
+
+{% highlight OCaml %}
+
+open Types
+open Containers
+
+module type ORDERED = sig
+  type inter= Types.inter
+  type value
+  val compare : value -> value  -> int
+end
+
+
+module type IntervalPt = sig
+  type elt
+  type inter= Types.inter
+  val eq : inter -> inter -> bool
+  val lt : inter -> inter -> bool
+end
+module IntervalPoint = struct
+
+module Make (Ord : ORDERED ) : (IntervalPt with type elt := Ord.value) =
+      struct
+        type value = int
+        type inter= Types.inter
+        type elt = Ord.value
+   (* Repeated definition. Should belong in types.ml *)
+   (* But interals.ml uses a certain pattern which may *)
+   (* not reuse thie type from types.ml. Should be investigated *)
+
+  let eq pt pt1 =
+        (* this equates infinity, which should be okay *)
+        match pt,pt1 with
+        |inter1,inter2 ->
+            Stdlib.compare inter1  inter2 = 0
+
+  let lt pt pt1 =
+        match pt,pt1 with
+        |Pinf,_ -> false
+             (* +inf, -inf/F; +inf, n/F; +inf, +inf/F *)
+        |Ninf,_ ->
+             (* -inf, -inf/F; -inf, n/T; -inf, +inf/T *)
+        if Stdlib.compare pt  pt1 <> 0 then true else false
+
+        |_,Ninf -> false
+             (* n, -inf/F *)
+
+        |_,Pinf -> true
+             (* n, +inf/F *)
+
+        |_,_->if Stdlib.compare pt  pt1 < 0 then true else false
+
+
+    let le pt pt1 =
+        match pt,pt1 with
+        |Pinf,_ -> if Stdlib.compare pt1 pt = 0 then true else false  (* +inf == +inf *)
+        |Ninf,_ ->
+            true   (* -inf <= -inf, n, +inf *)
+        |_,Ninf -> false
+        |_,Pinf -> true
+             (* _, +inf *)
+        |_,_->if Stdlib.compare pt  pt1 < 0 then true else false
+
+    let gt pt pt1 =
+        match pt,pt1 with
+        |Pinf,_ ->
+            Stdlib.compare pt1 Pinf = 0
+        |Ninf,_ -> false
+        |_,Ninf -> true
+        |_,Pinf -> false
+        |_,_-> if Stdlib.compare pt pt1 > 0 then true else false
+
+    let add pt o =
+
+    let m =
+        IntervalpointMap.empty
+        |> IntervalpointMap.add
+         (Ninf, Ninf) (Some Ninf)
+        |> IntervalpointMap.add
+         (Ninf, Pinf) None  (* undefined -inf + +inf *)
+        |> IntervalpointMap.add
+         ( Pinf,Ninf) None  (* undefined: +inf + -inf*)
+        |> IntervalpointMap.add
+         ( Pinf,Pinf) (Some Pinf)
+         in
+         let res =
+         (match( IntervalpointMap.find_opt (pt,o) m) with
+         | Some index ->
+           let result =  IntervalpointMap.get (pt,o) m in
+           (match result with
+           | Some v -> v
+           | None -> failwith "Addition not defined "
+           )
+         | None ->
+          (match pt,o with
+            |Types.Int i,Types.Int i1-> Some (Types.Int (i + i1))
+            |p,o when Stdlib.compare p Ninf <> 0 && Stdlib.compare p Pinf <> 0 -> Some o
+                        (* n + -inf = -inf, n + +inf = +inf *)
+            |_,_ -> Some pt
+                        (* -inf - n = -inf, +inf - n = +inf *)
+           ))
+          in res
+
+
+
+
+end
+end
 {% end highlight %}
 
 
