@@ -86,7 +86,7 @@ let rec sequence l =
                               (fun i _ -> i >= 1 && i <=
                                                     (List.length l)) l ))
 
-{% end highlight %}
+{% endhighlight %}
 
 I have to remind myself that the code shows how source code is statically analyzed.
 The theory behind it is still somewhat hard to understand at this point.
@@ -119,7 +119,7 @@ let%expect_test _=
              ))
           )))
     |}]
-{% end highlight %}
+{% endhighlight %}
 
 Thee tests are sparse but more will be added.
 
@@ -230,7 +230,7 @@ module Make (Ord : ORDERED ) : (IntervalPt with type elt := Ord.value) =
 
 end
 end
-{% end highlight %}
+{% endhighlight %}
 
 
 {% highlight OCaml %}
@@ -337,4 +337,4 @@ end
 module IST = IntervalDomain( I_Params)
 module NRA = NonRelationalAbstraction(IST)
 
-{% end highlight %}
+{% endhighlight %}
