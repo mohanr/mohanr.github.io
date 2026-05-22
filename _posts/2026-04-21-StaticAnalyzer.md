@@ -1445,8 +1445,9 @@ The last test shown above analyzer the following program which is an infinite lo
 are coded as _ADTs_
 
 ![The Program that is analyzed](../images/program.png){:class="img-responsive"}
-I understand that the static analyzer stops and returns _x (Types.Tup ((Types.Int 101), Types.Pinf))
-_. The principle of widening is explained in the book shown above.
+I understand that the static analyzer stops and returns 'x (Types.Tup ((Types.Int 101), Types.Pinf))'
+_. The principle of widening is explained in the book shown above. 'x' is the variable name and _101_
+means the condition exits.
 
 Thee tests are sparse but more will be added. The tests have be rigorously verified as the static analyzer
 I coded could have bugs.
