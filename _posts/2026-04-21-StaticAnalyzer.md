@@ -1441,8 +1441,12 @@ let%expect_test  "infinite_loop_abs"=
       |}]
 {% endhighlight %}
 
-![The Program that is analyzed](../images/program.png){:class="img-responsive"}
-I understand that static analyzer stops and return _x (Types.Tup ((Types.Int 101), Types.Pinf))
-_. The principle of widening is explained the book shown above.
+The last test shown above analyzer the following program which is an infinite loop. The programs
+are coded as _ADTs_
 
-Thee tests are sparse but more will be added.
+![The Program that is analyzed](../images/program.png){:class="img-responsive"}
+I understand that the static analyzer stops and returns _x (Types.Tup ((Types.Int 101), Types.Pinf))
+_. The principle of widening is explained in the book shown above.
+
+Thee tests are sparse but more will be added. The tests have be rigorously verified as the static analyzer
+I coded could have bugs.
