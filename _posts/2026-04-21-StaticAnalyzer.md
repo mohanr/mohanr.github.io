@@ -466,7 +466,7 @@ module IST = IntervalDomain( I_Params)
 
 The example in the diagrams shows the various intervals in the Interval Domain. The code
 for intervals and the Interval Domain are shown above. As I understand the number of intervals
-is very high when we don't impose any limitation. The limilation is returned by _V_abs.get_finite_height()_
+is very high when we don't impose any limitation. The limitation is returned by _V_abs.get_finite_height()_
 from the Interval Domain set in the _Functor_ in module _NonRelationalAbstractions. The section titled
 *Abstractions* has the code for this module.
 
