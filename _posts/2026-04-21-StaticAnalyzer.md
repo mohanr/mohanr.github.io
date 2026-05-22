@@ -460,6 +460,7 @@ module I_Params= struct
 end
 
 module IST = IntervalDomain( I_Params)
+{% endhighlight %}
 
 ![Interval Analysis](../images/Interval Analysis.png){:class="img-responsive"}
 
@@ -473,7 +474,6 @@ The last test which analyzes an infinite loop is relatable to this explanation a
 results in a _over_approximation_. I understand from Xaviel Rival's book that this _over_approximation_
 is sufficient to analyze the program. Look at the last test for some details.
 
-{% endhighlight %}
 # sems.ml
 {% highlight OCaml %}
 open Sems_abs
