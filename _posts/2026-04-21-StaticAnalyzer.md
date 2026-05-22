@@ -468,7 +468,7 @@ The example in the diagrams shows the various intervals in the Interval Domain. 
 for intervals and the Interval Domain are shown above. As I understand the number of intervals
 is very high when we don't impose any limitation. The limilation is returned by _V_abs.get_finite_height()_
 from the Interval Domain set in the _Functor_ in module _NonRelationalAbstractions. The section titled
-_Abstractions_ has the code for this module.
+*Abstractions* has the code for this module.
 
 The last test which analyzes an infinite loop is relatable to this explanation as the widening
 results in a _over_approximation_. I understand from Xaviel Rival's book that this _over_approximation_
@@ -1446,7 +1446,7 @@ are coded as _ADTs_
 
 ![The Program that is analyzed](../images/program.png){:class="img-responsive"}
 I understand that the static analyzer stops and returns 'x (Types.Tup ((Types.Int 101), Types.Pinf))'
-_. The principle of widening is explained in the book shown above. 'x' is the variable name and _101_
+. The principle of widening is explained in the book shown above. 'x' is the variable name and *101*
 means the condition exits.
 
 Thee tests are sparse but more will be added. The tests have be rigorously verified as the static analyzer
