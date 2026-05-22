@@ -1441,7 +1441,7 @@ let%expect_test  "infinite_loop_abs"=
       |}]
 {% endhighlight %}
 
-The last test shown above analyzer the following program which is an infinite loop. The programs
+The last test shown above uses the analyzer to analyze the following program which is an infinite loop. The programs
 are coded as _ADTs_
 
 ![The Program that is analyzed](../images/program.png){:class="img-responsive"}
