@@ -467,7 +467,7 @@ module IST = IntervalDomain( I_Params)
 The example in the diagrams shows the various intervals in the Interval Domain. The code
 for intervals and the Interval Domain are shown above. As I understand the number of intervals
 is very high when we don't impose any limitation. The limitation is returned by _V_abs.get_finite_height()_
-from the Interval Domain set in the _Functor_ in module _NonRelationalAbstractions. The section titled
+from the Interval Domain set in the _Functor_ in module _NonRelationalAbstractions_. The section titled
 *Abstractions* has the code for this module.
 
 The last test which analyzes an infinite loop is relatable to this explanation as the widening
@@ -1442,7 +1442,7 @@ let%expect_test  "infinite_loop_abs"=
 {% endhighlight %}
 
 The last test shown above uses the analyzer to analyze the following program which is an infinite loop. The programs
-are coded as _ADTs_
+are coded as Abstract Syntax Trees represented by_ADTs_ shown at the top of this article.
 
 ![The Program that is analyzed](../images/program.png){:class="img-responsive"}
 I understand that the static analyzer stops and returns 'x (Types.Tup ((Types.Int 101), Types.Pinf))'
