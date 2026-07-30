@@ -14,7 +14,64 @@ The code will be updated directly here in phases. I don't commit this to a separ
 Please note that this is a random collection of algorithms that eventually could be part of a simple editor.
 There are too many books and papers that deal with a multitude of algorithms.
 
-# OCaml 5 Effect Handlers
+# Terminal User Interface
+
+These TUIs or terminal UIs are simpler than implementing an editor using UI toolkits like _GTK_ or _QT_.
+Light weight TUIs are all the rage now because of its adoption by AI agents and other emulators like _Ghostty_
+and [OpenTUI](https://opentui.com/)
+
+I show here the simplest UI once could create using OCaml's _Format_ module which supports semantics tags.
+
+![image-title-here](../images/TUI`.png){:class="img-responsive"}
+
+{% highlight OCaml %}
+
+open Types
+open Buffer
+open Format
+
+(* https://hal.science/hal-01503081/file/format-unraveled.pdf *)
+module type Widget = sig
+    val render : Area.t  -> ?custom_formatter:Format.formatter -> Types.t-> unit
+end
+
+(* https://ocaml.org/manual/5.0/api/Format_tutorial.html#1_Refinementonhovboxes *)
+module Widget = struct
+   type Format.stag += Highlight
+
+   let tui_stag_functions = {
+     Format.print_open_stag = (fun stag ->
+       match stag with
+       | Format.String_tag s -> (* Printf.printf "%s" s; *)
+                                print_string "\x1b[48;5;162m\x1b[38;5;255m";
+       | _ -> ()
+     );
+     Format.print_close_stag = (fun _ -> print_string "\x1b[0m");
+     Format.mark_open_stag = (fun _ -> "");
+     Format.mark_close_stag = (fun _ -> "");
+   }
+
+   let pp_linebreak ppf () = Format.pp_print_break ppf Format.pp_infinity 0
+
+   let render_styled_text() =
+     Format.pp_set_tags Format.std_formatter true;
+     Format.pp_set_formatter_stag_functions Format.std_formatter tui_stag_functions;
+
+     Format.printf "@.@\n@{<Highlight>Collaborative editor.@}";
+     pp_linebreak Format.std_formatter ();
+     Format.printf "@.@\n@{<Highlight>Collaborative editor.@}";
+     pp_linebreak Format.std_formatter ();
+     Format.printf "@.@\n@{<Highlight>Collaborative editor.@}";
+     pp_linebreak Format.std_formatter ()
+
+
+   let render area ?( custom_formatter = Format.std_formatter) buf =
+           render_styled_text()
+end
+{% endhighlight  %}
+
+_<Highlight>_ is considered a semantics tag that is replaced by an ASCII color code. While this is a useful feature
+more sophisticated Terminal UI widgets need a better design.
 
 I will add some sections like this to explain the reason for experimenting with new paradigms. In many cases the code is too dense and will seem complicated when new techniques are introduced needlessly but Effect handlers are interesting to learn. Application though should be selective. There will be many usecases for these in the future.
 
