@@ -22,7 +22,7 @@ and [OpenTUI](https://opentui.com/)
 
 I show here the simplest UI once could create using OCaml's _Format_ module which supports semantics tags.
 
-![image-title-here](../images/TUI`.png){:class="img-responsive"}
+![image-title-here](../images/TUI1.png){:class="img-responsive"}
 
 {% highlight OCaml %}
 
