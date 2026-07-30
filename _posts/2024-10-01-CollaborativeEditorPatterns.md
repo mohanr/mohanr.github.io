@@ -9,7 +9,7 @@ string manipulation algorithms, CRDTs and even LLM inference. So even though a f
 editor is not in scope here, many algorithms like these can be explored and a functional
 editor can be created.
 
-The code will be updated directly here in phases. I don't commit this to a separate repository.
+The developing code is in [this](https://github.com/mohanr/collaborative-editor) repository.
 
 Please note that this is a random collection of algorithms that eventually could be part of a simple editor.
 There are too many books and papers that deal with a multitude of algorithms.
