@@ -20,7 +20,7 @@ These TUIs or terminal UIs are simpler than implementing an editor using UI tool
 Light weight TUIs are all the rage now because of its adoption by AI agents and other emulators like _Ghostty_
 and [OpenTUI](https://opentui.com/)
 
-I show here the simplest UI once could create using OCaml's _Format_ module which supports semantics tags.
+I show here the simplest UI one could create using OCaml's _Format_ module which supports semantics tags.
 
 ![image-title-here](../images/TUI1.png){:class="img-responsive"}
 
@@ -73,7 +73,31 @@ end
 _\<Highlight\>_ is considered a semantics tag that is replaced by an ASCII color code. While this is a useful feature
 more sophisticated Terminal UI widgets need a better design.
 
-I will add some sections like this to explain the reason for experimenting with new paradigms. In many cases the code is too dense and will seem complicated when new techniques are introduced needlessly but Effect handlers are interesting to learn. Application though should be selective. There will be many usecases for these in the future.
+# Terminal Type( TTY )
+
+This part of the code is reusable and is part of the _Unix_ module. I chose the simplest possible
+mode to create my Terminal User Interface on my Mac system.
+
+{% highlight OCaml %}
+
+let change_mode ()=
+     let enable_raw_mode () =
+       let stdin_fd = Unix.descr_of_in_channel stdin in
+       let termios = Unix.tcgetattr stdin_fd in
+       let new_termios =
+         Unix.
+           { termios with c_icanon = false; c_echo = false; c_vmin = 0; c_vtime = 1 }
+       in
+       Unix.tcsetattr stdin_fd Unix.TCSAFLUSH new_termios;
+       termios
+    in enable_raw_mode()
+{% endhighlight  %}
+
+
+
+# Effect Handlers are a new OCaml feature
+
+I will add some sections like this to explain the reason for experimenting with new paradigms like effect handlers. In many cases the code is too dense and will seem complicated when new techniques are introduced needlessly but Effect handlers are interesting to learn. Application though should be selective. There will be many usecases for these in the future.
 
 So the following is an experiment in the sense that the code quality will be fixed only later. So, for example, global references are used to complete the code even though they
 are unnecessary.
