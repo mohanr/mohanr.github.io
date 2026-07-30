@@ -70,7 +70,7 @@ module Widget = struct
 end
 {% endhighlight  %}
 
-_<Highlight>_ is considered a semantics tag that is replaced by an ASCII color code. While this is a useful feature
+_\<Highlight\>_ is considered a semantics tag that is replaced by an ASCII color code. While this is a useful feature
 more sophisticated Terminal UI widgets need a better design.
 
 I will add some sections like this to explain the reason for experimenting with new paradigms. In many cases the code is too dense and will seem complicated when new techniques are introduced needlessly but Effect handlers are interesting to learn. Application though should be selective. There will be many usecases for these in the future.
