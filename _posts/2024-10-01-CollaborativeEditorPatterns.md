@@ -17,7 +17,7 @@ There are too many books and papers that deal with a multitude of algorithms.
 # Terminal User Interface
 
 These TUIs or terminal UIs are simpler than implementing an editor using UI toolkits like _GTK_ or _QT_.
-Light weight TUIs are all the rage now because of its adoption by AI agents and other emulators like _Ghostty_
+Light weight TUIs are all the rage now because of their adoption by AI agents and other emulators like _Ghostty_
 and [OpenTUI](https://opentui.com/)
 
 I show here the simplest UI one could create using OCaml's _Format_ module which supports semantics tags.
