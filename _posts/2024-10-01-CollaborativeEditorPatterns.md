@@ -39,34 +39,39 @@ end
 module Widget = struct
    type Format.stag += Highlight
 
-   let tui_stag_functions = {
-     Format.print_open_stag = (fun stag ->
+   let tui_stag_functions (area : Types.Area.t) = {
+     Format.mark_open_stag = (fun stag ->
        match stag with
-       | Format.String_tag s -> (* Printf.printf "%s" s; *)
-                                print_string "\x1b[48;5;162m\x1b[38;5;255m";
-       | _ -> ()
+       | Format.String_tag s ->
+                (match s with
+                | s when String.equal s "Highlight"
+                        ->   "\x1b[48;5;162m\x1b[38;5;255m";
+                | _ -> String.empty)
+       | _ -> String.empty
      );
-     Format.print_close_stag = (fun _ -> print_string "\x1b[0m");
-     Format.mark_open_stag = (fun _ -> "");
-     Format.mark_close_stag = (fun _ -> "");
+     Format.mark_close_stag = (fun _ ->  "\x1b[0m");
+     Format.print_open_stag = (fun _ -> ());
+     Format.print_close_stag = (fun _ -> ());
    }
 
    let pp_linebreak ppf () = Format.pp_print_break ppf Format.pp_infinity 0
 
-   let render_styled_text() =
+   let render_styled_text area =
      Format.pp_set_tags Format.std_formatter true;
-     Format.pp_set_formatter_stag_functions Format.std_formatter tui_stag_functions;
+     Format.pp_set_formatter_stag_functions Format.std_formatter (tui_stag_functions area);
 
-     Format.printf "@.@\n@{<Highlight>Collaborative editor.@}";
      pp_linebreak Format.std_formatter ();
-     Format.printf "@.@\n@{<Highlight>Collaborative editor.@}";
+     Format.printf "@.";
      pp_linebreak Format.std_formatter ();
-     Format.printf "@.@\n@{<Highlight>Collaborative editor.@}";
+     Format.printf "@{<Highlight>Collaborative editor.@}@.@";
      pp_linebreak Format.std_formatter ()
 
 
+
    let render area ?( custom_formatter = Format.std_formatter) buf =
-           render_styled_text()
+           (* print_string "\x1b[43;30mHello World!\x1b[0m\n"; *)
+
+           render_styled_text area
 end
 {% endhighlight  %}
 
