@@ -1,5 +1,5 @@
 ---
 layout: post
 title: Static Analyzer
-published: true
+published: false
 ---
