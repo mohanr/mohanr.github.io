@@ -1,8 +1,12 @@
 ---
 layout: post
-title: Static Analyzer
+title: Imperative pretty printer
 published: false
 ---
+
+The title means that there is already a functional pretty printer by *Wadler* but even though I use
+OCaml the following code is based on Benjamin Pizza's Gutenberg library. The paper that shown the imperative
+version is shown below.
 
 # Pretty printer
 
@@ -23,3 +27,5 @@ let%expect_test "hello world"=
 
 
 {% endhighlight %}
+
+![image-title-here](../images/Oppen1.png){:width="10%"}{:class="img-responsive"}
