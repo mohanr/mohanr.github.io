@@ -13,11 +13,11 @@ This is a [simplified version](https://github.com/mohanr/agentic-harness/blob/ma
 # Pretty printer
 
 
-![image-title-here](../images/Oppen.png){:width="10%"}{:class="img-responsive"}
+![image-title-here](../images/Oppen.png){:width="40%"}{:class="img-responsive"}
 
 I also discovered a paper that shows Object Caml code which I didn't use. Mine is just an imperative version.
 
-![image-title-here](../images/lindig.png){:width="10%"}{:class="img-responsive"}
+![image-title-here](../images/lindig.png){:width="40%"}{:class="img-responsive"}
 
 ## The GADT
 
@@ -89,6 +89,6 @@ let%expect_test "hello world"=
 
 {% endhighlight %}
 
-![image-title-here](../images/Oppen1.png){:width="10%"}{:class="img-responsive"}
+![image-title-here](../images/Oppen1.png){:width="100%"}{:class="img-responsive"}
 
 There are some design decisions based on _ChoicePoint_ that I have to explain.
