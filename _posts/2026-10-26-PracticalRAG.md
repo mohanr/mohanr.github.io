@@ -78,12 +78,12 @@ direct way to port. In fact the Rust code uses many iterators like the following
 
  But in any case I found some OCaml effect handler patterns to implement the same type of iterator pattern.
 
- # Key parts of the network creation code
+ #  Key parts of the network creation code
 
  I have only tried to create a network by loading test data. No proper tests are executed. I found it hard
  to understand the Rust code to load and operate  a network, not to mention the difficulty of implementation
  of the Leiden community detection algorithm.
 
- # TODO Explain with code 
+ #  TODO Explain with code 
 
  
