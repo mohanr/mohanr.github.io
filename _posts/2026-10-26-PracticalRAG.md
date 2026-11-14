@@ -11,7 +11,7 @@ I will most probably read other RAG implementation code in order to port other a
 
 # tl;dr
 1. The code will be gradually improved and  be committed to git finally. The version on this
-   page is compiled but unfinished until I mention it here. Code is [here[(https://github.com/mohanr/agentic-harness/tree/main/lib/rag)
+   page is compiled but unfinished until I mention it here. Code is [here](https://github.com/mohanr/agentic-harness/tree/main/lib/rag)
 2. I found it hard to port the Rust iterator pattern to OCaml. So I may have introduced bugs.
 3. The OCaml code is verbose now. It has to be refactored. It is not easy to understand
    the algorithm without comments whether it is Rust code or OCaml.
