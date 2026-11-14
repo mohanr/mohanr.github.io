@@ -80,7 +80,7 @@ direct way to port. In fact the Rust code uses many iterators like the following
 
  #  Key parts of the network creation code
     
-    I have only tried to create a network by loading test data. No proper tests are executed. I found it hard
+   I have only tried to create a network by loading test data. No proper tests are executed. I found it hard
  to understand the Rust code to load and operate  a network, not to mention the difficulty of implementation
  of the Leiden community detection algorithm.
 
