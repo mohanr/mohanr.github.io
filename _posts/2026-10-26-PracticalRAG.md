@@ -56,7 +56,7 @@ impl Iterator for NeighborIterator<'_> {
         }
     }
 }
-{% highlight rust %}
+{% endhighlight  %}
  But in any case I found some OCaml effect handler patterns to implement the same type of iterator pattern.
 The Rust implementation of  iterators did not map directly to any OCaml language feature I was
 familiar with. Moreover everywhere in the source there were these iterators.
