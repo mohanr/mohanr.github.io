@@ -24,16 +24,7 @@ direct way to port. In fact the Rust code uses many iterators like the following
 
 # Rust's iterators pose a problem
 
-
- I have elided many other parts of the code but the general idea is this. I was not clear about
- the way forward when I started to port this to OCaml. The Rust code uses a pattern that is powerful
- but it does seem that a simpler method would also suffice. I am not a Rust programmer. So my
- assessment could be wrong.
-
- But in any case I found some OCaml effect handler patterns to implement the same type of iterator pattern.
- 
- 
- ## Effect handlers
+## Effect handlers
 
 The Rust implementation of  iterators did not map directly to any OCaml language feature I was
 familiar with. Moreover everywhere in the source there were these iterators.
