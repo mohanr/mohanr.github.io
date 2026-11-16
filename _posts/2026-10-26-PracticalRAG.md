@@ -35,8 +35,8 @@ direct way to port. In fact the Rust code uses many iterators like the following
  
  ## Effect handlers
 
- The Rust implementation of  iterators did not map directly to any OCaml language feature I was
- familiar with. Moreover everywhere in the source there were these iterators.
+The Rust implementation of  iterators did not map directly to any OCaml language feature I was
+familiar with. Moreover everywhere in the source there were these iterators.
 
 I was not clear about the way forward when I started to port this to OCaml. Even though the Rust code
 uses a pattern that is powerful  it does seem that a simpler method would also suffice. I am not a Rust programmer.
