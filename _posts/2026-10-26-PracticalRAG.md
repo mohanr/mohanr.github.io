@@ -24,7 +24,7 @@ direct way to port. In fact the Rust code uses many iterators like the following
 
 # Rust's iterators pose a problem
 
-{% highlight rust %}
+```rust
 
    pub fn neighbors_for(
         &self,
@@ -69,7 +69,7 @@ direct way to port. In fact the Rust code uses many iterators like the following
             })
             .collect()
     }
- {% endhighlight %}
+ ```
 
  I have elided many other parts of the code but the general idea is this. I was not clear about
  the way forward when I started to port this to OCaml. The Rust code uses a pattern that is powerful
