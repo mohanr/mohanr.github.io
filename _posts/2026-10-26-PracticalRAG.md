@@ -77,7 +77,8 @@ direct way to port. In fact the Rust code uses many iterators like the following
  assessment could be wrong.
 
  But in any case I found some OCaml effect handler patterns to implement the same type of iterator pattern.
-
+ 
+ 
  ## Effect handlers
 
  The Rust implementation of  iterators did not map directly to any OCaml language feature I was
