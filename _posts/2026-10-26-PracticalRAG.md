@@ -36,7 +36,7 @@ So my assessment could be wrong.
 Fortunately OCaml's effect handlers enabled me to separate the effect handler that is generic from the
 iteration logic.
 
-{% highlight rust %}
+{% highlight ocaml %}
 
    (* This is an example pattern using effects found in Github *)
    (* https://github.com/avsm/ocaml-eff-example/blob/master/generator.ml *)
@@ -61,7 +61,7 @@ iteration logic.
 
 The logic is separate and should be combined with the effect handler.
 
-{% highlight rust %}
+{% highlight ocaml %}
 
     let rec next f neighbor_iterator current_neighbor =
 
