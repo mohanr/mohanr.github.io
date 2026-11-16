@@ -78,6 +78,73 @@ direct way to port. In fact the Rust code uses many iterators like the following
 
  But in any case I found some OCaml effect handler patterns to implement the same type of iterator pattern.
 
+ # Effect handlers
+
+ The Rust implementation of  iterators did not map directly to any OCaml language feature I was
+ familiar with. Moreover everywhere in the source there were these iterators.
+
+I was not clear about the way forward when I started to port this to OCaml. Even though the Rust code
+uses a pattern that is powerful  it does seem that a simpler method would also suffice. I am not a Rust programmer.
+So my assessment could be wrong.
+
+Fortunately OCaml's effect handlers enabled me to separate the effect handler that is generic from the
+iteration logic.
+
+{% highlight rust %}
+
+   (* This is an example pattern using effects found in Github *)
+   (* https://github.com/avsm/ocaml-eff-example/blob/master/generator.ml *)
+   let to_iterator (type a) (t : a t) iter =
+     let module M =
+     struct type _ Effect.t += Next : a -> unit Effect.t end in
+     let open M in
+     let step = ref (fun () -> assert false) in
+     let first_step () =
+       try
+         iter (fun x -> Effect.perform (Next x)) t;
+         None
+       with effect Next v, k ->
+         step := Effect.Deep.continue k;
+         Some v
+     in
+       step := first_step;
+       fun () -> !step ()
+
+
+{% endhighlight%}
+
+The logic is separate and should be combined with the effect handler.
+
+{% highlight rust %}
+
+    let rec next f neighbor_iterator current_neighbor =
+
+      match Enum.exists ( fun v -> v = current_neighbor )
+                                       neighbor_iterator.neighbor_range with
+      | true ->
+            let cn =
+              Compact_neighbor.get
+                neighbor_iterator.compact_network.neighbors current_neighbor in
+            (match cn with
+            | CompactNeighbor (neighbor_id, edge_weight) ->
+            let item = {
+                connection_id = neighbor_iterator.current_neighbor ;
+                id  = neighbor_id;
+                edge_weight = edge_weight;
+                node_weight = match Compact_node.get
+                              Compact_network_params.network.nodes
+                               ( match neighbor_id with
+                                 | Compact_nodeid c -> c) with
+                              | CompactNode (i, j) -> i
+            } in
+            f (Some item);
+            next f neighbor_iterator  (current_neighbor + 1)
+            )
+      | false->
+            None
+{% endhighlight%}
+
+
  #  Key parts of the network creation code
     
    I have only tried to create a network by loading test data. No proper tests are executed. I found it hard
