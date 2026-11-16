@@ -26,6 +26,38 @@ direct way to port. In fact the Rust code uses many iterators like the following
 
 ## Effect handlers
 
+I have elided many other parts of the code but the general idea is this. I was not clear about
+ the way forward when I started to port this to OCaml. The Rust code uses a pattern that is powerful
+ but it does seem that a simpler method would also suffice. I am not a Rust programmer. So my
+ assessment could be wrong.
+{% highlight rust %}
+pub struct NeighborIterator<'a> {
+    compact_network: &'a CompactNetwork,
+    neighbor_range: Range<ConnectionId>,
+    current_neighbor: ConnectionId,
+}
+
+impl Iterator for NeighborIterator<'_> {
+    type Item = CompactNeighborItem;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.neighbor_range.contains(&self.current_neighbor) {
+            let (neighbor_id, edge_weight) = self.compact_network.neighbors[self.current_neighbor];
+            let item = CompactNeighborItem {
+                connection_id: self.current_neighbor,
+                id: neighbor_id,
+                edge_weight,
+                node_weight: self.compact_network.nodes[neighbor_id].0,
+            };
+            self.current_neighbor += 1;
+            Some(item)
+        } else {
+            None
+        }
+    }
+}
+{% highlight rust %}
+ But in any case I found some OCaml effect handler patterns to implement the same type of iterator pattern.
 The Rust implementation of  iterators did not map directly to any OCaml language feature I was
 familiar with. Moreover everywhere in the source there were these iterators.
 
@@ -91,12 +123,12 @@ The logic is separate and should be combined with the effect handler.
 {% endhighlight %}
 
 
- ## Key parts of the network creation code
+## Key parts of the network creation code
     
    I have only tried to create a network by loading test data. No proper tests are executed. I found it hard
  to understand the Rust code to load and operate  a network, not to mention the difficulty of implementation
  of the Leiden community detection algorithm.
-
- ##  TODO Explain with code 
+ 
+##  TODO Explain with code 
 
  
