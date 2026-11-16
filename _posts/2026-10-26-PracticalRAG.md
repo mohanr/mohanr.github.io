@@ -69,7 +69,7 @@ direct way to port. In fact the Rust code uses many iterators like the following
             })
             .collect()
     }
- {% endhighlight%}
+ {% endhighlight %}
 
  I have elided many other parts of the code but the general idea is this. I was not clear about
  the way forward when I started to port this to OCaml. The Rust code uses a pattern that is powerful
@@ -111,7 +111,7 @@ iteration logic.
        fun () -> !step ()
 
 
-{% endhighlight%}
+{% endhighlight %}
 
 The logic is separate and should be combined with the effect handler.
 
@@ -142,7 +142,7 @@ The logic is separate and should be combined with the effect handler.
             )
       | false->
             None
-{% endhighlight%}
+{% endhighlight %}
 
 
  #  Key parts of the network creation code
